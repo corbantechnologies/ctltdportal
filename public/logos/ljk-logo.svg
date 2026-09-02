@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%" fill="none">
+  <defs>
+    <linearGradient id="ljk-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#581c87" />
+      <stop offset="100%" stop-color="#3b0764" />
+    </linearGradient>
+    <linearGradient id="ljk-accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c084fc" />
+      <stop offset="100%" stop-color="#9333ea" />
+    </linearGradient>
+  </defs>
+  <!-- Background Badge with subtle rounded geometry (radius 24) -->
+  <rect x="16" y="16" width="480" height="480" rx="24" ry="24" fill="url(#ljk-grad)" />
+  <rect x="24" y="24" width="464" height="464" rx="16" ry="16" stroke="#a855f7" stroke-width="4" stroke-opacity="0.3" fill="none" />
+  
+  <!-- Geometric Monogram "L J K" -->
+  <g transform="translate(48, 64)">
+    <!-- Letter L -->
+    <path d="M 40 60 L 92 60 L 92 270 L 190 270 L 190 324 L 40 324 Z" fill="#ffffff" />
+    <path d="M 40 60 L 92 60 L 92 140 L 40 140 Z" fill="url(#ljk-accent)" />
+    
+    <!-- Letter J -->
+    <path d="M 170 60 L 222 60 L 222 260 C 222 295 195 324 160 324 C 125 324 110 300 110 275 L 158 275 C 158 280 162 284 170 284 C 178 284 182 278 182 265 L 182 60 Z" fill="#ffffff" fill-opacity="0.95" />
+    
+    <!-- Letter K -->
+    <path d="M 248 60 L 300 60 L 300 324 L 248 324 Z" fill="#ffffff" />
+    <path d="M 374 60 L 306 174 L 378 324 L 318 324 L 268 214 L 304 158 L 314 60 Z" fill="#ffffff" />
+    <path d="M 314 60 L 374 60 L 320 152 L 292 110 Z" fill="url(#ljk-accent)" />
+    
+    <!-- Precision dot accent -->
+    <rect x="340" y="292" width="32" height="32" rx="4" fill="url(#ljk-accent)" />
+  </g>
+</svg>

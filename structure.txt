@@ -1,0 +1,7 @@
+Corban Technologies LTD
+Divided into Divisions
+The divisions are set up in the backend/API. There are some data that unauthenticated users cant see 
+Anyway, under the divisions is where we have the specific projects, services and the description. These three are written in markdown
+Description: about the division and its summary
+Services: list of services offered by the division
+Projects: list of projects undertaken by the division

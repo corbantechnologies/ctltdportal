@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%" fill="none">
+  <defs>
+    <!-- Deep Emerald Green Background -->
+    <linearGradient id="manna-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="50%" stop-color="#022c22" />
+      <stop offset="100%" stop-color="#011812" />
+    </linearGradient>
+
+    <!-- Emerald Leaf / Growth Accent -->
+    <linearGradient id="manna-green" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+
+    <!-- Gold Balance Accent -->
+    <linearGradient id="manna-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fde047" />
+      <stop offset="50%" stop-color="#eab308" />
+      <stop offset="100%" stop-color="#ca8a04" />
+    </linearGradient>
+  </defs>
+
+  <!-- Container Badge (Radius 24) -->
+  <rect x="16" y="16" width="480" height="480" rx="24" ry="24" fill="url(#manna-bg)" />
+  <rect x="28" y="28" width="456" height="456" rx="18" ry="18" stroke="url(#manna-green)" stroke-width="2.5" stroke-opacity="0.3" fill="none" />
+
+  <!-- Open Accounting Ledger & Growth Emblem -->
+  <g transform="translate(256, 172)">
+    <!-- Base Ledger Spine -->
+    <path d="M 0 -70 L 70 -48 L 70 48 L 0 26 L -70 48 L -70 -48 Z" fill="#03382b" stroke="url(#manna-green)" stroke-width="3" />
+    
+    <!-- Left Ledger Page (Balanced Debits) -->
+    <path d="M -6 -60 L -62 -42 L -62 38 L -6 20 Z" fill="#064e3b" stroke="url(#manna-green)" stroke-width="2" />
+    <!-- Ledger Rule Lines (Left) -->
+    <line x1="-50" y1="-26" x2="-18" y2="-16" stroke="#6ee7b7" stroke-width="2" stroke-linecap="round" opacity="0.6" />
+    <line x1="-50" y1="-8" x2="-18" y2="2" stroke="#6ee7b7" stroke-width="2" stroke-linecap="round" opacity="0.6" />
+    <line x1="-50" y1="10" x2="-28" y2="17" stroke="url(#manna-gold)" stroke-width="2.5" stroke-linecap="round" />
+
+    <!-- Right Ledger Page (Balanced Credits) -->
+    <path d="M 6 -60 L 62 -42 L 62 38 L 6 20 Z" fill="#043a2c" stroke="url(#manna-green)" stroke-width="2" />
+    <!-- Ledger Rule Lines (Right) -->
+    <line x1="18" y1="-16" x2="50" y2="-26" stroke="#6ee7b7" stroke-width="2" stroke-linecap="round" opacity="0.6" />
+    <line x1="18" y1="2" x2="50" y2="-8" stroke="#6ee7b7" stroke-width="2" stroke-linecap="round" opacity="0.6" />
+    <line x1="18" y1="17" x2="50" y2="10" stroke="url(#manna-gold)" stroke-width="2.5" stroke-linecap="round" />
+
+    <!-- Center Growth Tree / Balance Node -->
+    <path d="M 0 -85 L 14 -60 L -14 -60 Z" fill="url(#manna-gold)" />
+    <circle cx="0" cy="-20" r="10" fill="url(#manna-gold)" />
+    <path d="M -4 -20 L -1 -17 L 4 -23" stroke="#022c22" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+
+  <!-- Typography Brand Section -->
+  <g id="brand-title">
+    <text x="256" y="342" text-anchor="middle" font-family="'Inter', 'Space Grotesk', system-ui, sans-serif" font-size="46" font-weight="800" letter-spacing="2" fill="#ffffff">
+      MANNA<tspan fill="url(#manna-gold)">BOOKS</tspan>
+    </text>
+  </g>
+
+  <!-- Divider Line -->
+  <line x1="140" y1="370" x2="372" y2="370" stroke="url(#manna-green)" stroke-width="2" stroke-linecap="round" opacity="0.8" />
+
+  <!-- Subtitle -->
+  <g id="brand-subtitle">
+    <text x="256" y="410" text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-size="13" font-weight="700" letter-spacing="5" fill="#a7f3d0">
+      DOUBLE-ENTRY ACCOUNTING
+    </text>
+    <text x="256" y="434" text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-size="10" font-weight="600" letter-spacing="4" fill="#fbbf24" fill-opacity="0.9">
+      KENYA · GENERAL LEDGER &amp; TAX
+    </text>
+  </g>
+</svg>

@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%" fill="none">
+  <defs>
+    <!-- Midnight Navy Background -->
+    <linearGradient id="fedha-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b132b" />
+      <stop offset="50%" stop-color="#1c2541" />
+      <stop offset="100%" stop-color="#070c18" />
+    </linearGradient>
+
+    <!-- Cobalt Analytics Gradient -->
+    <linearGradient id="fedha-blue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#60a5fa" />
+      <stop offset="100%" stop-color="#2563eb" />
+    </linearGradient>
+
+    <!-- Warm Orange Flare -->
+    <linearGradient id="fedha-orange" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fb923c" />
+      <stop offset="100%" stop-color="#ea580c" />
+    </linearGradient>
+  </defs>
+
+  <!-- Container Badge (Radius 24) -->
+  <rect x="16" y="16" width="480" height="480" rx="24" ry="24" fill="url(#fedha-bg)" />
+  <rect x="28" y="28" width="456" height="456" rx="18" ry="18" stroke="#3b82f6" stroke-width="2.5" stroke-opacity="0.3" fill="none" />
+
+  <!-- Financial Intelligence Hub Emblem -->
+  <g transform="translate(256, 172)">
+    <!-- Outer Data Orbit -->
+    <circle cx="0" cy="0" r="78" stroke="#334155" stroke-width="3" stroke-dasharray="12 6" fill="none" />
+    
+    <!-- Growth Trend Bars -->
+    <rect x="-48" y="-10" width="18" height="50" rx="4" fill="url(#fedha-blue)" opacity="0.7" />
+    <rect x="-22" y="-30" width="18" height="70" rx="4" fill="url(#fedha-blue)" opacity="0.9" />
+    <rect x="4" y="-55" width="18" height="95" rx="4" fill="url(#fedha-blue)" />
+    <rect x="30" y="-75" width="18" height="115" rx="4" fill="url(#fedha-orange)" />
+
+    <!-- Upward Trend Line & Spark -->
+    <path d="M -50 0 L -13 -22 L 13 -48 L 40 -68" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="40" cy="-68" r="7" fill="#ffffff" stroke="url(#fedha-orange)" stroke-width="3" />
+
+    <!-- Node Connector -->
+    <circle cx="-50" cy="0" r="4" fill="url(#fedha-blue)" />
+    <circle cx="-13" cy="-22" r="4" fill="url(#fedha-blue)" />
+    <circle cx="13" cy="-48" r="4" fill="url(#fedha-blue)" />
+  </g>
+
+  <!-- Typography Brand Section -->
+  <g id="brand-title">
+    <text x="256" y="342" text-anchor="middle" font-family="'Space Grotesk', 'Inter', system-ui, sans-serif" font-size="46" font-weight="800" letter-spacing="3" fill="#ffffff">
+      FEDHA<tspan fill="url(#fedha-orange)">HUB</tspan>
+    </text>
+  </g>
+
+  <!-- Divider Line -->
+  <line x1="140" y1="370" x2="372" y2="370" stroke="url(#fedha-orange)" stroke-width="2" stroke-linecap="round" />
+
+  <!-- Subtitle -->
+  <g id="brand-subtitle">
+    <text x="256" y="410" text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-size="13" font-weight="700" letter-spacing="5" fill="#93c5fd">
+      FINANCIAL INTELLIGENCE
+    </text>
+    <text x="256" y="434" text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-size="10" font-weight="600" letter-spacing="4" fill="#fb923c" fill-opacity="0.9">
+      KENYA · DIVIDENDS &amp; BLOG
+    </text>
+  </g>
+</svg>

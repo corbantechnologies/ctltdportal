@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%" fill="none">
+  <defs>
+    <!-- Deep Electric Violet Background -->
+    <linearGradient id="sherehe-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b0764" />
+      <stop offset="50%" stop-color="#1e0538" />
+      <stop offset="100%" stop-color="#0e021a" />
+    </linearGradient>
+
+    <!-- Neon Fuchsia Gradient -->
+    <linearGradient id="sherehe-pink" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f472b6" />
+      <stop offset="50%" stop-color="#d946ef" />
+      <stop offset="100%" stop-color="#9333ea" />
+    </linearGradient>
+
+    <!-- Sunset Gold Flare -->
+    <linearGradient id="sherehe-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fde047" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+  </defs>
+
+  <!-- Container Badge (Radius 24) -->
+  <rect x="16" y="16" width="480" height="480" rx="24" ry="24" fill="url(#sherehe-bg)" />
+  <rect x="28" y="28" width="456" height="456" rx="18" ry="18" stroke="url(#sherehe-pink)" stroke-width="2.5" stroke-opacity="0.35" fill="none" />
+
+  <!-- Event Ticket Pass & Celebration Star Emblem -->
+  <g transform="translate(256, 172)">
+    <!-- Ticket Body with Notches -->
+    <path d="M -65 -45 L 65 -45 C 65 -45 65 -15 50 0 C 65 15 65 45 65 45 L -65 45 C -65 45 -65 15 -50 0 C -65 -15 -65 -45 -65 -45 Z" fill="#240742" stroke="url(#sherehe-pink)" stroke-width="3.5" />
+
+    <!-- Perforation Line -->
+    <line x1="15" y1="-40" x2="15" y2="40" stroke="#a855f7" stroke-width="2" stroke-dasharray="6 4" />
+
+    <!-- QR / Ticket Core Symbol (Left Section) -->
+    <rect x="-42" y="-24" width="38" height="38" rx="6" fill="url(#sherehe-pink)" />
+    <rect x="-34" y="-16" width="22" height="22" rx="3" fill="#1e0538" />
+    <rect x="-28" y="-10" width="10" height="10" rx="1.5" fill="url(#sherehe-gold)" />
+
+    <!-- Celebration Star / Spotlight (Right Section) -->
+    <path d="M 38 -18 L 41 -6 L 53 -3 L 41 0 L 38 12 L 35 0 L 23 -3 L 35 -6 Z" fill="url(#sherehe-gold)" />
+
+    <!-- Micro Stars -->
+    <circle cx="-5" cy="-28" r="2.5" fill="url(#sherehe-gold)" />
+    <circle cx="5" cy="28" r="2" fill="url(#sherehe-pink)" />
+  </g>
+
+  <!-- Typography Brand Section -->
+  <g id="brand-title">
+    <text x="256" y="342" text-anchor="middle" font-family="'Space Grotesk', 'Inter', system-ui, sans-serif" font-size="48" font-weight="800" letter-spacing="4" fill="#ffffff">
+      SHER<tspan fill="url(#sherehe-pink)">EHE</tspan>
+    </text>
+  </g>
+
+  <!-- Divider Line -->
+  <line x1="140" y1="370" x2="372" y2="370" stroke="url(#sherehe-gold)" stroke-width="2" stroke-linecap="round" />
+
+  <!-- Subtitle -->
+  <g id="brand-subtitle">
+    <text x="256" y="410" text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-size="13" font-weight="700" letter-spacing="5" fill="#f0abfc">
+      DIGITAL EVENT TICKETING
+    </text>
+    <text x="256" y="434" text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-size="10" font-weight="600" letter-spacing="4" fill="#fde047" fill-opacity="0.9">
+      KENYA · QR PASSES &amp; GATE SCAN
+    </text>
+  </g>
+</svg>

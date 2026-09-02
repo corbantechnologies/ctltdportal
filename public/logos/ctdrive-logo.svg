@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%" fill="none">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="ctdrive-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="50%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#090d16" />
+    </linearGradient>
+
+    <!-- Cyan Electric Velocity Gradient -->
+    <linearGradient id="ctdrive-cyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+
+    <!-- Amber Speed Accent -->
+    <linearGradient id="ctdrive-amber" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#ea580c" />
+    </linearGradient>
+  </defs>
+
+  <!-- Container Badge (Radius 24) -->
+  <rect x="16" y="16" width="480" height="480" rx="24" ry="24" fill="url(#ctdrive-bg)" />
+  <rect x="28" y="28" width="456" height="456" rx="18" ry="18" stroke="#38bdf8" stroke-width="3" stroke-opacity="0.25" fill="none" />
+
+  <!-- Fleet & Waypoint Monogram Emblem -->
+  <g transform="translate(256, 175)">
+    <!-- Speed Rings -->
+    <circle cx="0" cy="0" r="80" stroke="#334155" stroke-width="4" stroke-dasharray="16 8" fill="none" />
+    
+    <!-- Forward Chevron Arrows (Fleet Motion) -->
+    <path d="M -55 -40 L -15 0 L -55 40 L -35 40 L 5 0 L -35 -40 Z" fill="url(#ctdrive-cyan)" />
+    <path d="M -15 -40 L 25 0 L -15 40 L 5 40 L 45 0 L 5 -40 Z" fill="#ffffff" />
+    <path d="M 25 -40 L 65 0 L 25 40 L 45 40 L 85 0 L 45 -40 Z" fill="url(#ctdrive-amber)" />
+
+    <!-- Core Waypoint Pin / Cargo Icon -->
+    <circle cx="-5" cy="0" r="14" fill="#0f172a" stroke="url(#ctdrive-cyan)" stroke-width="4" />
+    <circle cx="-5" cy="0" r="6" fill="url(#ctdrive-amber)" />
+  </g>
+
+  <!-- Typography Brand Section -->
+  <g id="brand-title">
+    <text x="256" y="344" text-anchor="middle" font-family="'Space Grotesk', 'Inter', 'Arial Black', sans-serif" font-size="52" font-weight="800" letter-spacing="4" fill="#ffffff">
+      CT <tspan fill="url(#ctdrive-cyan)">DRIVE</tspan>
+    </text>
+  </g>
+
+  <!-- Divider Line -->
+  <line x1="136" y1="372" x2="376" y2="372" stroke="url(#ctdrive-amber)" stroke-width="3" stroke-linecap="round" />
+
+  <!-- Subtitle -->
+  <g id="brand-subtitle">
+    <text x="256" y="412" text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-size="14" font-weight="700" letter-spacing="6" fill="#94a3b8">
+      LOGISTICS &amp; FLEET OS
+    </text>
+    <text x="256" y="436" text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-size="10" font-weight="600" letter-spacing="4" fill="#38bdf8" fill-opacity="0.8">
+      KENYA · WAYBILLS &amp; DISPATCH
+    </text>
+  </g>
+</svg>

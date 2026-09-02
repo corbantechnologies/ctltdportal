@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%" fill="none">
+  <defs>
+    <!-- Background Velvet Glow -->
+    <linearGradient id="clate-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2a121d" />
+      <stop offset="50%" stop-color="#190a12" />
+      <stop offset="100%" stop-color="#0e0409" />
+    </linearGradient>
+
+    <!-- Luxury Rose Gold Primary -->
+    <linearGradient id="clate-rosegold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fce2d6" />
+      <stop offset="35%" stop-color="#e5ad93" />
+      <stop offset="70%" stop-color="#c97b5e" />
+      <stop offset="100%" stop-color="#a65538" />
+    </linearGradient>
+
+    <!-- Shimmer Accent Gold -->
+    <linearGradient id="clate-shimmer" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#d48a6a" />
+      <stop offset="50%" stop-color="#fff0ea" />
+      <stop offset="100%" stop-color="#c97b5e" />
+    </linearGradient>
+
+    <!-- Soft Glow Filter -->
+    <filter id="soft-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background Base Container (Radius 24) -->
+  <rect x="16" y="16" width="480" height="480" rx="24" ry="24" fill="url(#clate-bg)" />
+  
+  <!-- Subtle Ornamental Inner Border -->
+  <rect x="28" y="28" width="456" height="456" rx="18" ry="18" stroke="url(#clate-rosegold)" stroke-width="2" stroke-opacity="0.35" fill="none" />
+  <rect x="36" y="36" width="440" height="440" rx="14" ry="14" stroke="url(#clate-rosegold)" stroke-width="1" stroke-opacity="0.2" stroke-dasharray="6 4" fill="none" />
+
+  <!-- Center Luxury Emblem (Botanical Lotus & Geometric 'C') -->
+  <g transform="translate(256, 175)">
+    <!-- Ambient Radial Glow -->
+    <circle cx="0" cy="0" r="85" fill="#c97b5e" fill-opacity="0.12" filter="url(#soft-glow)" />
+
+    <!-- Outer Botanical Petals -->
+    <path d="M 0 -85 C 30 -50 65 -20 75 20 C 50 25 25 10 0 35 C -25 10 -50 25 -75 20 C -65 -20 -30 -50 0 -85 Z" fill="url(#clate-rosegold)" fill-opacity="0.2" />
+
+    <!-- Center Blooming Petal Structure -->
+    <path d="M 0 -72 C 18 -42 42 -18 42 12 C 42 34 24 50 0 50 C -24 50 -42 34 -42 12 C -42 -18 -18 -42 0 -72 Z" stroke="url(#clate-shimmer)" stroke-width="3" fill="none" />
+
+    <!-- Side Flourish Wings -->
+    <path d="M -12 2 C -38 -8 -58 -32 -52 -56 C -40 -34 -22 -14 -4 4 Z" fill="url(#clate-rosegold)" />
+    <path d="M 12 2 C 38 -8 58 -32 52 -56 C 40 -34 22 -14 4 4 Z" fill="url(#clate-rosegold)" />
+
+    <!-- Monogram Initial 'C' (Sculpted) -->
+    <path d="M 18 -18 C 12 -28 2 -32 -10 -32 C -28 -32 -42 -18 -42 6 C -42 30 -28 44 -10 44 C 4 44 14 38 20 28 L 8 22 C 4 28 -2 32 -10 32 C -20 32 -30 22 -30 6 C -30 -10 -20 -20 -10 -20 C -2 -20 4 -16 8 -10 Z" fill="url(#clate-shimmer)" />
+
+    <!-- Core Diamond / Dewdrop Accent -->
+    <polygon points="0,-48 6,-38 0,-28 -6,-38" fill="url(#clate-shimmer)" />
+    <circle cx="0" cy="8" r="3.5" fill="url(#clate-shimmer)" />
+  </g>
+
+  <!-- Typography Brand Section -->
+  <!-- "CLATE" Wordmark -->
+  <g id="brand-title">
+    <text x="256" y="348" text-anchor="middle" font-family="'Cinzel', 'Playfair Display', 'Didot', 'Georgia', serif" font-size="54" font-weight="700" letter-spacing="14" fill="url(#clate-shimmer)">
+      CLATE
+    </text>
+  </g>
+
+  <!-- Divider Ribbon -->
+  <g transform="translate(156, 375)">
+    <line x1="0" y1="0" x2="80" y2="0" stroke="url(#clate-rosegold)" stroke-width="1.5" stroke-opacity="0.6" />
+    <circle cx="100" cy="0" r="3" fill="url(#clate-shimmer)" />
+    <line x1="120" y1="0" x2="200" y2="0" stroke="url(#clate-rosegold)" stroke-width="1.5" stroke-opacity="0.6" />
+  </g>
+
+  <!-- Subtitle "COSMETICS & BEAUTY" -->
+  <g id="brand-subtitle">
+    <text x="256" y="416" text-anchor="middle" font-family="'Montserrat', 'Inter', 'Helvetica', sans-serif" font-size="14" font-weight="600" letter-spacing="8" fill="#e5ad93" fill-opacity="0.9">
+      COSMETICS
+    </text>
+    <text x="256" y="440" text-anchor="middle" font-family="'Montserrat', 'Inter', 'Helvetica', sans-serif" font-size="9" font-weight="500" letter-spacing="5" fill="#fce2d6" fill-opacity="0.6">
+      KENYA · BEAUTY &amp; SKINCARE
+    </text>
+  </g>
+</svg>
