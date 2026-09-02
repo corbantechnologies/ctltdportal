@@ -650,16 +650,14 @@ export default function SimpleTransactionsPage() {
         </div>
       )}
 
-      {/* Bulk Transactions Modal (Grid & CSV Import) */}
+      {/* Bulk Transactions Fullscreen Studio Modal (Grid & CSV Import) */}
       {showBulkModal && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="relative w-full sm:max-w-6xl animate-in slide-in-from-bottom-4 sm:zoom-in-95 duration-300">
-            <BulkTransactionsModal
-              initialTab={bulkInitialTab}
-              onSuccess={() => setShowBulkModal(false)}
-              onClose={() => setShowBulkModal(false)}
-            />
-          </div>
+        <div className="fixed inset-0 z-50 flex flex-col bg-slate-900 w-screen h-screen overflow-hidden animate-in fade-in duration-200">
+          <BulkTransactionsModal
+            initialTab={bulkInitialTab}
+            onSuccess={() => setShowBulkModal(false)}
+            onClose={() => setShowBulkModal(false)}
+          />
         </div>
       )}
 

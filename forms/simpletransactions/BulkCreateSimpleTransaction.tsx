@@ -245,33 +245,10 @@ export default function BulkCreateSimpleTransaction({
   };
 
   return (
-    <div className="mx-auto w-full border border-slate-200 shadow-2xl rounded-lg overflow-hidden bg-white max-h-[92vh] flex flex-col">
-      {/* Header */}
-      <div className="p-4 sm:p-6 border-b border-slate-100 bg-gradient-to-r from-slate-900 to-slate-800 text-white flex-shrink-0 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded bg-white/10 flex items-center justify-center text-emerald-400 flex-shrink-0">
-            <Layers className="w-5 h-5" />
-          </div>
-          <div>
-            <h2 className="text-base sm:text-lg font-bold tracking-tight">Batch Transaction Entry</h2>
-            <p className="text-slate-300 text-xs mt-0.5">
-              Enter multiple transactions at once. Each record automatically generates a double-entry journal.
-            </p>
-          </div>
-        </div>
-        {onClose && (
-          <button
-            type="button"
-            onClick={onClose}
-            className="hover:bg-white/10 rounded text-slate-300 p-2 transition-all active:scale-95"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        )}
-      </div>
-
+    <div className="w-full h-full flex flex-col bg-white overflow-hidden">
       {/* Scrollable Container */}
-      <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5">
+
         {/* Quick-Fill Defaults Toolbar */}
         <div className="bg-slate-50 border border-slate-200/80 rounded-lg p-3 sm:p-4 space-y-3">
           <div className="flex items-center justify-between">

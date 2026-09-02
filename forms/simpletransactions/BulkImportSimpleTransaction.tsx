@@ -270,33 +270,10 @@ export default function BulkImportSimpleTransaction({
   };
 
   return (
-    <div className="mx-auto w-full border border-slate-200 shadow-2xl rounded-lg overflow-hidden bg-white max-h-[92vh] flex flex-col">
-      {/* Header */}
-      <div className="p-4 sm:p-6 border-b border-slate-100 bg-gradient-to-r from-slate-900 to-slate-800 text-white flex-shrink-0 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded bg-white/10 flex items-center justify-center text-emerald-400 flex-shrink-0">
-            <FileSpreadsheet className="w-5 h-5" />
-          </div>
-          <div>
-            <h2 className="text-base sm:text-lg font-bold tracking-tight">CSV Batch Import</h2>
-            <p className="text-slate-300 text-xs mt-0.5">
-              Upload a CSV file to bulk log transactions and auto-generate journals.
-            </p>
-          </div>
-        </div>
-        {onClose && (
-          <button
-            type="button"
-            onClick={onClose}
-            className="hover:bg-white/10 rounded text-slate-300 p-2 transition-all active:scale-95"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        )}
-      </div>
-
+    <div className="w-full h-full flex flex-col bg-white overflow-hidden">
       {/* Content Area */}
       <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
+
         {/* Template Download Banner */}
         <div className="bg-emerald-50 border border-emerald-200/80 rounded-lg p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
