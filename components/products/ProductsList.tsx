@@ -318,7 +318,7 @@ export default function ProductsList({ rolePrefix }: ProductsListProps) {
 
             <button
               disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, page + 1))}
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               className="w-12 h-12 flex items-center justify-center rounded bg-white border border-slate-200 text-slate-400 hover:bg-slate-900 hover:text-white hover:border-slate-900 disabled:opacity-20 transition-all shadow-sm"
             >
               <ChevronRight className="w-5 h-5" />
