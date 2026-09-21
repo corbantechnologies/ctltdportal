@@ -34,6 +34,13 @@ import {
   DollarSign,
   AlertTriangle,
   Info,
+  ShoppingCart,
+  Users,
+  Building2,
+  FileCheck,
+  CreditCard,
+  Send,
+  FileBadge,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { downloadSampleCSVTemplate } from "@/tools/csvExport";
@@ -61,6 +68,46 @@ const CATEGORIES: GuideCategory[] = [
     description: "Complete operational handbook and technical documentation",
   },
   {
+    id: "direct-sales",
+    name: "Direct Sales & POS",
+    icon: ShoppingCart,
+    badge: "Walk-in & Retail",
+    color: "text-emerald-500",
+    bgColor: "bg-emerald-500/10",
+    borderColor: "border-emerald-500/20",
+    description: "Walk-in sales without registered partners, instant 1-click settlement, and receipt generation",
+  },
+  {
+    id: "expenses-hub",
+    name: "Expenses & Outflows",
+    icon: TrendingDown,
+    badge: "COA 6xxx",
+    color: "text-rose-500",
+    bgColor: "bg-rose-500/10",
+    borderColor: "border-rose-500/20",
+    description: "Operational disbursements categorized by Chart of Accounts with dual bank/cash journal posting",
+  },
+  {
+    id: "billing-sales",
+    name: "Invoicing & Receipts",
+    icon: Receipt,
+    badge: "GL Posting",
+    color: "text-blue-500",
+    bgColor: "bg-blue-500/10",
+    borderColor: "border-blue-500/20",
+    description: "Full-page tax invoice studio, automated General Ledger posting, and payment allocations",
+  },
+  {
+    id: "crm-pipeline",
+    name: "CRM & Quotations",
+    icon: FileCheck,
+    badge: "Kanban Pipeline",
+    color: "text-amber-500",
+    bgColor: "bg-amber-500/10",
+    borderColor: "border-amber-500/20",
+    description: "Sales pipeline Kanban stages, commercial proposals, and 1-click invoice conversion",
+  },
+  {
     id: "immutability-reversals",
     name: "Reversals & Immutability",
     icon: RotateCcw,
@@ -85,16 +132,16 @@ const CATEGORIES: GuideCategory[] = [
     name: "Double-Entry & Fundamentals",
     icon: Calculator,
     badge: "Core Theory",
-    color: "text-blue-500",
-    bgColor: "bg-blue-500/10",
-    borderColor: "border-blue-500/20",
+    color: "text-indigo-500",
+    bgColor: "bg-indigo-500/10",
+    borderColor: "border-indigo-500/20",
     description: "Debit/Credit rules, accounting equation, and standard ledger entries",
   },
   {
     id: "bulk-studio",
     name: "Quick & Bulk Transactions",
     icon: Zap,
-    badge: "Popular",
+    badge: "Batch Presets",
     color: "text-amber-500",
     bgColor: "bg-amber-500/10",
     borderColor: "border-amber-500/20",
@@ -118,15 +165,6 @@ const CATEGORIES: GuideCategory[] = [
     bgColor: "bg-emerald-500/10",
     borderColor: "border-emerald-500/20",
     description: "Active fiscal years, monthly cycles, month-end closing, and audit locks",
-  },
-  {
-    id: "billing-sales",
-    name: "Invoicing & Receipts",
-    icon: Receipt,
-    color: "text-rose-500",
-    bgColor: "bg-rose-500/10",
-    borderColor: "border-rose-500/20",
-    description: "Quotations to Invoice conversion, partner payment receipts, and reconciliation",
   },
   {
     id: "ledger-reports",
@@ -159,6 +197,114 @@ interface SimulationScenario {
 
 const SIMULATION_SCENARIOS: SimulationScenario[] = [
   {
+    title: "Direct Walk-In Sale (POS) with Immediate Settlement & Receipt",
+    category: "Retail & Direct POS",
+    description: "Walk-in client purchases hardware/services without partner registration, paid instantly via M-PESA or Bank.",
+    type: "MONEY_IN",
+    debit: {
+      account: "M-PESA / Commercial Bank Account",
+      code: "1020-MPESA",
+      type: "Asset (Debit Increases Liquid Balance)",
+      note: "Receives immediate client settlement funds into designated liquid book",
+    },
+    credit: {
+      account: "Sales & Services Revenue",
+      code: "4010-REV",
+      type: "Revenue (Credit Recognizes Revenue)",
+      note: "Recognizes gross sales in Income Statement and automatically allocates VAT (2020-VAT) if taxable",
+    },
+    portalAction: "Launch Point-of-Sale Studio > Check 'Settle Immediately' > Post & Issue Receipt",
+    portalLink: "/finance/sales/new",
+    exampleData: {
+      amount: "KES 45,000.00 (Incl. 16% VAT)",
+      partner: "Walk-in Customer (John Doe)",
+      division: "Software & Hardware Retail",
+      ledgerBook: "M-PESA Collections Book",
+      paymentMethod: "M-PESA Buy Goods 889900",
+    },
+  },
+  {
+    title: "Operational Expense Outflow (Office Rent & Utilities)",
+    category: "Operating Disbursements",
+    description: "Monthly office rent or corporate utility bill disbursed from main commercial bank account.",
+    type: "MONEY_OUT",
+    debit: {
+      account: "Office Rent & Facilities Expense",
+      code: "6200-EXP",
+      type: "Expense (Debit Increases Expense)",
+      note: "Categorized under Chart of Accounts 6xxx Operating Expenses on P&L",
+    },
+    credit: {
+      account: "Main Commercial Bank Account",
+      code: "1010-BNK",
+      type: "Asset (Credit Decreases Bank Balance)",
+      note: "Reduces liquid cash/bank book balance to match bank statement debit",
+    },
+    portalAction: "Open Expenses Studio > Select 6xxx Expense Category > Select Disbursing Book > Submit",
+    portalLink: "/finance/expenses/new",
+    exampleData: {
+      amount: "KES 120,000.00",
+      partner: "Plaza Management Ltd",
+      division: "Corporate Operations",
+      ledgerBook: "Operating Bank Account",
+      paymentMethod: "EFT / RTGS Wire",
+    },
+  },
+  {
+    title: "B2B Credit Invoice Issued & Posted to General Ledger",
+    category: "Accounts Receivable",
+    description: "Corporate client receives a formal Tax Invoice on Net 30 terms; posted to GL before payment.",
+    type: "JOURNAL",
+    debit: {
+      account: "Trade Accounts Receivable (Client)",
+      code: "1200-AR",
+      type: "Asset (Debit Increases Receivables)",
+      note: "Establishes a legally enforceable asset owed by the client",
+    },
+    credit: {
+      account: "Enterprise Solutions Revenue",
+      code: "4010-REV",
+      type: "Revenue (Credit Recognizes Revenue)",
+      note: "Recognizes earned revenue under accrual accounting principle",
+    },
+    portalAction: "Open Invoice Studio > Select Partner / Client > Click 'Approve & Post to GL'",
+    portalLink: "/finance/invoices/new",
+    exampleData: {
+      amount: "KES 350,000.00",
+      partner: "Safaricom Enterprise Solutions",
+      division: "Cloud Engineering",
+      ledgerBook: "Accounts Receivable Sub-Ledger",
+      paymentMethod: "Credit Terms (Net 30)",
+    },
+  },
+  {
+    title: "Payment Receipt Allocated against Outstanding Tax Invoice",
+    category: "Settlement & Reconciliation",
+    description: "Client clears an outstanding invoice via direct bank wire; settles AR and updates progress meter to 100%.",
+    type: "MONEY_IN",
+    debit: {
+      account: "Main Commercial Bank Account",
+      code: "1010-BNK",
+      type: "Asset (Debit Increases Liquid Cash)",
+      note: "Deposits collected cash into liquid bank balance",
+    },
+    credit: {
+      account: "Trade Accounts Receivable",
+      code: "1200-AR",
+      type: "Asset (Credit Clears Receivables)",
+      note: "Reduces client outstanding balance to 0.00; invoice transitions to PAID",
+    },
+    portalAction: "Open Invoice Detail > Click 'Record Payment Receipt' > Enter Ref & Allocate",
+    portalLink: "/finance/invoices",
+    exampleData: {
+      amount: "KES 350,000.00",
+      partner: "Safaricom Enterprise Solutions",
+      division: "Cloud Engineering",
+      ledgerBook: "Operating Bank Account",
+      paymentMethod: "Bank Wire KCB-001928",
+    },
+  },
+  {
     title: "USD Cloud Hosting Paid via KES Card (Railway / AWS / OpenAI)",
     category: "Forex & Operating Expense",
     description: "Monthly subscription charged in USD ($50) but billed to corporate card in KES (KES 6,550.00).",
@@ -175,8 +321,8 @@ const SIMULATION_SCENARIOS: SimulationScenario[] = [
       type: "Asset (Decreases with Credit)",
       note: "Matches exact bank statement settlement amount for 100% reconciliation match",
     },
-    portalAction: "Log under Quick Transactions selecting KES statement amount and adding USD memo",
-    portalLink: "/finance/simple-transactions",
+    portalAction: "Log under Quick Transactions or Expenses Studio selecting KES statement amount and adding USD memo",
+    portalLink: "/finance/expenses/new",
     exampleData: {
       amount: "KES 6,550.00 ($50.00 USD)",
       partner: "Railway Corp",
@@ -327,6 +473,10 @@ export default function FinanceGuidesPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedScenarioIndex, setSelectedScenarioIndex] = useState(0);
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
+    "direct-sales-guide": true,
+    "expenses-guide": true,
+    "invoicing-settlement-guide": true,
+    "crm-kanban-guide": true,
     "reversals-guide": true,
     "forex-guide": true,
     "debit-credit-rules": true,
@@ -343,6 +493,7 @@ export default function FinanceGuidesPage() {
     chk4: false,
     chk5: false,
     chk6: false,
+    chk7: false,
   });
 
   const toggleChecklist = (id: string) => {
@@ -375,30 +526,34 @@ export default function FinanceGuidesPage() {
               Finance Reference Manual & SOP
             </div>
             <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">
-              Finance Operational <span className="text-emerald-400">Guides</span>
+              Enterprise ERP & CRM <span className="text-emerald-400">Operational Guides</span>
             </h1>
             <p className="text-slate-400 text-sm md:text-base leading-relaxed">
-              Standardized operating procedures, double-entry accounting cheat sheets, USD foreign currency billing, GL reversal safety rules, and bulk transaction studio blueprints.
+              Step-by-step Standard Operating Procedures (SOPs), Double-Entry Accounting rules, Point-of-Sale direct billing, Expense Management, and General Ledger posting standards.
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            <button
-              onClick={() => {
-                downloadSampleCSVTemplate();
-                toast.success("CSV Import Template downloaded!");
-              }}
-              className="flex items-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all shadow-md group"
-            >
-              <Download className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform" />
-              Download CSV Template
-            </button>
             <Link
-              href="/finance/simple-transactions"
-              className="flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold uppercase tracking-wider transition-all shadow-lg shadow-emerald-600/20 group"
+              href="/finance/sales/new"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold uppercase tracking-wider transition-all shadow-lg shadow-emerald-600/20 group"
             >
-              <Zap className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              Open Bulk Studio
+              <ShoppingCart className="w-4 h-4 group-hover:scale-110 transition-transform" />
+              Point of Sale
+            </Link>
+            <Link
+              href="/finance/expenses/new"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold uppercase tracking-wider transition-all shadow-lg shadow-rose-600/20 group"
+            >
+              <TrendingDown className="w-4 h-4 group-hover:scale-110 transition-transform" />
+              Log Expense
+            </Link>
+            <Link
+              href="/finance/invoices/new"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold uppercase tracking-wider transition-all shadow-lg shadow-blue-600/20 group"
+            >
+              <Receipt className="w-4 h-4 group-hover:scale-110 transition-transform" />
+              New Invoice
             </Link>
           </div>
         </div>
@@ -408,7 +563,7 @@ export default function FinanceGuidesPage() {
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search guides (e.g. Railway, USD bills, reversal, double-entry, CSV import, month closing)..."
+            placeholder="Search guides (e.g. POS sales, expenses, USD bills, reversals, GL posting, Kanban)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full bg-slate-950/80 border border-slate-700 text-white pl-10 pr-4 py-2.5 rounded-lg text-sm placeholder:text-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all"
@@ -457,7 +612,351 @@ export default function FinanceGuidesPage() {
         })}
       </div>
 
-      {/* NEW Section: Transaction Immutability & Automated Reversals */}
+      {/* Section 1: Direct Sales & Point of Sale (POS) Studio Guide */}
+      {(selectedCategory === "all" || selectedCategory === "direct-sales") && (
+        <div className="bg-white rounded-xl border border-emerald-200 shadow-sm overflow-hidden">
+          <button
+            onClick={() => toggleSection("direct-sales-guide")}
+            className="w-full p-6 flex items-center justify-between text-left hover:bg-emerald-50/30 transition-colors"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+                <ShoppingCart className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-slate-900">
+                    Direct Sales & Point-of-Sale (POS) Playbook
+                  </h3>
+                  <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">
+                    Walk-in & Retail
+                  </span>
+                </div>
+                <p className="text-xs md:text-sm text-slate-500">
+                  How to book sales immediately for walk-in clients without requiring registered partners, with 1-click automatic GL settlement.
+                </p>
+              </div>
+            </div>
+            <ChevronDown
+              className={cn(
+                "w-5 h-5 text-slate-400 transition-transform",
+                expandedSections["direct-sales-guide"] && "rotate-180"
+              )}
+            />
+          </button>
+
+          {expandedSections["direct-sales-guide"] && (
+            <div className="p-6 pt-0 border-t border-slate-100 space-y-6">
+              {/* Context Banner */}
+              <div className="p-4 rounded-lg bg-slate-900 text-white flex flex-col md:flex-row items-start justify-between gap-4">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 text-emerald-400 text-xs font-bold uppercase tracking-wider">
+                    <Sparkles className="w-4 h-4" />
+                    Zero Friction Point-of-Sale Architecture
+                  </div>
+                  <p className="text-sm text-slate-200 leading-relaxed max-w-3xl">
+                    For walk-in customers or one-off transactions, you do <strong>NOT</strong> need to register a corporate partner first. Simply input the client&apos;s name, phone (e.g. for M-PESA), and email in the Direct Sale Studio.
+                  </p>
+                </div>
+                <Link
+                  href="/finance/sales/new"
+                  className="px-3 py-1.5 rounded bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs uppercase tracking-wider whitespace-nowrap self-start"
+                >
+                  Open POS Studio
+                </Link>
+              </div>
+
+              {/* 3 Pillars of POS Flow */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs">
+                    1
+                  </div>
+                  <h4 className="text-xs font-bold text-slate-900 uppercase">Inline Customer Intake</h4>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Enter customer details on the fly. The system handles walk-in clients gracefully and stamps their contact information directly onto the invoice and receipt parchment.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">
+                    2
+                  </div>
+                  <h4 className="text-xs font-bold text-slate-900 uppercase">Live Parchment Preview</h4>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Watch the official digital tax document render in real-time as you add catalog items, adjust quantities, and calculate subtotal and VAT balances.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-xs">
+                    3
+                  </div>
+                  <h4 className="text-xs font-bold text-slate-900 uppercase">1-Click Instant Settlement</h4>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Toggle <strong>&quot;Settle & Mark as Paid Immediately&quot;</strong> to auto-post the General Ledger journal batch (Bank Debit $\rightarrow$ Revenue Credit), issue an official payment receipt, and mark status as <code>PAID</code>.
+                  </p>
+                </div>
+              </div>
+
+              {/* POS Journal Batch Diagram */}
+              <div className="p-4 rounded-lg bg-emerald-50/50 border border-emerald-200 space-y-3">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-900 flex items-center gap-2">
+                  <Calculator className="w-4 h-4 text-emerald-700" />
+                  Automatic GL Double-Entry for Instant POS Settlement
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                  <div className="bg-white p-3 rounded border border-emerald-100 space-y-1">
+                    <span className="font-bold text-emerald-700">DEBIT: Liquid Book (1010-BNK / 1020-MPESA)</span>
+                    <p className="text-slate-600">
+                      Increases liquid cash or M-PESA balance with the full gross settlement amount.
+                    </p>
+                  </div>
+                  <div className="bg-white p-3 rounded border border-emerald-100 space-y-1">
+                    <span className="font-bold text-emerald-700">CREDIT: Revenue (4010-REV) + VAT (2020-VAT)</span>
+                    <p className="text-slate-600">
+                      Recognizes earned gross sales revenue and accrues output tax liability.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Section 2: Operating Expenses & Outflow Studio Guide */}
+      {(selectedCategory === "all" || selectedCategory === "expenses-hub") && (
+        <div className="bg-white rounded-xl border border-rose-200 shadow-sm overflow-hidden">
+          <button
+            onClick={() => toggleSection("expenses-guide")}
+            className="w-full p-6 flex items-center justify-between text-left hover:bg-rose-50/30 transition-colors"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-lg bg-rose-100 text-rose-700 flex items-center justify-center font-bold">
+                <TrendingDown className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-slate-900">
+                    Operating Expenses & Disbursements Management SOP
+                  </h3>
+                  <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-rose-100 text-rose-800">
+                    COA 6xxx Taxonomy
+                  </span>
+                </div>
+                <p className="text-xs md:text-sm text-slate-500">
+                  Standard workflow for logging departmental expenses, vendor payments, and operational cash outflows.
+                </p>
+              </div>
+            </div>
+            <ChevronDown
+              className={cn(
+                "w-5 h-5 text-slate-400 transition-transform",
+                expandedSections["expenses-guide"] && "rotate-180"
+              )}
+            />
+          </button>
+
+          {expandedSections["expenses-guide"] && (
+            <div className="p-6 pt-0 border-t border-slate-100 space-y-6">
+              {/* Context */}
+              <div className="p-4 rounded-lg bg-slate-900 text-white flex flex-col md:flex-row items-start justify-between gap-4">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 text-rose-400 text-xs font-bold uppercase tracking-wider">
+                    <TrendingDown className="w-4 h-4" />
+                    Departmental Disbursement Architecture
+                  </div>
+                  <p className="text-sm text-slate-200 leading-relaxed max-w-3xl">
+                    All company disbursements are classified under the <strong>6xxx Operating Expense</strong> series (Rent, Utilities, Software, Salaries, Logistics). Every expense entry automatically creates a balanced General Ledger batch.
+                  </p>
+                </div>
+                <Link
+                  href="/finance/expenses/new"
+                  className="px-3 py-1.5 rounded bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs uppercase tracking-wider whitespace-nowrap self-start"
+                >
+                  Log Expense
+                </Link>
+              </div>
+
+              {/* How to Log Expense */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2 text-xs">
+                  <span className="font-bold text-rose-700 uppercase">Step 1: Select Category</span>
+                  <p className="text-slate-600">
+                    Choose from predefined Chart of Accounts expense heads (e.g. <code>6100-Cloud Hosting</code>, <code>6200-Office Rent</code>, <code>6300-Legal & Professional</code>).
+                  </p>
+                </div>
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2 text-xs">
+                  <span className="font-bold text-rose-700 uppercase">Step 2: Pick Disbursing Book</span>
+                  <p className="text-slate-600">
+                    Select the paying source: Bank Account (<code>1010-BNK</code>), M-PESA Paybill (<code>1020-MPESA</code>), or Petty Cash (<code>1030-CSH</code>).
+                  </p>
+                </div>
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2 text-xs">
+                  <span className="font-bold text-rose-700 uppercase">Step 3: GL Audit Stamping</span>
+                  <p className="text-slate-600">
+                    Submit the form to generate an immutable journal batch with instant live reflection on the executive KPI ribbon and P&L statements.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Section 3: Invoicing, Quotations & Receipts Settlement SOP */}
+      {(selectedCategory === "all" || selectedCategory === "billing-sales") && (
+        <div className="bg-white rounded-xl border border-blue-200 shadow-sm overflow-hidden">
+          <button
+            onClick={() => toggleSection("invoicing-settlement-guide")}
+            className="w-full p-6 flex items-center justify-between text-left hover:bg-blue-50/30 transition-colors"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold">
+                <Receipt className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-slate-900">
+                    Commercial Invoicing, Proposals & Receipts Settlement SOP
+                  </h3>
+                  <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-blue-100 text-blue-800">
+                    GL Posting & Settlement
+                  </span>
+                </div>
+                <p className="text-xs md:text-sm text-slate-500">
+                  Lifecycle from Commercial Quotation $\rightarrow$ Tax Invoice $\rightarrow$ GL Posting $\rightarrow$ Payment Receipt Allocation $\rightarrow$ Settlement Meters.
+                </p>
+              </div>
+            </div>
+            <ChevronDown
+              className={cn(
+                "w-5 h-5 text-slate-400 transition-transform",
+                expandedSections["invoicing-settlement-guide"] && "rotate-180"
+              )}
+            />
+          </button>
+
+          {expandedSections["invoicing-settlement-guide"] && (
+            <div className="p-6 pt-0 border-t border-slate-100 space-y-6">
+              {/* Lifecycle Stepper */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">
+                      1
+                    </span>
+                    <span className="text-[10px] font-bold uppercase text-slate-400">Proposal</span>
+                  </div>
+                  <h5 className="text-xs font-bold text-slate-900 uppercase">Commercial Quotation</h5>
+                  <p className="text-xs text-slate-600">
+                    Draft proposals in the full-page studio. Send to prospects or 1-click convert directly to a Tax Invoice.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">
+                      2
+                    </span>
+                    <span className="text-[10px] font-bold uppercase text-slate-400">Draft Invoice</span>
+                  </div>
+                  <h5 className="text-xs font-bold text-slate-900 uppercase">Tax Invoice Studio</h5>
+                  <p className="text-xs text-slate-600">
+                    Create invoices with live parchment preview, designated receiving payment accounts, and payment terms.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">
+                      3
+                    </span>
+                    <span className="text-[10px] font-bold uppercase text-slate-400">GL Accrual</span>
+                  </div>
+                  <h5 className="text-xs font-bold text-slate-900 uppercase">Approve & Post to GL</h5>
+                  <p className="text-xs text-slate-600">
+                    Locks invoice against tampering. Automatically creates Accounts Receivable (<code>1200-AR</code>) Debit and Revenue Credit.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs">
+                      4
+                    </span>
+                    <span className="text-[10px] font-bold uppercase text-emerald-600">Settled</span>
+                  </div>
+                  <h5 className="text-xs font-bold text-slate-900 uppercase">Receipt Allocation</h5>
+                  <p className="text-xs text-slate-600">
+                    Record payment receipts to debit Bank and clear AR. Live progress meters transition from 0% $\rightarrow$ 100% PAID.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Section 4: CRM Sales Pipeline & Kanban SOP */}
+      {(selectedCategory === "all" || selectedCategory === "crm-pipeline") && (
+        <div className="bg-white rounded-xl border border-amber-200 shadow-sm overflow-hidden">
+          <button
+            onClick={() => toggleSection("crm-kanban-guide")}
+            className="w-full p-6 flex items-center justify-between text-left hover:bg-amber-50/30 transition-colors"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold">
+                <FileCheck className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-slate-900">
+                    CRM Sales Pipeline & Visual Kanban SOP
+                  </h3>
+                  <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-amber-100 text-amber-800">
+                    Opportunity Progression
+                  </span>
+                </div>
+                <p className="text-xs md:text-sm text-slate-500">
+                  Managing leads across stages (New $\rightarrow$ Contacted $\rightarrow$ Qualified $\rightarrow$ Proposal Sent $\rightarrow$ Won), pipeline valuation, and proposal conversion.
+                </p>
+              </div>
+            </div>
+            <ChevronDown
+              className={cn(
+                "w-5 h-5 text-slate-400 transition-transform",
+                expandedSections["crm-kanban-guide"] && "rotate-180"
+              )}
+            />
+          </button>
+
+          {expandedSections["crm-kanban-guide"] && (
+            <div className="p-6 pt-0 border-t border-slate-100 space-y-6">
+              <div className="grid grid-cols-2 md:grid-cols-6 gap-3 text-center">
+                {[
+                  { stage: "NEW", desc: "Fresh prospect intake", color: "bg-slate-100 text-slate-700" },
+                  { stage: "CONTACTED", desc: "Outreach initiated", color: "bg-blue-100 text-blue-700" },
+                  { stage: "QUALIFIED", desc: "Budget & scope fit", color: "bg-purple-100 text-purple-700" },
+                  { stage: "PROPOSAL_SENT", desc: "Quote dispatched", color: "bg-amber-100 text-amber-700" },
+                  { stage: "WON", desc: "Deal closed & invoice ready", color: "bg-emerald-100 text-emerald-700" },
+                  { stage: "LOST", desc: "Declined / archived", color: "bg-rose-100 text-rose-700" },
+                ].map((s) => (
+                  <div key={s.stage} className="p-3 rounded-lg border border-slate-200 space-y-1">
+                    <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded uppercase", s.color)}>
+                      {s.stage}
+                    </span>
+                    <p className="text-[11px] text-slate-500">{s.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Section 5: Transaction Immutability & Automated Reversals */}
       {(selectedCategory === "all" || selectedCategory === "immutability-reversals") && (
         <div className="bg-white rounded-xl border border-violet-200 shadow-sm overflow-hidden">
           <button
@@ -573,7 +1072,7 @@ export default function FinanceGuidesPage() {
         </div>
       )}
 
-      {/* NEW Section: Foreign Currency & USD Card Billing Guide */}
+      {/* Section 6: Foreign Currency & USD Card Billing Guide */}
       {(selectedCategory === "all" || selectedCategory === "forex-usd") && (
         <div className="bg-white rounded-xl border border-teal-200 shadow-sm overflow-hidden">
           <button
@@ -679,7 +1178,7 @@ export default function FinanceGuidesPage() {
       )}
 
       {/* Interactive Double-Entry Scenario Explorer */}
-      {(selectedCategory === "all" || selectedCategory === "principles" || selectedCategory === "bulk-studio" || selectedCategory === "forex-usd" || selectedCategory === "immutability-reversals") && (
+      {(selectedCategory === "all" || selectedCategory === "principles" || selectedCategory === "direct-sales" || selectedCategory === "expenses-hub" || selectedCategory === "billing-sales" || selectedCategory === "crm-pipeline" || selectedCategory === "bulk-studio" || selectedCategory === "forex-usd" || selectedCategory === "immutability-reversals") && (
         <div className="bg-white rounded-xl border border-slate-200 shadow-xl overflow-hidden">
           <div className="p-6 bg-slate-900 text-white border-b border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
@@ -693,55 +1192,48 @@ export default function FinanceGuidesPage() {
               </p>
             </div>
             <span className="text-xs px-3 py-1.5 rounded bg-slate-800 border border-slate-700 text-slate-300 self-start md:self-auto font-mono">
-              6 Real Scenarios Available
+              {SIMULATION_SCENARIOS.length} Scenarios Available
             </span>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-slate-200">
-            {/* Scenario Selector Sidebar */}
-            <div className="lg:col-span-5 p-4 bg-slate-50 space-y-2 max-h-[460px] overflow-y-auto">
-              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-2 py-1">
-                Select Business Scenario
-              </p>
+            {/* Scenarios List (Left Column) */}
+            <div className="lg:col-span-5 p-4 space-y-2 max-h-[600px] overflow-y-auto scrollbar-thin">
               {SIMULATION_SCENARIOS.map((scenario, index) => {
-                const isActive = selectedScenarioIndex === index;
+                const isSelected = selectedScenarioIndex === index;
                 return (
                   <button
-                    key={index}
+                    key={scenario.title}
                     onClick={() => setSelectedScenarioIndex(index)}
                     className={cn(
-                      "w-full text-left p-3.5 rounded-lg border transition-all flex items-start justify-between gap-3 group",
-                      isActive
-                        ? "bg-white border-emerald-500 shadow-md ring-1 ring-emerald-500/20"
-                        : "bg-white/60 border-slate-200 hover:bg-white hover:border-slate-300"
+                      "w-full text-left p-3.5 rounded-lg border transition-all flex items-start justify-between gap-3",
+                      isSelected
+                        ? "bg-emerald-50/80 border-emerald-500/50 shadow-sm"
+                        : "bg-white border-slate-100 hover:border-slate-300 hover:bg-slate-50/50"
                     )}
                   >
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
                         <span
                           className={cn(
-                            "text-[10px] font-bold uppercase px-2 py-0.5 rounded",
-                            scenario.type === "MONEY_OUT"
-                              ? "bg-rose-50 text-rose-600 border border-rose-200"
-                              : scenario.type === "MONEY_IN"
-                              ? "bg-emerald-50 text-emerald-600 border border-emerald-200"
-                              : "bg-blue-50 text-blue-600 border border-blue-200"
+                            "text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded",
+                            scenario.type === "MONEY_IN"
+                              ? "bg-emerald-100 text-emerald-800"
+                              : scenario.type === "MONEY_OUT"
+                              ? "bg-rose-100 text-rose-800"
+                              : "bg-blue-100 text-blue-800"
                           )}
                         >
-                          {scenario.type === "MONEY_OUT"
-                            ? "Money Out"
-                            : scenario.type === "MONEY_IN"
-                            ? "Money In"
-                            : "General Journal"}
+                          {scenario.type.replace("_", " ")}
                         </span>
-                        <span className="text-[11px] text-slate-400 font-medium">
+                        <span className="text-[11px] text-slate-400 font-mono">
                           {scenario.category}
                         </span>
                       </div>
                       <h4
                         className={cn(
-                          "text-sm font-semibold transition-colors",
-                          isActive ? "text-slate-900 font-bold" : "text-slate-700 group-hover:text-slate-900"
+                          "text-xs font-bold leading-snug line-clamp-2",
+                          isSelected ? "text-emerald-950" : "text-slate-800"
                         )}
                       >
                         {scenario.title}
@@ -749,8 +1241,8 @@ export default function FinanceGuidesPage() {
                     </div>
                     <ChevronRight
                       className={cn(
-                        "w-5 h-5 flex-shrink-0 transition-transform mt-2",
-                        isActive ? "text-emerald-600 translate-x-1" : "text-slate-300"
+                        "w-4 h-4 flex-shrink-0 mt-1 transition-transform",
+                        isSelected ? "text-emerald-600 translate-x-1" : "text-slate-300"
                       )}
                     />
                   </button>
@@ -758,552 +1250,139 @@ export default function FinanceGuidesPage() {
               })}
             </div>
 
-            {/* Scenario Breakdown View */}
-            <div className="lg:col-span-7 p-6 space-y-6">
-              <div className="space-y-2 border-b border-slate-100 pb-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold uppercase text-emerald-600 tracking-wider">
-                    {activeScenario.category}
-                  </span>
-                  <span className="text-xs font-mono text-slate-500">
-                    Target: {activeScenario.type}
-                  </span>
-                </div>
-                <h3 className="text-lg font-bold text-slate-900">{activeScenario.title}</h3>
-                <p className="text-sm text-slate-600">{activeScenario.description}</p>
-              </div>
+            {/* Simulation Preview & GL Blueprint (Right Column) */}
+            <div className="lg:col-span-7 p-6 bg-slate-50/50 space-y-6">
+              {activeScenario && (
+                <>
+                  <div className="space-y-2 border-b border-slate-200 pb-4">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-bold uppercase tracking-wider text-emerald-600">
+                        {activeScenario.category}
+                      </span>
+                      <span className="text-slate-300">•</span>
+                      <span className="text-xs text-slate-500 font-mono">
+                        Standard Operational Voucher
+                      </span>
+                    </div>
+                    <h3 className="text-lg font-bold text-slate-900">{activeScenario.title}</h3>
+                    <p className="text-xs md:text-sm text-slate-600 leading-relaxed">
+                      {activeScenario.description}
+                    </p>
+                  </div>
 
-              {/* Debit & Credit Ledger Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* DEBIT Card */}
-                <div className="p-4 rounded-lg bg-emerald-50/70 border border-emerald-200 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 flex items-center gap-1.5">
-                      <TrendingUp className="w-4 h-4 text-emerald-600" />
-                      1. DEBIT ENTRY (DR)
-                    </span>
-                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-200 text-emerald-900">
-                      {activeScenario.debit.code}
-                    </span>
-                  </div>
-                  <div>
-                    <h5 className="text-sm font-bold text-slate-900">{activeScenario.debit.account}</h5>
-                    <p className="text-xs text-emerald-700 font-medium mt-0.5">{activeScenario.debit.type}</p>
-                  </div>
-                  <p className="text-xs text-slate-600 border-t border-emerald-200/60 pt-2">
-                    {activeScenario.debit.note}
-                  </p>
-                </div>
+                  {/* Debit vs Credit Balanced Cards */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* DEBIT CARD */}
+                    <div className="bg-white p-4 rounded-xl border border-blue-200 shadow-sm space-y-2.5 relative overflow-hidden">
+                      <div className="absolute top-0 left-0 right-0 h-1 bg-blue-500" />
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-mono font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
+                          DEBIT (DR)
+                        </span>
+                        <code className="text-xs font-mono font-bold text-slate-700">
+                          {activeScenario.debit.code}
+                        </code>
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold text-slate-900">
+                          {activeScenario.debit.account}
+                        </h4>
+                        <span className="text-[11px] text-blue-600 font-medium block mt-0.5">
+                          {activeScenario.debit.type}
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-500 leading-relaxed pt-1 border-t border-slate-100">
+                        {activeScenario.debit.note}
+                      </p>
+                    </div>
 
-                {/* CREDIT Card */}
-                <div className="p-4 rounded-lg bg-blue-50/70 border border-blue-200 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold uppercase tracking-wider text-blue-800 flex items-center gap-1.5">
-                      <TrendingDown className="w-4 h-4 text-blue-600" />
-                      2. CREDIT ENTRY (CR)
-                    </span>
-                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-blue-200 text-blue-900">
-                      {activeScenario.credit.code}
-                    </span>
+                    {/* CREDIT CARD */}
+                    <div className="bg-white p-4 rounded-xl border border-emerald-200 shadow-sm space-y-2.5 relative overflow-hidden">
+                      <div className="absolute top-0 left-0 right-0 h-1 bg-emerald-500" />
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">
+                          CREDIT (CR)
+                        </span>
+                        <code className="text-xs font-mono font-bold text-slate-700">
+                          {activeScenario.credit.code}
+                        </code>
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold text-slate-900">
+                          {activeScenario.credit.account}
+                        </h4>
+                        <span className="text-[11px] text-emerald-600 font-medium block mt-0.5">
+                          {activeScenario.credit.type}
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-500 leading-relaxed pt-1 border-t border-slate-100">
+                        {activeScenario.credit.note}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h5 className="text-sm font-bold text-slate-900">{activeScenario.credit.account}</h5>
-                    <p className="text-xs text-blue-700 font-medium mt-0.5">{activeScenario.credit.type}</p>
-                  </div>
-                  <p className="text-xs text-slate-600 border-t border-blue-200/60 pt-2">
-                    {activeScenario.credit.note}
-                  </p>
-                </div>
-              </div>
 
-              {/* Sample Data & Portal Action */}
-              <div className="bg-slate-900 text-white rounded-lg p-4 space-y-3">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-semibold text-slate-400 uppercase tracking-wider">
-                    Recommended Portal Action
-                  </span>
-                  <Link
-                    href={activeScenario.portalLink}
-                    className="inline-flex items-center gap-1 text-emerald-400 hover:text-emerald-300 font-semibold underline underline-offset-4 text-xs"
-                  >
-                    Open Page <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
-                <p className="text-sm font-medium text-slate-200">{activeScenario.portalAction}</p>
+                  {/* Sample Transaction Data Payload */}
+                  <div className="p-4 rounded-lg bg-white border border-slate-200 space-y-3 shadow-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                        Example Portal Payload
+                      </span>
+                      <span className="text-xs font-mono font-bold text-emerald-600">
+                        {activeScenario.exampleData.amount}
+                      </span>
+                    </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-slate-800 text-[11px]">
-                  <div>
-                    <span className="text-slate-500 block">Sample Amount:</span>
-                    <span className="font-semibold text-white">{activeScenario.exampleData.amount}</span>
-                  </div>
-                  <div>
-                    <span className="text-slate-500 block">Entity/Partner:</span>
-                    <span className="font-semibold text-white truncate block">
-                      {activeScenario.exampleData.partner}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-slate-500 block">Division:</span>
-                    <span className="font-semibold text-white truncate block">
-                      {activeScenario.exampleData.division}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-slate-500 block">Ledger Book:</span>
-                    <span className="font-semibold text-white truncate block">
-                      {activeScenario.exampleData.ledgerBook}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                      <div className="p-2 rounded bg-slate-50">
+                        <span className="text-slate-400 block text-[10px]">Entity / Partner</span>
+                        <span className="font-semibold text-slate-800 truncate block">
+                          {activeScenario.exampleData.partner}
+                        </span>
+                      </div>
+                      <div className="p-2 rounded bg-slate-50">
+                        <span className="text-slate-400 block text-[10px]">Division</span>
+                        <span className="font-semibold text-slate-800 truncate block">
+                          {activeScenario.exampleData.division}
+                        </span>
+                      </div>
+                      <div className="p-2 rounded bg-slate-50">
+                        <span className="text-slate-400 block text-[10px]">Ledger Book</span>
+                        <span className="font-semibold text-slate-800 truncate block">
+                          {activeScenario.exampleData.ledgerBook}
+                        </span>
+                      </div>
+                      <div className="p-2 rounded bg-slate-50">
+                        <span className="text-slate-400 block text-[10px]">Disbursing Method</span>
+                        <span className="font-semibold text-slate-800 truncate block">
+                          {activeScenario.exampleData.paymentMethod}
+                        </span>
+                      </div>
+                    </div>
 
-      {/* Guide Section 1: Double-Entry Principles & Golden Cheat Sheet */}
-      {(selectedCategory === "all" || selectedCategory === "principles") && (
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <button
-            onClick={() => toggleSection("debit-credit-rules")}
-            className="w-full p-6 flex items-center justify-between text-left hover:bg-slate-50/50 transition-colors"
-          >
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
-                <Calculator className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-slate-900">
-                  Double-Entry Master Matrix & Golden Rules
-                </h3>
-                <p className="text-xs md:text-sm text-slate-500">
-                  Fundamental accounting equation, debit/credit mechanics, and account classifications.
-                </p>
-              </div>
-            </div>
-            <ChevronDown
-              className={cn(
-                "w-5 h-5 text-slate-400 transition-transform",
-                expandedSections["debit-credit-rules"] && "rotate-180"
+                    <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-slate-100">
+                      <div className="flex items-center gap-2 text-xs text-slate-600">
+                        <Zap className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
+                        <span>
+                          <strong>Recommended action:</strong> {activeScenario.portalAction}
+                        </span>
+                      </div>
+                      <Link
+                        href={activeScenario.portalLink}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold whitespace-nowrap transition-colors self-start sm:self-auto"
+                      >
+                        <span>Open Studio</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </Link>
+                    </div>
+                  </div>
+                </>
               )}
-            />
-          </button>
-
-          {expandedSections["debit-credit-rules"] && (
-            <div className="p-6 pt-0 border-t border-slate-100 space-y-6">
-              {/* Fundamental Equation */}
-              <div className="p-4 rounded-lg bg-slate-900 text-white flex flex-col md:flex-row items-center justify-between gap-4">
-                <div className="space-y-1">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-400">
-                    The Fundamental Balance Equation
-                  </span>
-                  <div className="text-xl md:text-2xl font-mono font-bold text-white">
-                    Assets = Liabilities + Equity + (Revenue - Expenses)
-                  </div>
-                </div>
-                <div className="text-xs text-slate-300 max-w-sm">
-                  Every transaction recorded in Corban Portal creates balanced entries where{" "}
-                  <strong className="text-emerald-400">Total Debits == Total Credits</strong>.
-                </div>
-              </div>
-
-              {/* Master Matrix Table */}
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs border border-slate-200 rounded-lg overflow-hidden">
-                  <thead className="bg-slate-100 text-slate-700 font-bold uppercase text-[10px] tracking-wider">
-                    <tr>
-                      <th className="p-3 border-b border-r border-slate-200">Account Class</th>
-                      <th className="p-3 border-b border-r border-slate-200">Code Range</th>
-                      <th className="p-3 border-b border-r border-slate-200">Normal Balance</th>
-                      <th className="p-3 border-b border-r border-slate-200 text-emerald-700 bg-emerald-50/60">
-                        Debit Effect (DR)
-                      </th>
-                      <th className="p-3 border-b border-r border-slate-200 text-blue-700 bg-blue-50/60">
-                        Credit Effect (CR)
-                      </th>
-                      <th className="p-3 border-b border-slate-200">Examples at Corban</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-200">
-                    <tr className="hover:bg-slate-50/70">
-                      <td className="p-3 font-bold text-slate-900 border-r border-slate-200">
-                        1. Assets
-                      </td>
-                      <td className="p-3 font-mono text-slate-600 border-r border-slate-200">
-                        1000 – 1999
-                      </td>
-                      <td className="p-3 font-semibold text-emerald-600 border-r border-slate-200">
-                        Debit
-                      </td>
-                      <td className="p-3 font-bold text-emerald-600 bg-emerald-50/30 border-r border-slate-200">
-                        Increases (+)
-                      </td>
-                      <td className="p-3 font-bold text-rose-600 bg-rose-50/30 border-r border-slate-200">
-                        Decreases (-)
-                      </td>
-                      <td className="p-3 text-slate-600">
-                        Equity Bank, M-PESA Paybill, Petty Cash, Laptops, Servers
-                      </td>
-                    </tr>
-                    <tr className="hover:bg-slate-50/70">
-                      <td className="p-3 font-bold text-slate-900 border-r border-slate-200">
-                        2. Liabilities
-                      </td>
-                      <td className="p-3 font-mono text-slate-600 border-r border-slate-200">
-                        2000 – 2999
-                      </td>
-                      <td className="p-3 font-semibold text-blue-600 border-r border-slate-200">
-                        Credit
-                      </td>
-                      <td className="p-3 font-bold text-rose-600 bg-rose-50/30 border-r border-slate-200">
-                        Decreases (-)
-                      </td>
-                      <td className="p-3 font-bold text-emerald-600 bg-emerald-50/30 border-r border-slate-200">
-                        Increases (+)
-                      </td>
-                      <td className="p-3 text-slate-600">
-                        Accounts Payable, VAT Output, PAYE Withholding, Director Loan
-                      </td>
-                    </tr>
-                    <tr className="hover:bg-slate-50/70">
-                      <td className="p-3 font-bold text-slate-900 border-r border-slate-200">
-                        3. Equity
-                      </td>
-                      <td className="p-3 font-mono text-slate-600 border-r border-slate-200">
-                        3000 – 3999
-                      </td>
-                      <td className="p-3 font-semibold text-blue-600 border-r border-slate-200">
-                        Credit
-                      </td>
-                      <td className="p-3 font-bold text-rose-600 bg-rose-50/30 border-r border-slate-200">
-                        Decreases (-)
-                      </td>
-                      <td className="p-3 font-bold text-emerald-600 bg-emerald-50/30 border-r border-slate-200">
-                        Increases (+)
-                      </td>
-                      <td className="p-3 text-slate-600">
-                        Share Capital, Retained Earnings, Owner Capital Contributions
-                      </td>
-                    </tr>
-                    <tr className="hover:bg-slate-50/70">
-                      <td className="p-3 font-bold text-slate-900 border-r border-slate-200">
-                        4. Revenue / Income
-                      </td>
-                      <td className="p-3 font-mono text-slate-600 border-r border-slate-200">
-                        4000 – 4999
-                      </td>
-                      <td className="p-3 font-semibold text-blue-600 border-r border-slate-200">
-                        Credit
-                      </td>
-                      <td className="p-3 font-bold text-rose-600 bg-rose-50/30 border-r border-slate-200">
-                        Decreases (-)
-                      </td>
-                      <td className="p-3 font-bold text-emerald-600 bg-emerald-50/30 border-r border-slate-200">
-                        Increases (+)
-                      </td>
-                      <td className="p-3 text-slate-600">
-                        Software Consulting, SaaS Subscriptions, Retainers, Tech Support
-                      </td>
-                    </tr>
-                    <tr className="hover:bg-slate-50/70">
-                      <td className="p-3 font-bold text-slate-900 border-r border-slate-200">
-                        5. Cost of Sales & Expenses
-                      </td>
-                      <td className="p-3 font-mono text-slate-600 border-r border-slate-200">
-                        5000 – 6999
-                      </td>
-                      <td className="p-3 font-semibold text-emerald-600 border-r border-slate-200">
-                        Debit
-                      </td>
-                      <td className="p-3 font-bold text-emerald-600 bg-emerald-50/30 border-r border-slate-200">
-                        Increases (+)
-                      </td>
-                      <td className="p-3 font-bold text-rose-600 bg-rose-50/30 border-r border-slate-200">
-                        Decreases (-)
-                      </td>
-                      <td className="p-3 text-slate-600">
-                        Railway Hosting, AWS, Staff Salaries, Office Rent, Utilities
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Quick Callout */}
-              <div className="p-4 rounded-lg bg-blue-50 border border-blue-200 flex items-start gap-3">
-                <ShieldCheck className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                <div className="text-xs text-blue-900 leading-relaxed">
-                  <strong>Automated Balancing in Corban Portal:</strong> When you use{" "}
-                  <strong>Quick Transactions</strong> or <strong>Bulk Import</strong>, you only specify
-                  the event (e.g. Money Out of Bank to Railway Expense). The backend automatically
-                  determines the corresponding Debit and Credit sides and writes a linked, balanced{" "}
-                  <code>JournalEntry</code>!
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Guide Section 2: Quick & Bulk Transactions Studio */}
-      {(selectedCategory === "all" || selectedCategory === "bulk-studio") && (
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <button
-            onClick={() => toggleSection("batch-fill-guide")}
-            className="w-full p-6 flex items-center justify-between text-left hover:bg-slate-50/50 transition-colors"
-          >
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
-                <Zap className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-slate-900">
-                  Bulk Transaction Studio: Batch Fill & CSV Import Playbook
-                </h3>
-                <p className="text-xs md:text-sm text-slate-500">
-                  Step-by-step workflow for logging 1-year recurring expenses (e.g. Railway, AWS), quick batch presets, and CSV imports.
-                </p>
-              </div>
-            </div>
-            <ChevronDown
-              className={cn(
-                "w-5 h-5 text-slate-400 transition-transform",
-                expandedSections["batch-fill-guide"] && "rotate-180"
-              )}
-            />
-          </button>
-
-          {expandedSections["batch-fill-guide"] && (
-            <div className="p-6 pt-0 border-t border-slate-100 space-y-6">
-              {/* Step by Step Card: Recurring Expenses */}
-              <div className="space-y-4">
-                <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-amber-500" />
-                  Use-Case: Logging 12 Months of Recurring Cloud Bills (e.g., Railway)
-                </h4>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
-                    <div className="w-6 h-6 rounded-full bg-slate-900 text-white text-xs font-bold flex items-center justify-center">
-                      1
-                    </div>
-                    <h5 className="text-xs font-bold text-slate-900 uppercase">Set Studio Defaults</h5>
-                    <p className="text-xs text-slate-600">
-                      In the Bulk Studio top bar, set:
-                    </p>
-                    <ul className="text-[11px] space-y-1 text-slate-700 list-disc list-inside">
-                      <li><strong>Type:</strong> Money Out (Expense)</li>
-                      <li><strong>Payment:</strong> Main Bank / Card</li>
-                      <li><strong>Division:</strong> Tech / Engineering</li>
-                      <li><strong>Book:</strong> Cloud Hosting</li>
-                      <li><strong>Partner:</strong> Railway</li>
-                    </ul>
-                  </div>
-
-                  <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
-                    <div className="w-6 h-6 rounded-full bg-slate-900 text-white text-xs font-bold flex items-center justify-center">
-                      2
-                    </div>
-                    <h5 className="text-xs font-bold text-slate-900 uppercase">1-Click Batch Populate</h5>
-                    <p className="text-xs text-slate-600">
-                      Select <strong>12 Rows</strong> and click <strong>&quot;Apply Defaults to All Rows&quot;</strong>. 
-                      All 12 rows are instantly filled with your pre-configured settings in under a second!
-                    </p>
-                  </div>
-
-                  <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
-                    <div className="w-6 h-6 rounded-full bg-slate-900 text-white text-xs font-bold flex items-center justify-center">
-                      3
-                    </div>
-                    <h5 className="text-xs font-bold text-slate-900 uppercase">Tweak Dates & Amounts</h5>
-                    <p className="text-xs text-slate-600">
-                      Quickly tab through the date cells to set each month (e.g., Jan 15, Feb 15, Mar 15...) and adjust any fluctuating monthly usage amounts.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* CSV Import Standards */}
-              <div className="space-y-4 pt-4 border-t border-slate-100">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <div>
-                    <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                      <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
-                      CSV Batch Import Header Specifications
-                    </h4>
-                    <p className="text-xs text-slate-500">
-                      The CSV template is strictly pre-structured with 11 standard columns.
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => {
-                      downloadSampleCSVTemplate();
-                      toast.success("CSV Import Template downloaded!");
-                    }}
-                    className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-300 rounded text-xs font-bold transition-all"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                    Download Sample CSV
-                  </button>
-                </div>
-
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs border border-slate-200 rounded-lg">
-                    <thead className="bg-slate-900 text-slate-200 font-mono text-[10px]">
-                      <tr>
-                        <th className="p-2.5 border-b border-r border-slate-800">CSV Column Header</th>
-                        <th className="p-2.5 border-b border-r border-slate-800">Required?</th>
-                        <th className="p-2.5 border-b border-r border-slate-800">Accepted Values / Format</th>
-                        <th className="p-2.5 border-b border-slate-800">Example Cell</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-200 font-mono text-[11px]">
-                      <tr>
-                        <td className="p-2.5 font-bold text-slate-900 border-r">name</td>
-                        <td className="p-2.5 text-rose-600 font-bold border-r">YES</td>
-                        <td className="p-2.5 text-slate-600 border-r">Transaction title / memo</td>
-                        <td className="p-2.5 text-emerald-600">&quot;Railway Cloud Hosting&quot;</td>
-                      </tr>
-                      <tr>
-                        <td className="p-2.5 font-bold text-slate-900 border-r">transaction_type</td>
-                        <td className="p-2.5 text-rose-600 font-bold border-r">YES</td>
-                        <td className="p-2.5 text-slate-600 border-r"><code>MONEY_IN</code> or <code>MONEY_OUT</code></td>
-                        <td className="p-2.5 text-emerald-600">&quot;MONEY_OUT&quot;</td>
-                      </tr>
-                      <tr>
-                        <td className="p-2.5 font-bold text-slate-900 border-r">amount</td>
-                        <td className="p-2.5 text-rose-600 font-bold border-r">YES</td>
-                        <td className="p-2.5 text-slate-600 border-r">Decimal number (no currency symbols)</td>
-                        <td className="p-2.5 text-emerald-600">&quot;6500.00&quot;</td>
-                      </tr>
-                      <tr>
-                        <td className="p-2.5 font-bold text-slate-900 border-r">date</td>
-                        <td className="p-2.5 text-rose-600 font-bold border-r">YES</td>
-                        <td className="p-2.5 text-slate-600 border-r"><code>YYYY-MM-DD</code></td>
-                        <td className="p-2.5 text-emerald-600">&quot;2026-03-15&quot;</td>
-                      </tr>
-                      <tr>
-                        <td className="p-2.5 font-bold text-slate-900 border-r">ledger_book</td>
-                        <td className="p-2.5 text-rose-600 font-bold border-r">YES</td>
-                        <td className="p-2.5 text-slate-600 border-r">Matching Book Name in Portal</td>
-                        <td className="p-2.5 text-emerald-600">&quot;Hosting & Cloud&quot;</td>
-                      </tr>
-                      <tr>
-                        <td className="p-2.5 font-bold text-slate-900 border-r">payment_method</td>
-                        <td className="p-2.5 text-rose-600 font-bold border-r">YES</td>
-                        <td className="p-2.5 text-slate-600 border-r">Bank / Cash Book name</td>
-                        <td className="p-2.5 text-emerald-600">&quot;Equity Bank Main&quot;</td>
-                      </tr>
-                      <tr>
-                        <td className="p-2.5 font-bold text-slate-900 border-r">division</td>
-                        <td className="p-2.5 text-rose-600 font-bold border-r">YES</td>
-                        <td className="p-2.5 text-slate-600 border-r">Division Name configured in system</td>
-                        <td className="p-2.5 text-emerald-600">&quot;Engineering&quot;</td>
-                      </tr>
-                      <tr>
-                        <td className="p-2.5 font-bold text-slate-900 border-r">journal_type</td>
-                        <td className="p-2.5 text-rose-600 font-bold border-r">YES</td>
-                        <td className="p-2.5 text-slate-600 border-r">Journal Type Name (e.g. Expense, Receipt)</td>
-                        <td className="p-2.5 text-emerald-600">&quot;Payment Voucher&quot;</td>
-                      </tr>
-                      <tr>
-                        <td className="p-2.5 font-bold text-slate-900 border-r">partner</td>
-                        <td className="p-2.5 text-slate-400 border-r">Optional</td>
-                        <td className="p-2.5 text-slate-600 border-r">Vendor or Customer Name</td>
-                        <td className="p-2.5 text-emerald-600">&quot;Railway Inc&quot;</td>
-                      </tr>
-                      <tr>
-                        <td className="p-2.5 font-bold text-slate-900 border-r">source_document</td>
-                        <td className="p-2.5 text-slate-400 border-r">Optional</td>
-                        <td className="p-2.5 text-slate-600 border-r">Invoice / Receipt / Bill</td>
-                        <td className="p-2.5 text-emerald-600">&quot;Vendor Invoice&quot;</td>
-                      </tr>
-                      <tr>
-                        <td className="p-2.5 font-bold text-slate-900 border-r">document_number</td>
-                        <td className="p-2.5 text-slate-400 border-r">Optional</td>
-                        <td className="p-2.5 text-slate-600 border-r">Reference Code</td>
-                        <td className="p-2.5 text-emerald-600">&quot;RW-99382-FEB&quot;</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Guide Section 3: Chart of Accounts & Books Structure */}
-      {(selectedCategory === "all" || selectedCategory === "coa-books") && (
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="p-6 flex items-center justify-between text-left">
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center font-bold">
-                <Layers className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-slate-900">
-                  Chart of Accounts (COA) & Books Architecture
-                </h3>
-                <p className="text-xs md:text-sm text-slate-500">
-                  How accounts, books, sub-ledgers, and divisions interact across financial reports.
-                </p>
-              </div>
-            </div>
-            <Link
-              href="/finance/coa"
-              className="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold text-purple-600 hover:text-purple-700 bg-purple-50 px-3 py-1.5 rounded border border-purple-200"
-            >
-              View COA <ExternalLink className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-
-          <div className="p-6 pt-0 border-t border-slate-100 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-3">
-                <h4 className="text-xs font-bold uppercase text-purple-700 tracking-wider">
-                  1. Chart of Accounts (COA)
-                </h4>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  The COA is the primary taxonomy of all financial accounts in the organization. It categorizes accounts into the 5 global accounting heads (Assets, Liabilities, Equity, Revenue, Expense) and sets the normal balance (Debit vs Credit).
-                </p>
-                <div className="bg-white p-3 rounded border border-slate-200 text-xs font-mono text-slate-700 space-y-1">
-                  <div><strong>1000</strong> - Current Assets (Bank, M-PESA, Cash, AR)</div>
-                  <div><strong>2000</strong> - Current Liabilities (AP, Taxes, Loans)</div>
-                  <div><strong>3000</strong> - Equity & Share Capital</div>
-                  <div><strong>4000</strong> - Operating Revenue & Sales</div>
-                  <div><strong>6000</strong> - Operational & Administrative Expenses</div>
-                </div>
-              </div>
-
-              <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-3">
-                <h4 className="text-xs font-bold uppercase text-purple-700 tracking-wider">
-                  2. Books & Sub-Ledgers
-                </h4>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  <strong>Books</strong> act as user-friendly operational sub-accounts. When field staff or finance officers log daily transactions, they select a Book (e.g. &quot;Cloud Infrastructure&quot; or &quot;Consulting Sales&quot;) rather than memorizing raw general ledger account codes.
-                </p>
-                <div className="bg-white p-3 rounded border border-slate-200 text-xs text-slate-700 space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <span>Cash / Bank Books:</span>
-                    <span className="font-semibold text-emerald-600">Maps to Asset COA</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span>Expense Books:</span>
-                    <span className="font-semibold text-rose-600">Maps to Expense COA</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span>Sales Books:</span>
-                    <span className="font-semibold text-blue-600">Maps to Revenue COA</span>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Guide Section 4: Fiscal Cycles & Period Locks (Standard Month-End SOP) */}
+      {/* Guide Section: Fiscal Cycles & Period Locks (Standard Month-End SOP) */}
       {(selectedCategory === "all" || selectedCategory === "fiscal-periods") && (
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
           <button
@@ -1319,7 +1398,7 @@ export default function FinanceGuidesPage() {
                   Fiscal Period Management & Month-End Closing SOP
                 </h3>
                 <p className="text-xs md:text-sm text-slate-500">
-                  Interactive 6-step checklist for monthly financial closing and audit period freezing.
+                  Interactive 7-step checklist for monthly financial closing and audit period freezing.
                 </p>
               </div>
             </div>
@@ -1354,42 +1433,49 @@ export default function FinanceGuidesPage() {
                 {[
                   {
                     id: "chk1",
-                    title: "1. Post all Pending Daily Transactions & Receipts",
-                    desc: "Ensure all M-PESA, Bank statement, and supplier payments for the month are logged under Quick Transactions or Invoices/Receipts.",
-                    link: "/finance/simple-transactions",
-                    linkText: "Check Transactions",
+                    title: "1. Post all Pending Direct Sales & Retail Transactions",
+                    desc: "Ensure all walk-in POS transactions and cash/M-PESA sales for the month are posted to the General Ledger.",
+                    link: "/finance/sales/new",
+                    linkText: "Check POS Sales",
                   },
                   {
                     id: "chk2",
-                    title: "2. Bank & M-PESA Reconciliation",
+                    title: "2. Audit Operational Expenses & Disbursed Outflows",
+                    desc: "Review all 6xxx operating expenses, vendor disbursements, and USD card payments logged during the cycle.",
+                    link: "/finance/expenses",
+                    linkText: "Review Expenses",
+                  },
+                  {
+                    id: "chk3",
+                    title: "3. Bank & M-PESA Reconciliation",
                     desc: "Verify that Bank Ledger closing balances match physical bank statements and Safaricom Paybill settlements.",
                     link: "/finance/reports/gl-statement",
                     linkText: "View GL Statements",
                   },
                   {
-                    id: "chk3",
-                    title: "3. Review Accounts Receivable & Outstanding Invoices",
-                    desc: "Audit all unpaid client invoices. Follow up on overdue receivables and mark cleared payments.",
+                    id: "chk4",
+                    title: "4. Review Accounts Receivable & Outstanding Invoices",
+                    desc: "Audit all unpaid client invoices. Follow up on overdue receivables and allocate cleared payment receipts.",
                     link: "/finance/invoices",
                     linkText: "Review Invoices",
                   },
                   {
-                    id: "chk4",
-                    title: "4. Post End-of-Month Adjustments & Depreciation",
+                    id: "chk5",
+                    title: "5. Post End-of-Month Adjustments & Depreciation",
                     desc: "Post manual journal entries for asset depreciation, prepayments, and accrued supplier expenses.",
                     link: "/finance/journal-entries",
                     linkText: "New Journal Entry",
                   },
                   {
-                    id: "chk5",
-                    title: "5. Generate Trial Balance & Verify Zero Variance",
+                    id: "chk6",
+                    title: "6. Generate Trial Balance & Verify Zero Discrepancy",
                     desc: "Inspect the Trial Balance to confirm Total Debits equal Total Credits with zero suspense discrepancies.",
                     link: "/finance/reports",
                     linkText: "Financial Reports",
                   },
                   {
-                    id: "chk6",
-                    title: "6. Lock Financial Month Period",
+                    id: "chk7",
+                    title: "7. Lock Financial Month Period",
                     desc: "Navigate to Fiscal Years, select the closed month, and activate the Lock. This prevents unauthorized backdated edits.",
                     link: "/finance/fiscal-years",
                     linkText: "Manage Fiscal Periods",
@@ -1446,20 +1532,38 @@ export default function FinanceGuidesPage() {
         </div>
       )}
 
-      {/* Guide Section 5: Common FAQs & Trouble-Shooting */}
-      {(selectedCategory === "all" || selectedCategory === "immutability-reversals" || selectedCategory === "forex-usd" || selectedCategory === "billing-sales" || selectedCategory === "ledger-reports") && (
+      {/* Guide Section: Common FAQs & Trouble-Shooting */}
+      {(selectedCategory === "all" || selectedCategory === "immutability-reversals" || selectedCategory === "forex-usd" || selectedCategory === "direct-sales" || selectedCategory === "expenses-hub" || selectedCategory === "billing-sales" || selectedCategory === "ledger-reports") && (
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-6">
           <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
             <HelpCircle className="w-5 h-5 text-emerald-600" />
             <div>
               <h3 className="text-lg font-bold text-slate-900">Finance FAQs & Audit Best Practices</h3>
               <p className="text-xs text-slate-500">
-                Quick answers to common day-to-day accounting, forex, reversal, and portal operations questions.
+                Quick answers to common day-to-day accounting, POS billing, expenses, forex, reversals, and portal operations questions.
               </p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+              <h4 className="text-xs font-bold text-slate-900 uppercase">
+                Q: Can I book a sale without creating a registered partner?
+              </h4>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                <strong>Yes!</strong> Navigate to <strong>Direct Sales (POS)</strong> at <code>/finance/sales/new</code>. You can enter walk-in customer names, phone numbers, and emails directly. Toggling &quot;Settle Immediately&quot; automatically posts balanced GL entries and issues an official receipt.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+              <h4 className="text-xs font-bold text-slate-900 uppercase">
+                Q: When does a Tax Invoice post to the General Ledger?
+              </h4>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Invoices remain in <code>DRAFT</code> until approved. Clicking <strong>&quot;Approve & Post to GL&quot;</strong> locks the document, debits Accounts Receivable (<code>1200-AR</code>), and credits Revenue (<code>4010-REV</code>). When receipts are recorded, cash is debited and AR is credited.
+              </p>
+            </div>
+
             <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
               <h4 className="text-xs font-bold text-slate-900 uppercase">
                 Q: Why can&apos;t I delete a posted transaction or journal?
@@ -1471,28 +1575,10 @@ export default function FinanceGuidesPage() {
 
             <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
               <h4 className="text-xs font-bold text-slate-900 uppercase">
-                Q: What date should be used when reversing an old transaction?
-              </h4>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                The portal defaults reversal vouchers to <strong>Today&apos;s Date (in the current active period)</strong>. This avoids modifying closed past months or altering filed tax returns. If the original month is still open and unclosed, you can optionally reverse it on the original date.
-              </p>
-            </div>
-
-            <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
-              <h4 className="text-xs font-bold text-slate-900 uppercase">
                 Q: How do we record USD invoices charged to our KES corporate card?
               </h4>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Record the <strong>exact KES amount</strong> debited on your bank/card statement. This includes all card processing and FX conversion charges, ensuring your bank ledger perfectly reconciles with zero FX suspense variance. Include the USD amount (e.g. <code>$50 USD</code>) in the description memo.
-              </p>
-            </div>
-
-            <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
-              <h4 className="text-xs font-bold text-slate-900 uppercase">
-                Q: What is the difference between Quick Transaction and Journal Entry?
-              </h4>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                <strong>Quick Transactions</strong> are single-leg cash/bank events (Money In or Money Out). The backend automatically derives the debit/credit pair. <strong>Journal Entries</strong> allow multi-line debits and credits for complex multi-account adjustments, payroll, and asset transfers.
+                Record the <strong>exact KES amount</strong> debited on your bank/card statement. This includes all card processing and FX conversion charges, ensuring your bank ledger perfectly reconciles with zero FX suspense variance. Include the USD amount in the description memo.
               </p>
             </div>
           </div>
@@ -1508,29 +1594,35 @@ export default function FinanceGuidesPage() {
           <div>
             <h4 className="text-sm font-bold text-white">Need to record financial entries now?</h4>
             <p className="text-xs text-slate-400">
-              Jump straight to the transaction studio or launch the Chart of Accounts ledger.
+              Jump straight to the transaction studios or launch the Chart of Accounts ledger.
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <Link
+            href="/finance/sales/new"
+            className="px-3 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold uppercase tracking-wider transition-all shadow-lg shadow-emerald-600/20"
+          >
+            Direct Sale (POS)
+          </Link>
+          <Link
+            href="/finance/expenses/new"
+            className="px-3 py-2 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold uppercase tracking-wider transition-all shadow-lg shadow-rose-600/20"
+          >
+            Log Expense
+          </Link>
+          <Link
+            href="/finance/invoices/new"
+            className="px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold uppercase tracking-wider transition-all shadow-lg shadow-blue-600/20"
+          >
+            New Invoice
+          </Link>
           <Link
             href="/finance/coa"
-            className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold uppercase tracking-wider transition-all border border-slate-700"
+            className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold uppercase tracking-wider transition-all border border-slate-700"
           >
             Chart of Accounts
-          </Link>
-          <Link
-            href="/finance/reports/gl-statement"
-            className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold uppercase tracking-wider transition-all border border-slate-700"
-          >
-            GL Statements
-          </Link>
-          <Link
-            href="/finance/simple-transactions"
-            className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold uppercase tracking-wider transition-all shadow-lg shadow-emerald-600/20"
-          >
-            Record Transactions
           </Link>
         </div>
       </div>

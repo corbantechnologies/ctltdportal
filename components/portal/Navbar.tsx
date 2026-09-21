@@ -19,6 +19,11 @@ import {
   User,
   Settings,
   BookOpen,
+  Wallet,
+  Zap,
+  Receipt,
+  FileBadge,
+  Users,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 
@@ -112,7 +117,7 @@ export default function Navbar() {
     {
       name: "Quotations",
       href: `/${rolePrefix}/quotations`,
-      icon: FileText,
+      icon: FileBadge,
       show: isDirector || isOperations,
     },
     {
@@ -122,12 +127,23 @@ export default function Navbar() {
       show: isDirector || isFinance || isOperations,
     },
     {
-      name: "Receipts",
-      href: `/${rolePrefix}/receipts`,
-      icon: FileText,
+      name: "Direct Sales",
+      href: `/${rolePrefix}/sales/new`,
+      icon: Zap,
       show: isDirector || isFinance || isOperations,
     },
- 
+    {
+      name: "Expenses",
+      href: `/${rolePrefix}/expenses`,
+      icon: Wallet,
+      show: isDirector || isFinance || isOperations,
+    },
+    {
+      name: "Receipts",
+      href: `/${rolePrefix}/receipts`,
+      icon: Receipt,
+      show: isDirector || isFinance || isOperations,
+    },
     {
       name: "Ledger",
       href: `/${rolePrefix}/journal-entries`,
@@ -137,7 +153,7 @@ export default function Navbar() {
     {
       name: "Partners",
       href: `/${rolePrefix}/partners`,
-      icon: FileText,
+      icon: Users,
       show: isDirector || isFinance || isOperations,
     },
     {
@@ -147,9 +163,9 @@ export default function Navbar() {
       show: isDirector,
     },
     {
-      name: "Transactions",
+      name: "Quick Transactions",
       href: isEmployee ? `/employee/transactions` : `/${rolePrefix}/simple-transactions`,
-      icon: FileText,
+      icon: Database,
       show: isDirector || isFinance || isOperations || isEmployee,
     },
     {
