@@ -18,6 +18,7 @@ import {
   ChevronRight,
   User,
   Settings,
+  BookOpen,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 
@@ -150,6 +151,12 @@ export default function Navbar() {
       href: isEmployee ? `/employee/transactions` : `/${rolePrefix}/simple-transactions`,
       icon: FileText,
       show: isDirector || isFinance || isOperations || isEmployee,
+    },
+    {
+      name: "Finance Guides",
+      href: `/${rolePrefix}/guides`,
+      icon: BookOpen,
+      show: isDirector || isFinance,
     },
     {
       name: "Dashboard",

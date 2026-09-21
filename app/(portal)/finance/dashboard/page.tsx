@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useFetchDivisions } from "@/hooks/divisions/actions";
 import { useFetchJournalTypes } from "@/hooks/journaltypes/actions";
 import { useFetchPartnerTypes } from "@/hooks/partnertypes/actions";
@@ -122,6 +123,14 @@ export default function FinanceDashboard() {
             Fiscal policy audit, system configuration, and strategic resource allocation engine.
           </p>
         </div>
+
+        <Link
+          href="/finance/guides"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold uppercase tracking-wider transition-all shadow-md group"
+        >
+          <BookOpen className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform" />
+          <span>Finance Guides & Reference</span>
+        </Link>
       </div>
 
       <Tabs.Root defaultValue="reports" className="space-y-6">
