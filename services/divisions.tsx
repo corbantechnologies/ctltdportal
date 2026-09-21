@@ -6,7 +6,7 @@ import { PaginatedResponse } from "./general";
 import { JournalEntry } from "./journalentries";
 import { Partner } from "./partners";
 
-interface Division {
+export interface Division {
   name: string;
   code: string;
   is_active: boolean;
@@ -16,6 +16,7 @@ interface Division {
   journal_entries: JournalEntry[]
   partners: Partner[]
 }
+
 
 export interface DivisionPublic {
   name: string;

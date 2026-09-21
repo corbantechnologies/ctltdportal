@@ -24,7 +24,9 @@ import {
   Receipt,
   FileBadge,
   Users,
+  TrendingUp as TrendingUpIcon,
 } from "lucide-react";
+
 import { useState, useEffect } from "react";
 
 export default function Navbar() {
@@ -139,6 +141,36 @@ export default function Navbar() {
       show: isDirector || isFinance || isOperations,
     },
     {
+      name: "AR Aging",
+      href: `/${rolePrefix}/reports/ar-aging`,
+      icon: TrendingUpIcon,
+      show: isDirector || isFinance || isOperations,
+    },
+    {
+      name: "Vendor Bills (AP)",
+      href: `/${rolePrefix}/vendor-bills`,
+      icon: Receipt,
+      show: isDirector || isFinance || isOperations,
+    },
+    {
+      name: "Outflow Planner",
+      href: `/${rolePrefix}/reports/cash-outflow`,
+      icon: Wallet,
+      show: isDirector || isFinance || isOperations,
+    },
+    {
+      name: "Payroll",
+      href: `/${rolePrefix}/payroll`,
+      icon: Users,
+      show: isDirector || isFinance,
+    },
+    {
+      name: "Staff Claims",
+      href: `/${rolePrefix}/staff-claims`,
+      icon: Receipt,
+      show: isDirector || isFinance || isOperations || isEmployee,
+    },
+    {
       name: "Receipts",
       href: `/${rolePrefix}/receipts`,
       icon: Receipt,
@@ -181,6 +213,7 @@ export default function Navbar() {
       show: isEmployee,
     },
   ];
+
 
   return (
     <>

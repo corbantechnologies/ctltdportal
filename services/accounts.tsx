@@ -113,3 +113,14 @@ export const activateAccount = async (data: activateAccount): Promise<User> => {
   );
   return response.data;
 };
+
+export const getEmployees = async (
+  headers: { headers: { Authorization: string } }
+): Promise<User[]> => {
+  const response: AxiosResponse<User[]> = await apiActions.get(
+    `/api/v1/auth/employees/all/`,
+    headers
+  );
+  return response.data;
+};
+

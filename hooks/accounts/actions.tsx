@@ -16,3 +16,14 @@ export function useFetchAccount() {
     enabled: !!member_code,
   });
 }
+
+export function useFetchEmployees() {
+  const header = useAxiosAuth();
+
+  return useQuery({
+    queryKey: ["employees"],
+    queryFn: () => import("@/services/accounts").then((m) => m.getEmployees(header)),
+    enabled: !!header.headers.Authorization,
+  });
+}
+

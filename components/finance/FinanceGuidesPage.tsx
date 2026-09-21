@@ -118,6 +118,46 @@ const CATEGORIES: GuideCategory[] = [
     description: "Audit trail protection, non-destructive reversals, and closed-period locking",
   },
   {
+    id: "ar-aging",
+    name: "AR Aging & Customer Statements",
+    icon: TrendingUp,
+    badge: "Receivables & DSO",
+    color: "text-emerald-500",
+    bgColor: "bg-emerald-500/10",
+    borderColor: "border-emerald-500/20",
+    description: "Aging brackets (0-30, 31-60, 61-90, 90+), DSO cash velocity, and 1-click Statement of Account (SOA) generation",
+  },
+  {
+    id: "vendor-bills",
+    name: "Vendor Bills (AP) & Outflows",
+    icon: Receipt,
+    badge: "Payables & Runway",
+    color: "text-rose-500",
+    bgColor: "bg-rose-500/10",
+    borderColor: "border-rose-500/20",
+    description: "Supplier bill booking, double-entry AP expense accrual (DR 6xxx / CR 2010), and 7-day liquidity runway planning",
+  },
+  {
+    id: "payroll-statutory",
+    name: "Kenyan Payroll & Staff Claims",
+    icon: Users,
+    badge: "PAYE & NSSF/SHIF",
+    color: "text-purple-500",
+    bgColor: "bg-purple-500/10",
+    borderColor: "border-purple-500/20",
+    description: "Automated Kenyan statutory engine (PAYE, NSSF Tier 1/2, SHIF 2.75%, Housing Levy 1.5%) and staff expense reimbursements",
+  },
+  {
+    id: "audit-drilldowns",
+    name: "GL Interactive Drill-Downs",
+    icon: Layers,
+    badge: "Traceability",
+    color: "text-cyan-500",
+    bgColor: "bg-cyan-500/10",
+    borderColor: "border-cyan-500/20",
+    description: "Clickable Trial Balance, P&L, and Balance Sheet rows drilling down into chronological audit journal entries",
+  },
+  {
     id: "forex-usd",
     name: "USD & Forex Card Billing",
     icon: DollarSign,
@@ -176,6 +216,7 @@ const CATEGORIES: GuideCategory[] = [
     description: "General Ledger statements, Trial Balance, Balance Sheet, and P&L exports",
   },
 ];
+
 
 interface SimulationScenario {
   title: string;
@@ -466,7 +507,116 @@ const SIMULATION_SCENARIOS: SimulationScenario[] = [
       paymentMethod: "Non-Cash Journal Adjustment",
     },
   },
+  {
+    title: "Vendor Bill (AP) Accrual & Booking",
+    category: "Accounts Payable",
+    description: "Supplier bill received for software licenses / hosting; accrued to General Ledger before payment.",
+    type: "JOURNAL",
+    debit: {
+      account: "Cloud Software & Licenses Expense",
+      code: "6110-EXP",
+      type: "Expense (Debit Recognizes Expense)",
+      note: "Accrues expense into current financial month P&L",
+    },
+    credit: {
+      account: "Trade Accounts Payable",
+      code: "2010-AP",
+      type: "Liability (Credit Establishes Payable)",
+      note: "Establishes formal Accounts Payable liability due to supplier",
+    },
+    portalAction: "Open Vendor Bills Studio > Enter Supplier Invoice Details > Click 'Post to General Ledger'",
+    portalLink: "/finance/vendor-bills",
+    exampleData: {
+      amount: "KES 75,000.00",
+      partner: "Datadog Cloud Solutions",
+      division: "Engineering & Cloud",
+      ledgerBook: "Software Licenses & Subscriptions",
+      paymentMethod: "Credit Terms (Net 30)",
+    },
+  },
+  {
+    title: "Vendor Bill Settlement / AP Disbursement",
+    category: "Payables Settlement",
+    description: "Clearing an approved supplier invoice via corporate bank wire; settles AP liability.",
+    type: "MONEY_OUT",
+    debit: {
+      account: "Trade Accounts Payable",
+      code: "2010-AP",
+      type: "Liability (Debit Clears Liability)",
+      note: "Reduces supplier balance due to zero",
+    },
+    credit: {
+      account: "Main Commercial Bank Account",
+      code: "1010-BNK",
+      type: "Asset (Credit Decreases Bank Balance)",
+      note: "Funds disbursed from corporate bank account",
+    },
+    portalAction: "Open Vendor Bill Detail > Click 'Record Payment' > Choose Bank Account > Confirm Disbursement",
+    portalLink: "/finance/vendor-bills",
+    exampleData: {
+      amount: "KES 75,000.00",
+      partner: "Datadog Cloud Solutions",
+      division: "Engineering & Cloud",
+      ledgerBook: "Operating Bank Account",
+      paymentMethod: "Bank Wire KCB-994821",
+    },
+  },
+  {
+    title: "Monthly Staff Payroll Execution & Kenyan Statutory Posting",
+    category: "Payroll & Statutory",
+    description: "Monthly salary run calculating PAYE, NSSF Tier 1/2, SHIF, Housing Levy, and Net Pay.",
+    type: "JOURNAL",
+    debit: {
+      account: "Salaries & Wages Operating Expense",
+      code: "6010-EXP",
+      type: "Expense (Debit Gross Remuneration)",
+      note: "Full gross employee compensation charged to Income Statement",
+    },
+    credit: {
+      account: "PAYE Tax (2040) + Statutory (2050) + Net Pay (1010)",
+      code: "2040 / 2050 / 1010",
+      type: "Multi-Leg Liabilities & Liquid Cash",
+      note: "Allocates KRA PAYE tax, NSSF/SHIF/Housing levies, and net cash disbursed to staff",
+    },
+    portalAction: "Open Payroll Studio > Add Employee Items > Verify Statutory Deductions > Click 'Post Payroll to GL'",
+    portalLink: "/finance/payroll",
+    exampleData: {
+      amount: "KES 450,000.00 Gross (Net KES 342,000.00)",
+      partner: "Corban Staff Payroll Batch",
+      division: "All Operating Divisions",
+      ledgerBook: "Executive & Engineering Payroll",
+      paymentMethod: "Bank Salary Transfer Batch",
+    },
+  },
+  {
+    title: "Staff Expense Reimbursement Claim Disbursement",
+    category: "Reimbursements",
+    description: "Employee submits field visit travel expense; approved by Director and disbursed via M-Pesa/Bank.",
+    type: "MONEY_OUT",
+    debit: {
+      account: "Field Operations & Travel Expense",
+      code: "6300-EXP",
+      type: "Expense (Debit Increases Expense)",
+      note: "Charges travel and field expense to P&L",
+    },
+    credit: {
+      account: "Corporate M-PESA Cash Book / Bank",
+      code: "1020-MPESA",
+      type: "Asset (Credit Disburses Cash)",
+      note: "Instant reimbursement sent to employee phone/account",
+    },
+    portalAction: "Open Staff Claims Hub > Click 'Approve' > Click 'Disburse & Post to GL'",
+    portalLink: "/finance/staff-claims",
+    exampleData: {
+      amount: "KES 14,500.00",
+      partner: "Field Engineer (Staff Claim)",
+      division: "Infrastructure Deployment",
+      ledgerBook: "Travel & Subsistence",
+      paymentMethod: "M-PESA B2C Disbursement",
+    },
+  },
 ];
+
 
 export default function FinanceGuidesPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -1532,7 +1682,358 @@ export default function FinanceGuidesPage() {
         </div>
       )}
 
+      {/* Guide Section: Accounts Receivable (AR) Aging Matrix & Statement of Account */}
+      {(selectedCategory === "all" || selectedCategory === "ar-aging") && (
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <button
+            onClick={() => toggleSection("ar-aging-guide")}
+            className="w-full p-6 flex items-center justify-between text-left hover:bg-slate-50/50 transition-colors"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+                <TrendingUp className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-slate-900">
+                    Accounts Receivable (AR) Aging Matrix &amp; Customer Statement SOP
+                  </h3>
+                  <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-emerald-100 text-emerald-800 uppercase tracking-wider">
+                    DSO &amp; Collections
+                  </span>
+                </div>
+                <p className="text-xs md:text-sm text-slate-500 mt-0.5">
+                  Standard operating procedure for tracking debtor aging buckets (0-30, 31-60, 61-90, 90+), measuring Days Sales Outstanding (DSO), and issuing 1-click Statements of Account (SOA).
+                </p>
+              </div>
+            </div>
+            <ChevronDown
+              className={cn(
+                "w-5 h-5 text-slate-400 transition-transform",
+                expandedSections["ar-aging-guide"] && "rotate-180"
+              )}
+            />
+          </button>
+
+          {expandedSections["ar-aging-guide"] && (
+            <div className="p-6 pt-0 border-t border-slate-100 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
+                <div className="p-3.5 rounded-lg bg-emerald-50 border border-emerald-200">
+                  <span className="font-bold text-emerald-800 uppercase block text-[10px]">0-30 Days (Current)</span>
+                  <p className="text-slate-600 mt-1">Normal credit window. Customer invoices are within standard payment grace period.</p>
+                </div>
+                <div className="p-3.5 rounded-lg bg-amber-50 border border-amber-200">
+                  <span className="font-bold text-amber-800 uppercase block text-[10px]">31-60 Days</span>
+                  <p className="text-slate-600 mt-1">Early follow-up. First reminder email triggered with attached Statement of Account.</p>
+                </div>
+                <div className="p-3.5 rounded-lg bg-orange-50 border border-orange-200">
+                  <span className="font-bold text-orange-800 uppercase block text-[10px]">61-90 Days</span>
+                  <p className="text-slate-600 mt-1">Escalated collection. Direct phone inquiry and finance credit restriction warning.</p>
+                </div>
+                <div className="p-3.5 rounded-lg bg-rose-50 border border-rose-200">
+                  <span className="font-bold text-rose-800 uppercase block text-[10px]">90+ Days (Critical)</span>
+                  <p className="text-slate-600 mt-1">Critical default risk. Service hold enacted; executive director intervention required.</p>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-lg bg-slate-900 text-white space-y-2">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400">
+                  Days Sales Outstanding (DSO) Formula:
+                </h4>
+                <p className="font-mono text-xs text-slate-200">
+                  DSO = (Total Accounts Receivable / Total Credit Sales) &times; Number of Days
+                </p>
+                <p className="text-[11px] text-slate-400">
+                  Target: &le; 35 Days. A rising DSO indicates collection bottlenecks or billing disputes requiring immediate customer statement dispatch.
+                </p>
+              </div>
+
+              <div className="flex items-center justify-between p-3.5 rounded-lg bg-slate-50 border border-slate-200 text-xs">
+                <div className="flex items-center gap-2 text-slate-700">
+                  <Zap className="w-4 h-4 text-emerald-500" />
+                  <span>View live company-wide debtor aging schedule &amp; generate customer statements:</span>
+                </div>
+                <Link
+                  href="/finance/reports/ar-aging"
+                  className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold transition-colors shadow-sm"
+                >
+                  Open AR Aging Matrix
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Guide Section: Accounts Payable (AP) & Cash Outflow Runway Planner */}
+      {(selectedCategory === "all" || selectedCategory === "vendor-bills") && (
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <button
+            onClick={() => toggleSection("vendor-bills-guide")}
+            className="w-full p-6 flex items-center justify-between text-left hover:bg-slate-50/50 transition-colors"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center font-bold">
+                <Receipt className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-slate-900">
+                    Vendor Bills (AP) Accrual &amp; Cash Outflow Runway Planner
+                  </h3>
+                  <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-rose-100 text-rose-800 uppercase tracking-wider">
+                    Payables &amp; Working Capital
+                  </span>
+                </div>
+                <p className="text-xs md:text-sm text-slate-500 mt-0.5">
+                  Double-entry accrual mechanics for supplier invoices, disbursement recording, and 7-day liquidity runway monitoring.
+                </p>
+              </div>
+            </div>
+            <ChevronDown
+              className={cn(
+                "w-5 h-5 text-slate-400 transition-transform",
+                expandedSections["vendor-bills-guide"] && "rotate-180"
+              )}
+            />
+          </button>
+
+          {expandedSections["vendor-bills-guide"] && (
+            <div className="p-6 pt-0 border-t border-slate-100 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+                  <h4 className="text-xs font-bold text-slate-900 uppercase">
+                    Stage 1: Booking &amp; Posting Supplier Invoice (AP Accrual)
+                  </h4>
+                  <div className="font-mono text-xs space-y-1">
+                    <p className="text-emerald-700"><strong>DEBIT:</strong> 6xxx Operating Expense (e.g. 6110 Software)</p>
+                    <p className="text-rose-700"><strong>CREDIT:</strong> 2010 Accounts Payable (AP Liability)</p>
+                  </div>
+                  <p className="text-[11px] text-slate-500">
+                    Recognizes the expense in the correct accounting period even before cash leaves the bank account.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+                  <h4 className="text-xs font-bold text-slate-900 uppercase">
+                    Stage 2: Disbursing Payment to Vendor (Settlement)
+                  </h4>
+                  <div className="font-mono text-xs space-y-1">
+                    <p className="text-emerald-700"><strong>DEBIT:</strong> 2010 Accounts Payable (Clears Liability)</p>
+                    <p className="text-rose-700"><strong>CREDIT:</strong> 1010 Commercial Bank Account (Reduces Cash)</p>
+                  </div>
+                  <p className="text-[11px] text-slate-500">
+                    Settles the liability, reduces vendor balance due to 0.00, and records payment reference number.
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-lg bg-rose-50 border border-rose-200 space-y-2">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-rose-800">
+                  7-Day Liquidity Runway Rule:
+                </h4>
+                <p className="text-xs text-slate-700">
+                  Total Liquid Reserves (Bank + Cash) must always exceed <strong>Immediate Outflows (Overdue AP + Bills Due in 7 Days + Approved Staff Claims)</strong>. If net projected runway is negative, hold non-essential disbursements until receivables are collected.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-2 pt-1">
+                <Link
+                  href="/finance/vendor-bills"
+                  className="px-3.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold transition-colors"
+                >
+                  Manage Vendor Bills (AP)
+                </Link>
+                <Link
+                  href="/finance/reports/cash-outflow"
+                  className="px-3.5 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold transition-colors"
+                >
+                  Open Cash Outflow Planner
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Guide Section: Kenyan Statutory Payroll Engine & Staff Claims */}
+      {(selectedCategory === "all" || selectedCategory === "payroll-statutory") && (
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <button
+            onClick={() => toggleSection("payroll-statutory-guide")}
+            className="w-full p-6 flex items-center justify-between text-left hover:bg-slate-50/50 transition-colors"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center font-bold">
+                <Users className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-slate-900">
+                    Kenyan Statutory Payroll Deductions &amp; Staff Reimbursements Guide
+                  </h3>
+                  <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-purple-100 text-purple-800 uppercase tracking-wider">
+                    Statutory Compliance
+                  </span>
+                </div>
+                <p className="text-xs md:text-sm text-slate-500 mt-0.5">
+                  Exact Kenyan tax compliance formulas (PAYE, NSSF Tier 1/2, SHIF 2.75%, Housing Levy 1.5%) and automated 4-leg GL posting.
+                </p>
+              </div>
+            </div>
+            <ChevronDown
+              className={cn(
+                "w-5 h-5 text-slate-400 transition-transform",
+                expandedSections["payroll-statutory-guide"] && "rotate-180"
+              )}
+            />
+          </button>
+
+          {expandedSections["payroll-statutory-guide"] && (
+            <div className="p-6 pt-0 border-t border-slate-100 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+                <div className="p-3.5 rounded-lg bg-purple-50 border border-purple-200">
+                  <span className="font-bold text-purple-800 uppercase block text-[10px]">1. NSSF (Act 2013)</span>
+                  <p className="text-slate-600 mt-1 font-mono text-[11px]">
+                    Tier 1: 6% up to 7,000 (Max 420)<br />
+                    Tier 2: 6% 7,001-36,000 (Max 1,740)<br />
+                    <strong>Total Cap: KES 2,160.00</strong>
+                  </p>
+                </div>
+                <div className="p-3.5 rounded-lg bg-blue-50 border border-blue-200">
+                  <span className="font-bold text-blue-800 uppercase block text-[10px]">2. PAYE (KRA Tax)</span>
+                  <p className="text-slate-600 mt-1 text-[11px]">
+                    Taxable = Gross - NSSF.<br />
+                    Graduated bands (10% to 35%) minus <strong>KES 2,400.00 Monthly Personal Relief</strong>.
+                  </p>
+                </div>
+                <div className="p-3.5 rounded-lg bg-teal-50 border border-teal-200">
+                  <span className="font-bold text-teal-800 uppercase block text-[10px]">3. SHIF (Health)</span>
+                  <p className="text-slate-600 mt-1 text-[11px]">
+                    <strong>2.75% of Gross Remuneration</strong>.<br />
+                    Statutory floor minimum: KES 300.00.
+                  </p>
+                </div>
+                <div className="p-3.5 rounded-lg bg-amber-50 border border-amber-200">
+                  <span className="font-bold text-amber-800 uppercase block text-[10px]">4. Housing Levy (AHL)</span>
+                  <p className="text-slate-600 mt-1 text-[11px]">
+                    <strong>1.5% of Gross Remuneration</strong>.<br />
+                    Remitted monthly to KRA alongside PAYE.
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-lg bg-slate-900 text-white space-y-2">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400">
+                  Automated 4-Leg Double-Entry GL Journal Posting:
+                </h4>
+                <div className="font-mono text-xs space-y-1">
+                  <p className="text-emerald-400"><strong>DEBIT:</strong> 6010 Salaries &amp; Wages Expense (Total Gross Remuneration)</p>
+                  <p className="text-blue-400"><strong>CREDIT:</strong> 2040 PAYE Tax Payable (KRA Liability)</p>
+                  <p className="text-purple-400"><strong>CREDIT:</strong> 2050 Statutory Deductions Payable (NSSF + SHIF + AHL)</p>
+                  <p className="text-teal-400"><strong>CREDIT:</strong> 1010 Operating Bank Account (Net Salaries Disbursed)</p>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-2 pt-1">
+                <Link
+                  href="/finance/payroll"
+                  className="px-3.5 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold transition-colors shadow-sm"
+                >
+                  Launch Payroll Studio
+                </Link>
+                <Link
+                  href="/finance/staff-claims"
+                  className="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold transition-colors"
+                >
+                  Manage Staff Expense Claims
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Guide Section: Interactive General Ledger Audit Drill-Downs */}
+      {(selectedCategory === "all" || selectedCategory === "audit-drilldowns") && (
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <button
+            onClick={() => toggleSection("audit-drilldown-guide")}
+            className="w-full p-6 flex items-center justify-between text-left hover:bg-slate-50/50 transition-colors"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-lg bg-cyan-50 text-cyan-600 flex items-center justify-center font-bold">
+                <Layers className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-slate-900">
+                    Interactive General Ledger Audit Drill-Down &amp; Month Reopen SOP
+                  </h3>
+                  <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-cyan-100 text-cyan-800 uppercase tracking-wider">
+                    Audit Transparency
+                  </span>
+                </div>
+                <p className="text-xs md:text-sm text-slate-500 mt-0.5">
+                  How to inspect underlying chronological journal entries directly from financial reports and the director month reopen procedure.
+                </p>
+              </div>
+            </div>
+            <ChevronDown
+              className={cn(
+                "w-5 h-5 text-slate-400 transition-transform",
+                expandedSections["audit-drilldown-guide"] && "rotate-180"
+              )}
+            />
+          </button>
+
+          {expandedSections["audit-drilldown-guide"] && (
+            <div className="p-6 pt-0 border-t border-slate-100 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+                  <h4 className="text-xs font-bold text-slate-900 uppercase">
+                    1. 1-Click Report Drill-Down Drawer
+                  </h4>
+                  <p className="text-slate-600 leading-relaxed">
+                    Clicking on any account row on the <strong>Trial Balance</strong>, <strong>P&amp;L</strong>, or <strong>Balance Sheet</strong> opens the real-time Ledger Drawer. It displays:
+                  </p>
+                  <ul className="list-disc list-inside text-slate-600 space-y-1">
+                    <li>Opening balance brought forward</li>
+                    <li>Itemized journal codes and transaction dates</li>
+                    <li>Counterparty partner details and memos</li>
+                    <li>Debit / Credit movements and calculated running balances</li>
+                  </ul>
+                </div>
+
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+                  <h4 className="text-xs font-bold text-slate-900 uppercase">
+                    2. Director Month Reopen Policy
+                  </h4>
+                  <p className="text-slate-600 leading-relaxed">
+                    Closed financial months are locked to prevent retroactive alteration. Only authorized <strong>Managing Directors</strong> or Finance Leads can reopen a month via <code>POST /api/v1/financialmonths/{'{ref}'}/reopen/</code> with mandatory justification logged in the audit trail.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between p-3.5 rounded-lg bg-cyan-50 border border-cyan-200 text-xs">
+                <div className="flex items-center gap-2 text-slate-700">
+                  <Zap className="w-4 h-4 text-cyan-600" />
+                  <span>Inspect active trial balance and drill down into general ledger books:</span>
+                </div>
+                <Link
+                  href="/finance/reports"
+                  className="px-3.5 py-1.5 rounded-lg bg-cyan-700 hover:bg-cyan-600 text-white font-semibold transition-colors shadow-sm"
+                >
+                  Open Financial Reports
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Guide Section: Common FAQs & Trouble-Shooting */}
+
       {(selectedCategory === "all" || selectedCategory === "immutability-reversals" || selectedCategory === "forex-usd" || selectedCategory === "direct-sales" || selectedCategory === "expenses-hub" || selectedCategory === "billing-sales" || selectedCategory === "ledger-reports") && (
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-6">
           <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
