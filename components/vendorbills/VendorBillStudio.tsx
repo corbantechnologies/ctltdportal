@@ -259,15 +259,20 @@ export default function VendorBillStudio({ billReference, rolePrefix }: VendorBi
                                 Accounts Payable Studio
                             </span>
                             <span className="text-xs text-muted-foreground">•</span>
-                            <span className="text-xs font-mono font-bold text-foreground">
+                            <span className="text-xs text-muted-foreground font-mono font-medium">
                                 {isNew ? "New Vendor Bill" : billData?.code}
                             </span>
                         </div>
-                        <h1 className="text-xl font-bold tracking-tight text-foreground mt-0.5">
+                        <h1 className="text-2xl font-bold tracking-tight text-foreground mt-1">
                             {isNew
                                 ? "Book Supplier Invoice"
                                 : `${selectedVendorObj?.name || billData?.partner_details?.name || billData?.vendor_name || "Vendor"} Bill`}
                         </h1>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                            {isNew
+                                ? "Record vendor bill, allocate operating expense accounts, and preview double-entry AP posting."
+                                : "Inspect payable details, audit general ledger journal entries, and disburse bank payments."}
+                        </p>
                     </div>
                 </div>
 

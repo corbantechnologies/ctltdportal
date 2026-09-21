@@ -114,7 +114,7 @@ export default function FinanceMonthDetailPage() {
               <ChevronLeft className="w-4 h-4" />
             </button>
             <div>
-              <h1 className="text-xl font-black text-black tracking-tighter italic leading-none flex items-center gap-2">
+              <h1 className="text-xl font-bold text-foreground tracking-tight italic leading-none flex items-center gap-2">
                 {month.name}
                 {month.is_closed ? (
                   <Lock className="w-4 h-4 text-gray-300" />

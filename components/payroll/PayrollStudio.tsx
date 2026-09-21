@@ -251,13 +251,18 @@ export default function PayrollStudio({ runReference, rolePrefix }: PayrollStudi
                                 Payroll Studio
                             </span>
                             <span className="text-xs text-muted-foreground">•</span>
-                            <span className="text-xs font-mono font-bold text-foreground">
+                            <span className="text-xs text-muted-foreground font-mono font-medium">
                                 {isNew ? "New Payroll Batch" : runData?.code}
                             </span>
                         </div>
-                        <h1 className="text-xl font-bold tracking-tight text-foreground mt-0.5">
+                        <h1 className="text-2xl font-bold tracking-tight text-foreground mt-1">
                             {isNew ? "Initiate Payroll Run" : runData?.title}
                         </h1>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                            {isNew
+                                ? "Configure batch execution parameters, disbursing bank account, and initialize statutory payroll processing."
+                                : "Review employee payslips, verify statutory deductions, and post double-entry payroll to GL."}
+                        </p>
                     </div>
                 </div>
 
@@ -297,91 +302,148 @@ export default function PayrollStudio({ runReference, rolePrefix }: PayrollStudi
 
             {/* Run Parameters Card (If New or viewing) */}
             {isNew ? (
-                <div className="bg-card rounded-2xl border border-border/80 shadow-sm p-6 space-y-4 max-w-2xl">
-                    <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
-                        <Users className="w-4 h-4 text-corporate-primary" /> Payroll Period & Disbursing Bank
-                    </h2>
+                <div className="w-full space-y-6">
+                    <div className="bg-card rounded-2xl border border-border/80 shadow-sm p-6 sm:p-8 space-y-6 w-full">
+                        <div className="border-b border-border/60 pb-4">
+                            <h2 className="text-base font-bold text-foreground flex items-center gap-2">
+                                <Users className="w-5 h-5 text-corporate-primary" /> Payroll Period & Disbursing Bank
+                            </h2>
+                            <p className="text-xs text-muted-foreground mt-1">
+                                Specify the payroll run title, execution date, linked accounting month, and the payment account for net salary disbursement.
+                            </p>
+                        </div>
 
-                    <div>
-                        <label className="block text-xs font-semibold text-muted-foreground mb-1">
-                            Payroll Title <span className="text-destructive">*</span>
-                        </label>
-                        <input
-                            type="text"
-                            placeholder="e.g. September 2026 Executive & Staff Payroll"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            className="w-full px-3 py-2 text-xs bg-muted/40 border border-border rounded-xl focus:ring-1 focus:ring-corporate-primary"
-                        />
+                        <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
+                            <div className="md:col-span-8">
+                                <label className="block text-xs font-semibold text-muted-foreground mb-1.5">
+                                    Payroll Title <span className="text-destructive">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    placeholder="e.g. September 2026 Executive & Staff Payroll"
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                    className="w-full px-3.5 py-2.5 text-xs bg-muted/40 border border-border rounded-xl focus:ring-1 focus:ring-corporate-primary font-medium"
+                                />
+                            </div>
+
+                            <div className="md:col-span-4">
+                                <label className="block text-xs font-semibold text-muted-foreground mb-1.5">
+                                    Payroll Date <span className="text-destructive">*</span>
+                                </label>
+                                <input
+                                    type="date"
+                                    value={payrollDate}
+                                    onChange={(e) => setPayrollDate(e.target.value)}
+                                    className="w-full px-3.5 py-2.5 text-xs bg-muted/40 border border-border rounded-xl focus:ring-1 focus:ring-corporate-primary font-medium"
+                                />
+                            </div>
+
+                            <div className="md:col-span-4">
+                                <label className="block text-xs font-semibold text-muted-foreground mb-1.5">
+                                    Financial Month
+                                </label>
+                                <select
+                                    value={financialMonth}
+                                    onChange={(e) => setFinancialMonth(e.target.value)}
+                                    className="w-full px-3.5 py-2.5 text-xs bg-muted/40 border border-border rounded-xl focus:ring-1 focus:ring-corporate-primary font-medium"
+                                >
+                                    <option value="">Select Month</option>
+                                    {months.map((m: any) => (
+                                        <option key={m.reference} value={m.reference}>
+                                            {m.title || m.name} {m.is_active ? "(Active)" : ""}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className="md:col-span-4">
+                                <label className="block text-xs font-semibold text-muted-foreground mb-1.5">
+                                    Disbursing Account
+                                </label>
+                                <select
+                                    value={paymentAccount}
+                                    onChange={(e) => setPaymentAccount(e.target.value)}
+                                    className="w-full px-3.5 py-2.5 text-xs bg-muted/40 border border-border rounded-xl focus:ring-1 focus:ring-corporate-primary font-medium"
+                                >
+                                    <option value="">Select Bank / M-Pesa Account</option>
+                                    {paymentAccounts.map((pa: any) => (
+                                        <option key={pa.reference} value={pa.reference}>
+                                            {pa.name} ({pa.account_type || "Bank"})
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className="md:col-span-4">
+                                <label className="block text-xs font-semibold text-muted-foreground mb-1.5">
+                                    Cost Center / Division
+                                </label>
+                                <select
+                                    value={division}
+                                    onChange={(e) => setDivision(e.target.value)}
+                                    className="w-full px-3.5 py-2.5 text-xs bg-muted/40 border border-border rounded-xl focus:ring-1 focus:ring-corporate-primary font-medium"
+                                >
+                                    <option value="">Headquarters / General</option>
+                                    {divisions.map((d: any) => (
+                                        <option key={d.reference} value={d.reference}>
+                                            {d.name} ({d.code})
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className="md:col-span-12">
+                                <label className="block text-xs font-semibold text-muted-foreground mb-1.5">
+                                    Batch Notes & Remarks (Optional)
+                                </label>
+                                <textarea
+                                    rows={2}
+                                    placeholder="Enter any administrative notes or audit remarks for this payroll run..."
+                                    value={notes}
+                                    onChange={(e) => setNotes(e.target.value)}
+                                    className="w-full px-3.5 py-2.5 text-xs bg-muted/40 border border-border rounded-xl focus:ring-1 focus:ring-corporate-primary font-medium resize-none"
+                                />
+                            </div>
+                        </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3">
-                        <div>
-                            <label className="block text-xs font-semibold text-muted-foreground mb-1">
-                                Payroll Date <span className="text-destructive">*</span>
-                            </label>
-                            <input
-                                type="date"
-                                value={payrollDate}
-                                onChange={(e) => setPayrollDate(e.target.value)}
-                                className="w-full px-3 py-2 text-xs bg-muted/40 border border-border rounded-xl focus:ring-1 focus:ring-corporate-primary"
-                            />
+                    {/* Statutory Calculation Blueprint Info Cards */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="p-5 rounded-2xl bg-card border border-border/80 shadow-sm flex flex-col justify-between">
+                            <div className="flex items-center gap-2 mb-2">
+                                <div className="w-7 h-7 rounded-lg bg-corporate-primary/10 flex items-center justify-center text-corporate-primary font-bold text-xs">
+                                    1
+                                </div>
+                                <h3 className="text-xs font-bold text-foreground">Initiate Batch</h3>
+                            </div>
+                            <p className="text-[11px] text-muted-foreground leading-relaxed">
+                                Set up execution parameters and designate the liquidity account for salary settlements.
+                            </p>
                         </div>
 
-                        <div>
-                            <label className="block text-xs font-semibold text-muted-foreground mb-1">
-                                Financial Month
-                            </label>
-                            <select
-                                value={financialMonth}
-                                onChange={(e) => setFinancialMonth(e.target.value)}
-                                className="w-full px-3 py-2 text-xs bg-muted/40 border border-border rounded-xl focus:ring-1 focus:ring-corporate-primary"
-                            >
-                                <option value="">Select Month</option>
-                                {months.map((m: any) => (
-                                    <option key={m.reference} value={m.reference}>
-                                        {m.title || m.name} {m.is_active ? "(Active)" : ""}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3">
-                        <div>
-                            <label className="block text-xs font-semibold text-muted-foreground mb-1">
-                                Disbursing Account
-                            </label>
-                            <select
-                                value={paymentAccount}
-                                onChange={(e) => setPaymentAccount(e.target.value)}
-                                className="w-full px-3 py-2 text-xs bg-muted/40 border border-border rounded-xl focus:ring-1 focus:ring-corporate-primary"
-                            >
-                                <option value="">Select Bank / M-Pesa Account</option>
-                                {paymentAccounts.map((pa: any) => (
-                                    <option key={pa.reference} value={pa.reference}>
-                                        {pa.name} ({pa.account_type || "Bank"})
-                                    </option>
-                                ))}
-                            </select>
+                        <div className="p-5 rounded-2xl bg-card border border-border/80 shadow-sm flex flex-col justify-between">
+                            <div className="flex items-center gap-2 mb-2">
+                                <div className="w-7 h-7 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-600 font-bold text-xs">
+                                    2
+                                </div>
+                                <h3 className="text-xs font-bold text-foreground">Statutory Engine</h3>
+                            </div>
+                            <p className="text-[11px] text-muted-foreground leading-relaxed">
+                                Automated Kenyan tax brackets: PAYE Bands, NSSF Tier 1 & 2, SHIF (2.75%), and Housing Levy (1.5%).
+                            </p>
                         </div>
 
-                        <div>
-                            <label className="block text-xs font-semibold text-muted-foreground mb-1">
-                                Cost Center / Division
-                            </label>
-                            <select
-                                value={division}
-                                onChange={(e) => setDivision(e.target.value)}
-                                className="w-full px-3 py-2 text-xs bg-muted/40 border border-border rounded-xl focus:ring-1 focus:ring-corporate-primary"
-                            >
-                                <option value="">Headquarters / General</option>
-                                {divisions.map((d: any) => (
-                                    <option key={d.reference} value={d.reference}>
-                                        {d.name} ({d.code})
-                                    </option>
-                                ))}
-                            </select>
+                        <div className="p-5 rounded-2xl bg-card border border-border/80 shadow-sm flex flex-col justify-between">
+                            <div className="flex items-center gap-2 mb-2">
+                                <div className="w-7 h-7 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-600 font-bold text-xs">
+                                    3
+                                </div>
+                                <h3 className="text-xs font-bold text-foreground">Automated GL Posting</h3>
+                            </div>
+                            <p className="text-[11px] text-muted-foreground leading-relaxed">
+                                Post full double-entry journals: DR 6010 Salaries, CR 2040 PAYE, CR 2050 Statutory, CR 1010 Bank with zero manual entries.
+                            </p>
                         </div>
                     </div>
                 </div>

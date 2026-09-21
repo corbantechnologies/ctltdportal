@@ -71,13 +71,16 @@ export function CustomerStatementStudio({
                                 Statement of Account
                             </span>
                             <span className="text-xs text-muted-foreground">•</span>
-                            <span className="text-xs text-muted-foreground font-mono font-semibold">
+                            <span className="text-xs text-muted-foreground font-mono font-medium">
                                 {data?.partner.code || "SOA"}
                             </span>
                         </div>
-                        <h1 className="text-xl font-bold tracking-tight text-foreground mt-0.5">
+                        <h1 className="text-2xl font-bold tracking-tight text-foreground mt-1">
                             {data?.partner.name || "Customer Statement"}
                         </h1>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                            Detailed chronological ledger of billed invoices, settled receipts, and outstanding aging balance.
+                        </p>
                     </div>
                 </div>
 
@@ -140,7 +143,7 @@ export function CustomerStatementStudio({
                         <div>
                             <div className="flex items-center gap-2">
                                 <Building2 className="w-6 h-6 text-corporate-primary" />
-                                <span className="text-xl font-black tracking-tight text-foreground">
+                                <span className="text-xl font-bold tracking-tight text-foreground">
                                     CORBAN TECHNOLOGIES LTD
                                 </span>
                             </div>

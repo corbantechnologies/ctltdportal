@@ -33,7 +33,7 @@ export default function DirectorMonthDetailPage() {
 
   if (isLoading) return <LoadingSpinner />;
   if (!month) return (
-    <div className="p-12 text-center text-gray-300 font-black uppercase tracking-[0.3em]">
+    <div className="p-12 text-center text-muted-foreground font-bold uppercase tracking-[0.3em]">
       Period Not Found.
     </div>
   );

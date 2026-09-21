@@ -160,7 +160,7 @@ export default function FinancialMonthReport({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Project Profitability Table */}
             <section className="space-y-4">
-              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Top Projects Performance</h3>
+              <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 ml-1">Top Projects Performance</h3>
               <div className="bg-white border border-slate-100 rounded overflow-hidden overflow-x-auto">
                 <table className="w-full text-[11px]">
                   <thead>
@@ -190,7 +190,7 @@ export default function FinancialMonthReport({
 
             {/* Position Snapshot */}
             <section className="space-y-4">
-              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Position Snapshot</h3>
+              <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 ml-1">Position Snapshot</h3>
               <div className="bg-slate-50 border border-slate-200 rounded p-5 space-y-4">
                 <div className="space-y-2">
                   <div className="flex justify-between items-center text-xs">
@@ -202,7 +202,7 @@ export default function FinancialMonthReport({
                     <span className="font-bold text-rose-600">{(report.balance_sheet?.liabilities?.total || 0).toLocaleString()}</span>
                   </div>
                   <div className="h-px bg-slate-200 my-2" />
-                  <div className="flex justify-between items-center text-xs font-black">
+                  <div className="flex justify-between items-center text-xs font-bold">
                     <span className="text-slate-900 uppercase">Shareholder Equity</span>
                     <span className="text-emerald-600">{(report.balance_sheet?.equity?.net || 0).toLocaleString()}</span>
                   </div>
@@ -284,7 +284,7 @@ export default function FinancialMonthReport({
           <section className="space-y-4">
             <div className={cn("p-6 rounded border space-y-6 shadow-sm", theme.bg, theme.border)}>
               <div>
-                <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-4">Audit Trial Balance</h4>
+                <h4 className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400 mb-4">Audit Trial Balance</h4>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center text-xs">
                     <span className="text-slate-500 font-medium">System Debits</span>
@@ -296,9 +296,9 @@ export default function FinancialMonthReport({
                   </div>
                   <div className="pt-3 border-t border-slate-200 mt-2">
                     <div className="flex justify-between items-center">
-                      <span className="text-[9px] font-black uppercase text-slate-400">Balance Integrity</span>
+                      <span className="text-[9px] font-bold uppercase text-slate-400">Balance Integrity</span>
                       <span className={cn(
-                        "text-xs font-black",
+                        "text-xs font-bold",
                         Math.abs(report.trial_balance?.totals?.net_balance || 0) < 0.01 ? "text-emerald-600" : "text-rose-600"
                       )}>
                         {Math.abs(report.trial_balance?.totals?.net_balance || 0) < 0.01 ? "VERIFIED" : (report.trial_balance?.totals?.net_balance || 0).toFixed(4)}
@@ -309,10 +309,10 @@ export default function FinancialMonthReport({
               </div>
 
               <div className="pt-4 border-t border-slate-200">
-                <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-4">Journal Volume</h4>
+                <h4 className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400 mb-4">Journal Volume</h4>
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded border-4 border-slate-200 border-t-slate-800 flex items-center justify-center">
-                    <span className="text-xs font-black">{month.journals_count || 0}</span>
+                    <span className="text-xs font-bold">{month.journals_count || 0}</span>
                   </div>
                   <p className="text-[10px] text-slate-500 font-medium leading-relaxed italic">
                     {month.journals_count || 0} transaction batches recorded and processed in this period.

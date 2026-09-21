@@ -60,7 +60,7 @@ export default function FinancialMonthsList({
                     </div>
                   )}
                   {month.unposted_journals_count > 0 && !isLocked && (
-                    <div className="text-[8px] font-black uppercase text-orange-600 bg-orange-50 px-1.5 py-0.5 rounded animate-pulse">
+                    <div className="text-[8px] font-bold uppercase text-orange-600 bg-orange-50 px-1.5 py-0.5 rounded animate-pulse">
                       {month.unposted_journals_count} Unposted
                     </div>
                   )}
