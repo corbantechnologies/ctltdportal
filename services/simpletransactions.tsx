@@ -21,6 +21,12 @@ export interface SimpleTransaction {
   source_document: string | null;
   document_number: string | null;
   document_file: string | null;
+  is_reversed?: boolean;
+  reversed_at?: string | null;
+  reversed_by?: string | null;
+  reversal_transaction_reference?: string | null;
+  reversal_transaction_code?: string | null;
+  reversal_reason?: string | null;
   reference: string;
   created_at: string;
   updated_at: string;
@@ -135,4 +141,29 @@ export const getSimpleTransaction = async (
   );
   return response.data;
 };
+
+export interface ReverseSimpleTransactionData {
+  reversal_date?: string;
+  reason: string;
+}
+
+export const reverseSimpleTransaction = async (
+  reference: string,
+  data: ReverseSimpleTransactionData,
+  headers: { headers: { Authorization: string } }
+): Promise<{
+  message: string;
+  original_reference: string;
+  reversal_reference: string;
+  reversal_code: string;
+  reversal_date: string;
+}> => {
+  const response = await apiActions.post(
+    `/api/v1/simpletransactions/${reference}/reverse/`,
+    data,
+    headers
+  );
+  return response.data;
+};
+
 

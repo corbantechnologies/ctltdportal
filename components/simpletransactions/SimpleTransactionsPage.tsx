@@ -11,6 +11,9 @@ import {
 import LoadingSpinner from "@/components/portal/LoadingSpinner";
 import CreateSimpleTransaction from "@/forms/simpletransactions/CreateSimpleTransaction";
 import BulkTransactionsModal from "@/forms/simpletransactions/BulkTransactionsModal";
+import ReverseJournalModal from "@/components/journals/ReverseJournalModal";
+import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Search,
   X,
@@ -29,12 +32,13 @@ import {
   Square,
   MinusSquare,
   AlertTriangle,
+  RotateCcw,
 } from "lucide-react";
 import { formatNumber } from "@/tools/format";
 import { exportTransactionsToCSV } from "@/tools/csvExport";
 import { cn } from "@/lib/utils";
 import { formatBackendError } from "@/lib/error-handler";
-import { SimpleTransaction } from "@/services/simpletransactions";
+import { SimpleTransaction, reverseSimpleTransaction } from "@/services/simpletransactions";
 
 function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
@@ -67,6 +71,11 @@ export default function SimpleTransactionsPage() {
 
   const bulkDeleteMutation = useBulkDeleteSimpleTransactions();
   const bulkRetryMutation = useBulkJournalRetrySimpleTransactions();
+
+  const header = useAxiosAuth();
+  const queryClient = useQueryClient();
+  const [selectedTxForReversal, setSelectedTxForReversal] = useState<SimpleTransaction | null>(null);
+  const [isReversingTx, setIsReversingTx] = useState(false);
 
   const totalIn = transactions
     .filter((t) => t.transaction_type === "MONEY_IN")
@@ -122,7 +131,7 @@ export default function SimpleTransactionsPage() {
   // Bulk Actions
   const handleExportSelected = () => {
     if (selectedTransactions.length === 0) {
-      toast.error("No transactions selected.");
+      toast.error("No transactions selected to export.");
       return;
     }
     exportTransactionsToCSV(
@@ -152,7 +161,7 @@ export default function SimpleTransactionsPage() {
       const res = await bulkDeleteMutation.mutateAsync(refs);
       if (res.skipped && res.skipped.length > 0) {
         toast(
-          `Deleted ${res.deleted_count} transaction(s). Skipped ${res.skipped.length} posted/locked.`,
+          `Deleted ${res.deleted_count} unposted transaction(s). Skipped ${res.skipped.length} posted/reversed (GL protected).`,
           { icon: "⚠️" }
         );
       } else {
@@ -177,6 +186,22 @@ export default function SimpleTransactionsPage() {
       handleClearSelection();
     } catch (err: any) {
       toast.error(formatBackendError(err, "Failed to retry journal generation"));
+    }
+  };
+
+  const handleReverseTransaction = async (data: { reversal_date: string; reason: string }) => {
+    if (!selectedTxForReversal) return;
+    try {
+      setIsReversingTx(true);
+      const res = await reverseSimpleTransaction(selectedTxForReversal.reference, data, header);
+      toast.success(res.message || "Transaction successfully reversed in General Ledger");
+      setSelectedTxForReversal(null);
+      queryClient.invalidateQueries({ queryKey: ["simple-transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["journals"] });
+    } catch (err: any) {
+      toast.error(formatBackendError(err, "Failed to reverse transaction"));
+    } finally {
+      setIsReversingTx(false);
     }
   };
 
@@ -341,6 +366,9 @@ export default function SimpleTransactionsPage() {
                   <th className="text-center py-3 px-4 text-[10px] font-bold uppercase tracking-wider text-slate-500">
                     Journal
                   </th>
+                  <th className="text-right py-3 px-4 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                    Status / Action
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-black/5">
@@ -441,6 +469,30 @@ export default function SimpleTransactionsPage() {
                           </span>
                         )}
                       </td>
+
+                      {/* Action / Status */}
+                      <td className="py-3 px-4 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                        {t.is_reversed ? (
+                          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-purple-700 bg-purple-50 border border-purple-200 px-2.5 py-1 rounded uppercase font-mono">
+                            <RotateCcw className="w-3 h-3 text-purple-600" />
+                            REVERSED
+                          </span>
+                        ) : t.journal ? (
+                          <button
+                            type="button"
+                            onClick={() => setSelectedTxForReversal(t)}
+                            className="inline-flex items-center gap-1.5 text-[11px] font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 px-2.5 py-1 rounded uppercase transition-all shadow-sm active:scale-95 group/btn"
+                            title="Reverse and void this transaction in the General Ledger"
+                          >
+                            <RotateCcw className="w-3 h-3 text-rose-500 group-hover/btn:rotate-180 transition-transform duration-300" />
+                            Reverse
+                          </button>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded uppercase">
+                            Draft
+                          </span>
+                        )}
+                      </td>
                     </tr>
                   );
                 })}
@@ -496,7 +548,7 @@ export default function SimpleTransactionsPage() {
                       <p className="text-[10px] text-slate-400 mt-0.5 font-mono">{t.code}</p>
                     </div>
                   </div>
-                  <div className="text-right flex-shrink-0">
+                  <div className="text-right flex-shrink-0 flex flex-col items-end">
                     <p
                       className={cn(
                         "font-mono font-bold text-sm",
@@ -512,10 +564,21 @@ export default function SimpleTransactionsPage() {
                         month: "short",
                       })}
                     </p>
-                    {t.journal ? (
-                      <span className="inline-flex items-center gap-0.5 text-[9px] font-semibold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded uppercase mt-1">
-                        <CheckCircle className="w-2.5 h-2.5" /> Auto-journaled
+                    {t.is_reversed ? (
+                      <span className="inline-flex items-center gap-1 text-[9px] font-bold text-purple-700 bg-purple-50 px-1.5 py-0.5 rounded uppercase mt-1">
+                        <RotateCcw className="w-2.5 h-2.5" /> Reversed
                       </span>
+                    ) : t.journal ? (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedTxForReversal(t);
+                        }}
+                        className="inline-flex items-center gap-1 text-[9px] font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 px-2 py-0.5 rounded uppercase mt-1 transition-colors"
+                      >
+                        <RotateCcw className="w-2.5 h-2.5 text-rose-500" /> Reverse
+                      </button>
                     ) : (
                       <span className="inline-flex items-center gap-0.5 text-[9px] font-semibold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded uppercase mt-1">
                         <AlertCircle className="w-2.5 h-2.5" /> Pending
@@ -696,6 +759,21 @@ export default function SimpleTransactionsPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Transaction Reversal Modal */}
+      {selectedTxForReversal && (
+        <ReverseJournalModal
+          open={!!selectedTxForReversal}
+          onClose={() => setSelectedTxForReversal(null)}
+          title="Reverse & Void Transaction"
+          originalCode={selectedTxForReversal.code}
+          originalDate={selectedTxForReversal.date}
+          amount={selectedTxForReversal.amount}
+          description={selectedTxForReversal.name}
+          onConfirm={handleReverseTransaction}
+          isLoading={isReversingTx}
+        />
       )}
     </div>
   );

@@ -14,6 +14,12 @@ interface Journal {
   currency: string;
   is_posted: boolean;
   status: string;
+  is_reversed?: boolean;
+  reversed_at?: string | null;
+  reversed_by?: string | null;
+  reversal_journal_reference?: string | null;
+  reversal_journal_code?: string | null;
+  reversal_reason?: string | null;
   created_by: string;
   created_at: string;
   updated_at: string;
@@ -105,3 +111,28 @@ export const getJournal = async (
   );
   return response.data;
 };
+
+export interface ReverseJournalData {
+  reversal_date?: string;
+  reason: string;
+}
+
+export const reverseJournal = async (
+  reference: string,
+  data: ReverseJournalData,
+  headers: { headers: { Authorization: string } }
+): Promise<{
+  message: string;
+  original_reference: string;
+  reversal_reference: string;
+  reversal_code: string;
+  reversal_date: string;
+}> => {
+  const response = await apiActions.post(
+    `/api/v1/journals/${reference}/reverse/`,
+    data,
+    headers
+  );
+  return response.data;
+};
+

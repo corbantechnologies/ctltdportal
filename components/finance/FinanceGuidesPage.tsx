@@ -29,8 +29,11 @@ import {
   FileSpreadsheet,
   ExternalLink,
   BookMarked,
-  Copy,
-  Check,
+  RotateCcw,
+  Lock,
+  DollarSign,
+  AlertTriangle,
+  Info,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { downloadSampleCSVTemplate } from "@/tools/csvExport";
@@ -56,6 +59,26 @@ const CATEGORIES: GuideCategory[] = [
     bgColor: "bg-emerald-500/10",
     borderColor: "border-emerald-500/20",
     description: "Complete operational handbook and technical documentation",
+  },
+  {
+    id: "immutability-reversals",
+    name: "Reversals & Immutability",
+    icon: RotateCcw,
+    badge: "GL Safety Engine",
+    color: "text-violet-500",
+    bgColor: "bg-violet-500/10",
+    borderColor: "border-violet-500/20",
+    description: "Audit trail protection, non-destructive reversals, and closed-period locking",
+  },
+  {
+    id: "forex-usd",
+    name: "USD & Forex Card Billing",
+    icon: DollarSign,
+    badge: "Forex Playbook",
+    color: "text-teal-500",
+    bgColor: "bg-teal-500/10",
+    borderColor: "border-teal-500/20",
+    description: "Handling foreign currency SaaS bills paid in KES via corporate card or bank",
   },
   {
     id: "principles",
@@ -136,30 +159,57 @@ interface SimulationScenario {
 
 const SIMULATION_SCENARIOS: SimulationScenario[] = [
   {
-    title: "Paying Recurring Cloud Hosting (Railway / AWS / Vercel)",
-    category: "Operating Expense",
-    description: "Monthly subscription fee for application infrastructure paid via Bank or Corporate Card.",
+    title: "USD Cloud Hosting Paid via KES Card (Railway / AWS / OpenAI)",
+    category: "Forex & Operating Expense",
+    description: "Monthly subscription charged in USD ($50) but billed to corporate card in KES (KES 6,550.00).",
     type: "MONEY_OUT",
     debit: {
       account: "Cloud Infrastructure & Hosting Expense",
       code: "6100-EXP",
       type: "Expense (Increases with Debit)",
-      note: "Recognizes server hosting cost in P&L for the period",
+      note: "Recognizes exact KES cost in P&L with USD reference in transaction memo",
     },
     credit: {
-      account: "Corporate Bank Account / Card",
+      account: "Corporate Bank Account / Debit Card",
       code: "1010-BNK",
       type: "Asset (Decreases with Credit)",
-      note: "Cash outflow from company bank balance",
+      note: "Matches exact bank statement settlement amount for 100% reconciliation match",
     },
-    portalAction: "Use Quick Transactions or Bulk Studio (Batch Fill defaults for 12 months)",
+    portalAction: "Log under Quick Transactions selecting KES statement amount and adding USD memo",
     portalLink: "/finance/simple-transactions",
     exampleData: {
-      amount: "KES 6,500.00 ($50.00)",
+      amount: "KES 6,550.00 ($50.00 USD)",
       partner: "Railway Corp",
       division: "Engineering & Cloud",
       ledgerBook: "Hosting & Server Expenses",
       paymentMethod: "Equity Bank Corporate Card",
+    },
+  },
+  {
+    title: "1-Click Reversal of Erroneous Posted Expense Journal",
+    category: "GL Correction & Audit",
+    description: "An erroneous KES 50,000 vendor payment was posted to the wrong ledger and needs voiding.",
+    type: "JOURNAL",
+    debit: {
+      account: "Corporate Bank Account / Cash",
+      code: "1010-BNK",
+      type: "Asset (Debit Restores Bank Balance)",
+      note: "Offsets and credits back the bank balance",
+    },
+    credit: {
+      account: "Cloud Infrastructure Expense (Reversed)",
+      code: "6100-EXP",
+      type: "Expense (Credit Decreases Expense)",
+      note: "Reduces overstated expense balance back to zero",
+    },
+    portalAction: "Open Journal Batch > Click 'Reverse Journal' > Enter Reason > Post Offset",
+    portalLink: "/finance/fiscal-years",
+    exampleData: {
+      amount: "KES 50,000.00 (Mirrored Inversion)",
+      partner: "System Reversal Engine",
+      division: "Finance Operations",
+      ledgerBook: "General Journal",
+      paymentMethod: "Automated Reversal Voucher",
     },
   },
   {
@@ -244,33 +294,6 @@ const SIMULATION_SCENARIOS: SimulationScenario[] = [
     },
   },
   {
-    title: "Staff Salaries & Payroll Disbursal",
-    category: "Payroll & Compensation",
-    description: "Monthly staff remuneration disbursed directly via bank transfer / mobile money.",
-    type: "MONEY_OUT",
-    debit: {
-      account: "Salaries & Wages Operating Expense",
-      code: "6010-EXP",
-      type: "Expense (Increases with Debit)",
-      note: "Recognizes personnel expense on Profit & Loss",
-    },
-    credit: {
-      account: "Payroll Bank Account",
-      code: "1010-BNK",
-      type: "Asset (Decreases with Credit)",
-      note: "Cash outflow settlement to employees",
-    },
-    portalAction: "Log Quick Transactions for payroll batch or import payroll CSV",
-    portalLink: "/finance/simple-transactions",
-    exampleData: {
-      amount: "KES 420,000.00",
-      partner: "Payroll Batch Disbursal",
-      division: "Human Capital",
-      ledgerBook: "Salaries & Remuneration",
-      paymentMethod: "Equity Bank Payroll Transfer",
-    },
-  },
-  {
     title: "Monthly Depreciation of Fixed Assets",
     category: "Non-Cash Adjustment",
     description: "Allocating the monthly wear & tear cost of laptops, servers, and office furniture.",
@@ -304,12 +327,13 @@ export default function FinanceGuidesPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedScenarioIndex, setSelectedScenarioIndex] = useState(0);
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
+    "reversals-guide": true,
+    "forex-guide": true,
     "debit-credit-rules": true,
     "batch-fill-guide": true,
     "csv-specs": true,
     "month-end-sop": true,
   });
-  const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
   // Checklist state for Month-End SOP
   const [checklist, setChecklist] = useState<Record<string, boolean>>({
@@ -335,13 +359,6 @@ export default function FinanceGuidesPage() {
     setExpandedSections((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const copyToClipboard = (text: string, id: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedCode(id);
-    toast.success("Copied to clipboard!");
-    setTimeout(() => setCopiedCode(null), 2000);
-  };
-
   const activeScenario = SIMULATION_SCENARIOS[selectedScenarioIndex];
 
   return (
@@ -349,7 +366,7 @@ export default function FinanceGuidesPage() {
       {/* Header Banner */}
       <div className="relative overflow-hidden rounded-xl bg-slate-900 border border-slate-800 p-6 md:p-10 shadow-2xl">
         <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-        <div className="absolute bottom-0 left-1/3 w-64 h-64 bg-blue-500/5 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/3 w-64 h-64 bg-violet-500/5 rounded-full blur-2xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div className="space-y-3 max-w-2xl">
@@ -361,7 +378,7 @@ export default function FinanceGuidesPage() {
               Finance Operational <span className="text-emerald-400">Guides</span>
             </h1>
             <p className="text-slate-400 text-sm md:text-base leading-relaxed">
-              Standardized operating procedures, double-entry accounting cheat sheets, bulk transaction studio blueprints, and period closing workflows for Corban Technologies.
+              Standardized operating procedures, double-entry accounting cheat sheets, USD foreign currency billing, GL reversal safety rules, and bulk transaction studio blueprints.
             </p>
           </div>
 
@@ -391,7 +408,7 @@ export default function FinanceGuidesPage() {
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search guides (e.g. Railway, double-entry, CSV import, month closing, debit credit)..."
+            placeholder="Search guides (e.g. Railway, USD bills, reversal, double-entry, CSV import, month closing)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full bg-slate-950/80 border border-slate-700 text-white pl-10 pr-4 py-2.5 rounded-lg text-sm placeholder:text-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all"
@@ -440,8 +457,229 @@ export default function FinanceGuidesPage() {
         })}
       </div>
 
+      {/* NEW Section: Transaction Immutability & Automated Reversals */}
+      {(selectedCategory === "all" || selectedCategory === "immutability-reversals") && (
+        <div className="bg-white rounded-xl border border-violet-200 shadow-sm overflow-hidden">
+          <button
+            onClick={() => toggleSection("reversals-guide")}
+            className="w-full p-6 flex items-center justify-between text-left hover:bg-violet-50/30 transition-colors"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-lg bg-violet-100 text-violet-700 flex items-center justify-center font-bold">
+                <RotateCcw className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-slate-900">
+                    Transaction Immutability & Automated Reversal Engine
+                  </h3>
+                  <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-violet-100 text-violet-800">
+                    Audit Trail Standard
+                  </span>
+                </div>
+                <p className="text-xs md:text-sm text-slate-500">
+                  Why posted transactions cannot be deleted, how the 1-click reversal engine works, and closed-period safety rules.
+                </p>
+              </div>
+            </div>
+            <ChevronDown
+              className={cn(
+                "w-5 h-5 text-slate-400 transition-transform",
+                expandedSections["reversals-guide"] && "rotate-180"
+              )}
+            />
+          </button>
+
+          {expandedSections["reversals-guide"] && (
+            <div className="p-6 pt-0 border-t border-slate-100 space-y-6">
+              {/* Core Principle Alert */}
+              <div className="p-4 rounded-lg bg-slate-900 text-white flex flex-col md:flex-row items-start justify-between gap-4">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 text-violet-400 text-xs font-bold uppercase tracking-wider">
+                    <Lock className="w-4 h-4" />
+                    Golden Rule of General Ledger Immutability
+                  </div>
+                  <p className="text-sm text-slate-200 leading-relaxed max-w-3xl">
+                    Once a transaction or journal batch is <strong>POSTED</strong> to the General Ledger, it forms an immutable historical record. Hard deletions are permanently blocked. To void or correct a posted entry, an <strong>Automated Reversal Voucher</strong> is generated with an explicit reason.
+                  </p>
+                </div>
+                <span className="text-[11px] font-mono px-3 py-1 rounded bg-violet-500/20 text-violet-300 border border-violet-500/30 whitespace-nowrap self-start">
+                  IFRS & GAAP Compliant
+                </span>
+              </div>
+
+              {/* 3 Pillars of Reversal Architecture */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-rose-100 text-rose-700 flex items-center justify-center font-bold text-xs">
+                    1
+                  </div>
+                  <h4 className="text-xs font-bold text-slate-900 uppercase">Hard-Delete Lockout</h4>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Attempting to delete a posted transaction or journal raises a strict <code>PermissionDenied</code> safety block. Bulk delete operations automatically skip posted records to prevent accidental mass deletion.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-violet-100 text-violet-700 flex items-center justify-center font-bold text-xs">
+                    2
+                  </div>
+                  <h4 className="text-xs font-bold text-slate-900 uppercase">Mirrored Inversion Engine</h4>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    When you click <strong>&quot;Reverse&quot;</strong>, the backend instantly clones the journal line items, swapping all <strong>Debits to Credits</strong> and <strong>Credits to Debits</strong>. Net GL balance impact drops to exactly 0.00.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs">
+                    3
+                  </div>
+                  <h4 className="text-xs font-bold text-slate-900 uppercase">Smart Date & Period Lock</h4>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Reversals default to <strong>Today&apos;s Date</strong> in the current active month. If a transaction belongs to a closed/locked month or fiscal year, backdated reversals are rejected to protect filed tax returns.
+                  </p>
+                </div>
+              </div>
+
+              {/* How to Reverse Flow */}
+              <div className="p-4 rounded-lg bg-violet-50/50 border border-violet-200 space-y-3">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-violet-900 flex items-center gap-2">
+                  <RotateCcw className="w-4 h-4 text-violet-700" />
+                  How to Void / Reverse an Entry in 3 Clicks
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                  <div className="bg-white p-3 rounded border border-violet-100 space-y-1">
+                    <span className="font-bold text-violet-700">Step 1: Locate Record</span>
+                    <p className="text-slate-600">
+                      Open the Journal Batch or find the row in Quick Transactions.
+                    </p>
+                  </div>
+                  <div className="bg-white p-3 rounded border border-violet-100 space-y-1">
+                    <span className="font-bold text-violet-700">Step 2: Click Reverse</span>
+                    <p className="text-slate-600">
+                      Click the purple <strong>Reverse</strong> button to launch the Reversal Dialog.
+                    </p>
+                  </div>
+                  <div className="bg-white p-3 rounded border border-violet-100 space-y-1">
+                    <span className="font-bold text-violet-700">Step 3: State Reason</span>
+                    <p className="text-slate-600">
+                      Confirm the effective date, enter an audit reason (e.g. &quot;Duplicate payment&quot;), and confirm.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* NEW Section: Foreign Currency & USD Card Billing Guide */}
+      {(selectedCategory === "all" || selectedCategory === "forex-usd") && (
+        <div className="bg-white rounded-xl border border-teal-200 shadow-sm overflow-hidden">
+          <button
+            onClick={() => toggleSection("forex-guide")}
+            className="w-full p-6 flex items-center justify-between text-left hover:bg-teal-50/30 transition-colors"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center font-bold">
+                <DollarSign className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-slate-900">
+                    Foreign Currency (USD) Bills & Corporate Card Playbook
+                  </h3>
+                  <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-teal-100 text-teal-800">
+                    Forex Standard
+                  </span>
+                </div>
+                <p className="text-xs md:text-sm text-slate-500">
+                  Best practices for recording USD subscriptions (Railway, AWS, Vercel, OpenAI) billed to KES bank accounts.
+                </p>
+              </div>
+            </div>
+            <ChevronDown
+              className={cn(
+                "w-5 h-5 text-slate-400 transition-transform",
+                expandedSections["forex-guide"] && "rotate-180"
+              )}
+            />
+          </button>
+
+          {expandedSections["forex-guide"] && (
+            <div className="p-6 pt-0 border-t border-slate-100 space-y-6">
+              {/* Question / Context Banner */}
+              <div className="p-4 rounded-lg bg-teal-900 text-white space-y-2">
+                <div className="flex items-center gap-2 text-teal-300 text-xs font-bold uppercase tracking-wider">
+                  <Info className="w-4 h-4" />
+                  Standard Accounting Treatment for Foreign Vendor Invoices
+                </div>
+                <p className="text-xs md:text-sm text-slate-200 leading-relaxed">
+                  Corban Technologies&apos; functional operating currency is <strong>KES (Kenyan Shillings)</strong>. When international vendors invoice in <strong>USD ($)</strong> and are charged to our KES corporate card, the commercial bank executes real-time FX conversion (including their bank FX spread and processing fees).
+                </p>
+              </div>
+
+              {/* Step-by-Step Workflow */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-3">
+                  <h4 className="text-xs font-bold uppercase text-teal-800 tracking-wider">
+                    Recommended Operating Procedure (Zero Variance)
+                  </h4>
+                  <div className="space-y-2 text-xs text-slate-700">
+                    <div className="flex items-start gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-teal-600 flex-shrink-0 mt-0.5" />
+                      <span>
+                        <strong>1. Pick the exact KES settlement:</strong> Always record the exact KES debit amount reflected on your bank / credit card statement.
+                      </span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-teal-600 flex-shrink-0 mt-0.5" />
+                      <span>
+                        <strong>2. Why this is best:</strong> The bank&apos;s settlement amount already bundles the spot FX conversion, card interchange markup, and excise duty. Recording the exact KES ensures your General Ledger matches the bank statement to the cent.
+                      </span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-teal-600 flex-shrink-0 mt-0.5" />
+                      <span>
+                        <strong>3. Document the USD rate in the memo:</strong> Include the USD invoice total and reference in the description field for audit reference.
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-3">
+                  <h4 className="text-xs font-bold uppercase text-teal-800 tracking-wider">
+                    Example Entry Comparison
+                  </h4>
+                  <div className="bg-white p-3 rounded border border-slate-200 space-y-2 text-xs">
+                    <div className="flex justify-between border-b pb-1.5">
+                      <span className="text-slate-500">Vendor Invoice:</span>
+                      <span className="font-mono font-bold text-slate-900">$50.00 USD</span>
+                    </div>
+                    <div className="flex justify-between border-b pb-1.5">
+                      <span className="text-slate-500">Bank Card Charge:</span>
+                      <span className="font-mono font-bold text-emerald-600">KES 6,550.00</span>
+                    </div>
+                    <div className="flex justify-between border-b pb-1.5">
+                      <span className="text-slate-500">Effective Rate:</span>
+                      <span className="font-mono text-slate-700">1 USD = 131.00 KES</span>
+                    </div>
+                    <div className="pt-1">
+                      <span className="text-slate-500 block text-[11px]">Recommended Memo Format:</span>
+                      <code className="text-[11px] font-mono bg-slate-100 px-1.5 py-0.5 rounded text-slate-800 block mt-1">
+                        Railway Hosting Feb 2026 ($50.00 USD @ 131.00 KES/USD) - Inv #RW-4482
+                      </code>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Interactive Double-Entry Scenario Explorer */}
-      {(selectedCategory === "all" || selectedCategory === "principles" || selectedCategory === "bulk-studio") && (
+      {(selectedCategory === "all" || selectedCategory === "principles" || selectedCategory === "bulk-studio" || selectedCategory === "forex-usd" || selectedCategory === "immutability-reversals") && (
         <div className="bg-white rounded-xl border border-slate-200 shadow-xl overflow-hidden">
           <div className="p-6 bg-slate-900 text-white border-b border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
@@ -807,7 +1045,7 @@ export default function FinanceGuidesPage() {
         </div>
       )}
 
-      {/* Guide Section 2: Quick & Bulk Transactions Studio (The Full Manual) */}
+      {/* Guide Section 2: Quick & Bulk Transactions Studio */}
       {(selectedCategory === "all" || selectedCategory === "bulk-studio") && (
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
           <button
@@ -1209,14 +1447,14 @@ export default function FinanceGuidesPage() {
       )}
 
       {/* Guide Section 5: Common FAQs & Trouble-Shooting */}
-      {(selectedCategory === "all" || selectedCategory === "billing-sales" || selectedCategory === "ledger-reports") && (
+      {(selectedCategory === "all" || selectedCategory === "immutability-reversals" || selectedCategory === "forex-usd" || selectedCategory === "billing-sales" || selectedCategory === "ledger-reports") && (
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-6">
           <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
             <HelpCircle className="w-5 h-5 text-emerald-600" />
             <div>
               <h3 className="text-lg font-bold text-slate-900">Finance FAQs & Audit Best Practices</h3>
               <p className="text-xs text-slate-500">
-                Quick answers to common day-to-day accounting and portal operations questions.
+                Quick answers to common day-to-day accounting, forex, reversal, and portal operations questions.
               </p>
             </div>
           </div>
@@ -1224,11 +1462,28 @@ export default function FinanceGuidesPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
               <h4 className="text-xs font-bold text-slate-900 uppercase">
-                Q: How do I correct a mistake in a locked financial period?
+                Q: Why can&apos;t I delete a posted transaction or journal?
               </h4>
               <p className="text-xs text-slate-600 leading-relaxed">
-                <strong>Do not reopen historical periods for past months!</strong> Instead, post a standard{" "}
-                <strong>Reversing Journal Entry</strong> in the current open financial month. Reference the original transaction code in the memo for a clear audit trail.
+                In double-entry accounting (IFRS/GAAP), posted transactions form a permanent General Ledger record. Deleting them creates untraceable discrepancies. Instead, use the <strong>&quot;Reverse Journal&quot;</strong> button to generate an offsetting entry that cancels out the financial effect while keeping an immutable audit trail.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+              <h4 className="text-xs font-bold text-slate-900 uppercase">
+                Q: What date should be used when reversing an old transaction?
+              </h4>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                The portal defaults reversal vouchers to <strong>Today&apos;s Date (in the current active period)</strong>. This avoids modifying closed past months or altering filed tax returns. If the original month is still open and unclosed, you can optionally reverse it on the original date.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+              <h4 className="text-xs font-bold text-slate-900 uppercase">
+                Q: How do we record USD invoices charged to our KES corporate card?
+              </h4>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Record the <strong>exact KES amount</strong> debited on your bank/card statement. This includes all card processing and FX conversion charges, ensuring your bank ledger perfectly reconciles with zero FX suspense variance. Include the USD amount (e.g. <code>$50 USD</code>) in the description memo.
               </p>
             </div>
 
@@ -1237,26 +1492,7 @@ export default function FinanceGuidesPage() {
                 Q: What is the difference between Quick Transaction and Journal Entry?
               </h4>
               <p className="text-xs text-slate-600 leading-relaxed">
-                <strong>Quick Transactions</strong> are designed for day-to-day single-leg cash/bank events (Money In or Money Out). <strong>Journal Entries</strong> allow multi-line debits and credits for complex adjustments, payroll, and asset transfers.
-              </p>
-            </div>
-
-            <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
-              <h4 className="text-xs font-bold text-slate-900 uppercase">
-                Q: How does the system handle multi-currency payments?
-              </h4>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Record the base equivalent amount in <strong>KES</strong> at the transaction date exchange rate, and note the foreign currency amount (e.g. <code>$50 USD</code>) in the description or source document field.
-              </p>
-            </div>
-
-            <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
-              <h4 className="text-xs font-bold text-slate-900 uppercase">
-                Q: Can I export financial reports for external auditors?
-              </h4>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Yes! Every report (General Ledger, P&L, Balance Sheet, and Transaction Lists) includes instant{" "}
-                <strong>CSV / PDF export</strong> buttons pre-formatted with fiscal period headers.
+                <strong>Quick Transactions</strong> are single-leg cash/bank events (Money In or Money Out). The backend automatically derives the debit/credit pair. <strong>Journal Entries</strong> allow multi-line debits and credits for complex multi-account adjustments, payroll, and asset transfers.
               </p>
             </div>
           </div>

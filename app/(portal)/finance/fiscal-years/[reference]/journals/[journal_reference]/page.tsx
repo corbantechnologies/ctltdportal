@@ -2,11 +2,12 @@
 "use client";
 
 import { useFetchJournal } from "@/hooks/journals/actions";
-import { postJournal } from "@/services/journals";
+import { postJournal, reverseJournal } from "@/services/journals";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import SingleJournalEntry from "@/forms/journalentries/SingleJournalEntry";
 import UpdateJournal from "@/forms/journals/UpdateJournal";
+import ReverseJournalModal from "@/components/journals/ReverseJournalModal";
 import LoadingSpinner from "@/components/portal/LoadingSpinner";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import {
@@ -18,7 +19,8 @@ import {
   Receipt,
   Edit2,
   Lock,
-  FileText
+  FileText,
+  RotateCcw,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useFetchFinancialYear } from "@/hooks/financialyears/actions";
@@ -39,6 +41,8 @@ export default function JournalsDetailPage() {
 
   const [entryMode, setEntryMode] = useState<"single" | null>(null);
   const [openUpdateJournal, setOpenUpdateJournal] = useState(false);
+  const [openReverseModal, setOpenReverseModal] = useState(false);
+  const [isReversing, setIsReversing] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState<JournalEntry | null>(null);
   const [isPosting, setIsPosting] = useState(false);
 
@@ -75,6 +79,21 @@ export default function JournalsDetailPage() {
       toast.error(error?.response?.data?.message || "Failed to post journal");
     } finally {
       setIsPosting(false);
+    }
+  };
+
+  const handleReverseJournal = async (data: { reversal_date: string; reason: string }) => {
+    if (!journal) return;
+    try {
+      setIsReversing(true);
+      const res = await reverseJournal(journal.reference, data, header);
+      toast.success(res.message || "Journal reversed successfully");
+      setOpenReverseModal(false);
+      refetchJournal();
+    } catch (error: any) {
+      toast.error(error?.response?.data?.error || "Failed to reverse journal");
+    } finally {
+      setIsReversing(false);
     }
   };
 
@@ -128,12 +147,20 @@ export default function JournalsDetailPage() {
               <ArrowLeft className="w-4 h-4" />
             </button>
             <span
-              className={`px-4 py-1.5 rounded text-[10px] font-semibold uppercase tracking-widest border-none ${journal.is_posted
-                ? "bg-green-500/10 text-green-600 shadow-sm shadow-green-500/10"
-                : "bg-orange-500/10 text-orange-600 shadow-sm shadow-orange-500/10"
-                }`}
+              className={cn(
+                "px-4 py-1.5 rounded text-[10px] font-semibold uppercase tracking-widest border-none",
+                journal.is_reversed
+                  ? "bg-purple-500/10 text-purple-700 shadow-sm shadow-purple-500/10 border border-purple-200"
+                  : journal.is_posted
+                  ? "bg-green-500/10 text-green-600 shadow-sm shadow-green-500/10"
+                  : "bg-orange-500/10 text-orange-600 shadow-sm shadow-orange-500/10"
+              )}
             >
-              {journal.is_posted ? (
+              {journal.is_reversed ? (
+                <div className="flex items-center gap-2 font-bold">
+                  <RotateCcw className="w-3 h-3 text-purple-600" /> REVERSED
+                </div>
+              ) : journal.is_posted ? (
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-3 h-3" /> POSTED
                 </div>
@@ -191,15 +218,27 @@ export default function JournalsDetailPage() {
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
-          <button
-            className="flex items-center justify-center px-4 h-12 border border-black/5 bg-white hover:bg-black/5 font-semibold uppercase text-xs tracking-widest rounded transition-colors"
-            onClick={() => setOpenUpdateJournal(true)}
-          >
-            <Edit2 className="w-4 h-4 mr-2" />
-            Edit Details
-          </button>
+          {!journal.is_posted && !journal.is_reversed && (
+            <button
+              className="flex items-center justify-center px-4 h-12 border border-black/5 bg-white hover:bg-black/5 font-semibold uppercase text-xs tracking-widest rounded transition-colors"
+              onClick={() => setOpenUpdateJournal(true)}
+            >
+              <Edit2 className="w-4 h-4 mr-2" />
+              Edit Details
+            </button>
+          )}
 
-          {!journal.is_posted && (
+          {journal.is_posted && !journal.is_reversed && (
+            <button
+              onClick={() => setOpenReverseModal(true)}
+              className="flex items-center justify-center px-4 h-12 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold uppercase text-xs tracking-widest rounded shadow-sm transition-all active:scale-95"
+            >
+              <RotateCcw className="w-4 h-4 mr-2" />
+              Reverse Journal
+            </button>
+          )}
+
+          {!journal.is_posted && !journal.is_reversed && (
             <>
               <button
                 onClick={() => setEntryMode("single")}
@@ -230,6 +269,31 @@ export default function JournalsDetailPage() {
           )}
         </div>
       </div>
+
+      {/* Reversal Banner if Journal is Reversed */}
+      {journal.is_reversed && (
+        <div className="p-4 rounded-lg bg-purple-50 border border-purple-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs animate-in fade-in duration-300">
+          <div className="space-y-1">
+            <div className="font-bold text-purple-950 flex items-center gap-2">
+              <RotateCcw className="w-4 h-4 text-purple-700" />
+              This journal has been permanently reversed in the General Ledger.
+            </div>
+            <p className="text-purple-800">
+              Reason: <span className="font-semibold text-purple-950">{journal.reversal_reason || "No reason provided"}</span>
+              {journal.reversed_by && ` • Reversed by: ${journal.reversed_by}`}
+              {journal.reversed_at && ` • ${new Date(journal.reversed_at).toLocaleDateString()}`}
+            </p>
+          </div>
+          {journal.reversal_journal_reference && (
+            <a
+              href={`/finance/fiscal-years/${reference}/journals/${journal.reversal_journal_reference}`}
+              className="px-3.5 py-2 rounded bg-purple-700 hover:bg-purple-800 text-white font-bold whitespace-nowrap transition-colors shadow-sm"
+            >
+              View Offsetting Journal ({journal.reversal_journal_code || "Reversal"})
+            </a>
+          )}
+        </div>
+      )}
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -401,6 +465,19 @@ export default function JournalsDetailPage() {
         entry={selectedEntry}
         open={!!selectedEntry}
         onClose={() => setSelectedEntry(null)}
+      />
+
+      {/* Reversal Confirmation Modal */}
+      <ReverseJournalModal
+        open={openReverseModal}
+        onClose={() => setOpenReverseModal(false)}
+        title={`Reverse Journal Batch`}
+        originalCode={journal.code}
+        originalDate={new Date(journal.date).toISOString().split("T")[0]}
+        amount={totalDebit}
+        description={journal.description}
+        onConfirm={handleReverseJournal}
+        isLoading={isReversing}
       />
     </div>
   );
