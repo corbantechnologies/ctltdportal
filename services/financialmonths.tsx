@@ -108,12 +108,14 @@ export const getFinancialMonths = async (
   const params = financialYearRef
     ? `?financial_year=${financialYearRef}`
     : "";
-  const response: AxiosResponse<FinancialMonth[]> = await apiActions.get(
+  const response: AxiosResponse<any> = await apiActions.get(
     `/api/v1/financialmonths/${params}`,
     headers
   );
-  // API returns a plain array (not paginated)
-  return response.data;
+  const d = response?.data;
+  if (Array.isArray(d)) return d;
+  if (Array.isArray(d?.results)) return d.results;
+  return [];
 };
 
 // Get a single month (with live report data)

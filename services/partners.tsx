@@ -102,9 +102,12 @@ export const deletePartner = async (
 export const getPartners = async (headers: {
   headers: { Authorization: string };
 }): Promise<Partner[]> => {
-  const response: AxiosResponse<PaginatedResponse<Partner>> =
+  const response: AxiosResponse<any> =
     await apiActions.get(`/api/v1/partners/`, headers);
-  return response.data.results || [];
+  const d = response?.data;
+  if (Array.isArray(d)) return d;
+  if (Array.isArray(d?.results)) return d.results;
+  return [];
 };
 
 export const getPartner = async (
@@ -121,7 +124,10 @@ export const getPartner = async (
 export const getPartnerTypes = async (headers: {
   headers: { Authorization: string };
 }): Promise<PartnerType[]> => {
-  const response: AxiosResponse<PaginatedResponse<PartnerType>> =
+  const response: AxiosResponse<any> =
     await apiActions.get(`/api/v1/partnertypes/`, headers);
-  return response.data.results || [];
+  const d = response?.data;
+  if (Array.isArray(d)) return d;
+  if (Array.isArray(d?.results)) return d.results;
+  return [];
 };

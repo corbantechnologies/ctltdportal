@@ -99,9 +99,12 @@ export const deleteLead = async (
 export const getLeads = async (headers: {
     headers: { Authorization: string };
 }): Promise<Lead[]> => {
-    const response: AxiosResponse<PaginatedResponse<Lead>> =
+    const response: AxiosResponse<any> =
         await apiActions.get(`/api/v1/leads/`, headers);
-    return response.data.results || [];
+    const d = response?.data;
+    if (Array.isArray(d)) return d;
+    if (Array.isArray(d?.results)) return d.results;
+    return [];
 };
 
 export const getLead = async (

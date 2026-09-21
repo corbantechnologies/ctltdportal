@@ -22,9 +22,12 @@ export interface PaymentAccount {
 }
 
 export const getPaymentAccounts = async (headers: { headers: { Authorization: string } }): Promise<PaymentAccount[]> => {
-    const response: AxiosResponse<PaginatedResponse<PaymentAccount>> =
+    const response: AxiosResponse<any> =
         await apiActions.get(`/api/v1/paymentaccounts/`, headers);
-    return response.data.results || [];
+    const d = response?.data;
+    if (Array.isArray(d)) return d;
+    if (Array.isArray(d?.results)) return d.results;
+    return [];
 };
 
 export const getPaymentAccount = async (

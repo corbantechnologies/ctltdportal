@@ -69,9 +69,12 @@ export const createDivision = async (
 export const getDivisions = async (headers: {
   headers: { Authorization: string };
 }): Promise<Division[]> => {
-  const response: AxiosResponse<PaginatedResponse<Division>> =
+  const response: AxiosResponse<any> =
     await apiActions.get(`/api/v1/divisions/`, headers);
-  return response.data.results || [];
+  const d = response?.data;
+  if (Array.isArray(d)) return d;
+  if (Array.isArray(d?.results)) return d.results;
+  return [];
 };
 
 export const getDivision = async (
@@ -123,9 +126,12 @@ export const reactivateDivision = async (
 // Public Endpoints
 
 export const getPublicDivisions = async (): Promise<DivisionPublic[]> => {
-  const response: AxiosResponse<PaginatedResponse<DivisionPublic>> =
+  const response: AxiosResponse<any> =
     await apiActions.get(`/api/v1/divisions/list/public/`);
-  return response.data.results || [];
+  const d = response?.data;
+  if (Array.isArray(d)) return d;
+  if (Array.isArray(d?.results)) return d.results;
+  return [];
 };
 
 export const getPublicDivision = async (

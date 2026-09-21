@@ -12,7 +12,7 @@ export function useFetchPayrollRuns(params: { status?: string; month?: string; p
     return useQuery({
         queryKey: ["payrollruns", params],
         queryFn: () => fetchPayrollRuns(header, params),
-        enabled: !!header.headers.Authorization,
+        enabled: !!header.headers.Authorization && header.headers.Authorization !== "Token undefined",
     });
 }
 
@@ -21,6 +21,7 @@ export function useFetchPayrollRun(reference: string) {
     return useQuery({
         queryKey: ["payrollrun", reference],
         queryFn: () => fetchPayrollRunByReference(reference, header),
-        enabled: !!reference && !!header.headers.Authorization,
+        enabled: !!reference && !!header.headers.Authorization && header.headers.Authorization !== "Token undefined",
     });
 }
+

@@ -94,9 +94,12 @@ export interface RecordReceiptData {
 export const getInvoices = async (headers: {
   headers: { Authorization: string };
 }): Promise<Invoice[]> => {
-  const response: AxiosResponse<PaginatedResponse<Invoice>> =
+  const response: AxiosResponse<any> =
     await apiActions.get(`/api/v1/invoices/`, headers);
-  return response.data.results || [];
+  const d = response?.data;
+  if (Array.isArray(d)) return d;
+  if (Array.isArray(d?.results)) return d.results;
+  return [];
 };
 
 export const getInvoice = async (

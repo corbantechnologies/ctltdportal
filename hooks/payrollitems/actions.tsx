@@ -12,7 +12,7 @@ export function useFetchPayrollItems(params: { payroll_run?: string; employee?: 
     return useQuery({
         queryKey: ["payrollitems", params],
         queryFn: () => fetchPayrollItems(header, params),
-        enabled: !!header.headers.Authorization,
+        enabled: !!header.headers.Authorization && header.headers.Authorization !== "Token undefined",
     });
 }
 
@@ -21,6 +21,7 @@ export function useFetchPayrollItem(reference: string) {
     return useQuery({
         queryKey: ["payrollitem", reference],
         queryFn: () => fetchPayrollItemByReference(reference, header),
-        enabled: !!reference && !!header.headers.Authorization,
+        enabled: !!reference && !!header.headers.Authorization && header.headers.Authorization !== "Token undefined",
     });
 }
+

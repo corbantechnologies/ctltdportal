@@ -68,7 +68,7 @@ export function ARAgingMatrix({ rolePrefix = "finance" }: ARAgingMatrixProps) {
         setExpandedPartners({});
     };
 
-    const filteredPartners = data?.partners.filter((partner) => {
+    const filteredPartners = (data?.partners || []).filter((partner) => {
         // Bucket filter
         if (selectedBucket === "CURRENT" && partner.current <= 0) return false;
         if (selectedBucket === "31_60" && partner.days_31_60 <= 0) return false;
@@ -84,7 +84,7 @@ export function ARAgingMatrix({ rolePrefix = "finance" }: ARAgingMatrixProps) {
             (partner.partner_email && partner.partner_email.toLowerCase().includes(q)) ||
             (partner.partner_phone && partner.partner_phone.includes(q))
         );
-    }) || [];
+    });
 
     const handlePrint = () => {
         window.print();

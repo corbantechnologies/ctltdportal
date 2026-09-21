@@ -90,9 +90,12 @@ export const deleteProduct = async (
 export const getProducts = async (headers: {
     headers: { Authorization: string };
 }): Promise<Products[]> => {
-    const response: AxiosResponse<PaginatedResponse<Products>> =
+    const response: AxiosResponse<any> =
         await apiActions.get(`/api/v1/products/`, headers);
-    return response.data.results || [];
+    const d = response?.data;
+    if (Array.isArray(d)) return d;
+    if (Array.isArray(d?.results)) return d.results;
+    return [];
 };
 
 export const getProduct = async (

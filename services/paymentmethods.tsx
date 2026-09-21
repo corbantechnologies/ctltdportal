@@ -17,9 +17,12 @@ export interface PaymentMethod {
 export const getPaymentMethods = async (headers: {
   headers: { Authorization: string };
 }): Promise<PaymentMethod[]> => {
-  const response: AxiosResponse<PaginatedResponse<PaymentMethod>> =
+  const response: AxiosResponse<any> =
     await apiActions.get(`/api/v1/paymentmethods/`, headers);
-  return response.data.results || [];
+  const d = response?.data;
+  if (Array.isArray(d)) return d;
+  if (Array.isArray(d?.results)) return d.results;
+  return [];
 };
 
 export const getPaymentMethod = async (

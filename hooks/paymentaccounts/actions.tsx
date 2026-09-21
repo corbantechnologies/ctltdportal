@@ -9,7 +9,7 @@ export function useFetchPaymentAccounts() {
     return useQuery({
         queryKey: ["paymentaccounts"],
         queryFn: () => getPaymentAccounts(headers),
-        enabled: !!headers
+        enabled: !!headers.headers.Authorization && headers.headers.Authorization !== "Token undefined"
     });
 }
 
@@ -18,6 +18,7 @@ export function useFetchPaymentAccount(reference: string) {
     return useQuery({
         queryKey: ["paymentaccount", reference],
         queryFn: () => getPaymentAccount(reference, headers),
-        enabled: !!reference && !!headers
+        enabled: !!reference && !!headers.headers.Authorization && headers.headers.Authorization !== "Token undefined"
     });
 }
+

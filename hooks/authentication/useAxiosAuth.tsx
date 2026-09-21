@@ -18,7 +18,10 @@ function useAxiosAuth() {
 
   const authenticationHeader = {
     headers: {
-      Authorization: tokens ? "Token " + tokens : "",
+      Authorization:
+        tokens && tokens !== "undefined" && tokens.trim() !== ""
+          ? "Token " + tokens.trim()
+          : "",
       "Content-Type": "multipart/form-data",
     },
   };
@@ -27,3 +30,4 @@ function useAxiosAuth() {
 }
 
 export default useAxiosAuth;
+

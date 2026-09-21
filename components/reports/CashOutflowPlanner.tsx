@@ -47,11 +47,13 @@ export function CashOutflowPlanner({ rolePrefix = "finance" }: CashOutflowPlanne
 
     // Filter unpaid bills
     const unpaidBills = useMemo(() => {
-        return (billsData?.results || []).filter((b) => b.balance_due > 0);
+        const list = Array.isArray(billsData) ? billsData : (billsData?.results || []);
+        return list.filter((b: any) => Number(b.balance_due) > 0);
     }, [billsData]);
 
     const approvedClaims = useMemo(() => {
-        return (claimsData?.results || []).filter((c) => c.status === "APPROVED");
+        const list = Array.isArray(claimsData) ? claimsData : (claimsData?.results || []);
+        return list.filter((c: any) => c.status === "APPROVED");
     }, [claimsData]);
 
     // Bucket commitments

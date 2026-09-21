@@ -54,9 +54,12 @@ export interface Receipt {
 export const getInvoices = async (headers: {
     headers: { Authorization: string };
 }): Promise<Invoice[]> => {
-    const response: AxiosResponse<PaginatedResponse<Invoice>> =
+    const response: AxiosResponse<any> =
         await apiActions.get(`/api/v1/invoices/`, headers);
-    return response.data.results || [];
+    const d = response?.data;
+    if (Array.isArray(d)) return d;
+    if (Array.isArray(d?.results)) return d.results;
+    return [];
 };
 
 export const getInvoice = async (
@@ -85,9 +88,12 @@ export const markInvoiceAsPaid = async (
 export const getReceipts = async (headers: {
     headers: { Authorization: string };
 }): Promise<Receipt[]> => {
-    const response: AxiosResponse<PaginatedResponse<Receipt>> =
+    const response: AxiosResponse<any> =
         await apiActions.get(`/api/v1/receipts/`, headers);
-    return response.data.results || [];
+    const d = response?.data;
+    if (Array.isArray(d)) return d;
+    if (Array.isArray(d?.results)) return d.results;
+    return [];
 };
 
 export const getReceipt = async (

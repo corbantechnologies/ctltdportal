@@ -15,7 +15,7 @@ export function useFetchFinancialMonths(financialYearRef?: string) {
   return useQuery({
     queryKey: ["financialmonths", financialYearRef ?? "all"],
     queryFn: () => getFinancialMonths(header, financialYearRef),
-    enabled: !!header.headers.Authorization,
+    enabled: !!header.headers.Authorization && header.headers.Authorization !== "Token undefined",
   });
 }
 
@@ -25,7 +25,7 @@ export function useFetchFinancialMonth(reference: string) {
   return useQuery({
     queryKey: ["financialmonth", reference],
     queryFn: () => getFinancialMonth(reference, header),
-    enabled: !!reference && !!header.headers.Authorization,
+    enabled: !!reference && !!header.headers.Authorization && header.headers.Authorization !== "Token undefined",
   });
 }
 

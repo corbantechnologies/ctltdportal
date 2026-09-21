@@ -12,7 +12,7 @@ export function useFetchStaffClaims(params: { status?: string; month?: string; p
     return useQuery({
         queryKey: ["staffclaims", params],
         queryFn: () => fetchStaffClaims(header, params),
-        enabled: !!header.headers.Authorization,
+        enabled: !!header.headers.Authorization && header.headers.Authorization !== "Token undefined",
     });
 }
 
@@ -21,6 +21,7 @@ export function useFetchStaffClaim(reference: string) {
     return useQuery({
         queryKey: ["staffclaim", reference],
         queryFn: () => fetchStaffClaimByReference(reference, header),
-        enabled: !!reference && !!header.headers.Authorization,
+        enabled: !!reference && !!header.headers.Authorization && header.headers.Authorization !== "Token undefined",
     });
 }
+

@@ -73,7 +73,6 @@ export default function StaffClaimsStudio({ rolePrefix }: StaffClaimsStudioProps
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
 
-    // Queries
     const { data: response, isLoading, refetch } = useFetchStaffClaims({
         status: statusFilter !== "ALL" ? statusFilter : undefined,
     });
@@ -82,7 +81,13 @@ export default function StaffClaimsStudio({ rolePrefix }: StaffClaimsStudioProps
     const { data: monthsData } = useFetchFinancialMonths();
     const { data: divisionsData } = useFetchDivisions();
 
-    const claims = useMemo(() => response?.results || [], [response]);
+    // Safe normalized arrays
+    const claims = useMemo<StaffClaim[]>(() => (Array.isArray(response) ? (response as unknown as StaffClaim[]) : (response?.results || [])), [response]);
+    const books = useMemo(() => (Array.isArray(booksData) ? booksData : (booksData as any)?.results || []), [booksData]);
+    const paymentAccounts = useMemo(() => (Array.isArray(paymentAccountsData) ? paymentAccountsData : (paymentAccountsData as any)?.results || []), [paymentAccountsData]);
+    const months = useMemo(() => (Array.isArray(monthsData) ? monthsData : (monthsData as any)?.results || []), [monthsData]);
+    const divisions = useMemo(() => (Array.isArray(divisionsData) ? divisionsData : (divisionsData as any)?.results || []), [divisionsData]);
+
 
     // KPI Metrics
     const pendingApprovalAmount = useMemo(() => {
@@ -511,8 +516,8 @@ export default function StaffClaimsStudio({ rolePrefix }: StaffClaimsStudioProps
                                     className="w-full px-3 py-2 bg-muted/40 border border-border rounded-xl focus:ring-1 focus:ring-corporate-primary"
                                 >
                                     <option value="">Select Expense Category</option>
-                                    {booksData
-                                        ?.filter((b: any) => b.account_type === "EXPENSE" || b.code?.startsWith("6"))
+                                    {books
+                                        .filter((b: any) => b.account_type === "EXPENSE" || b.code?.startsWith("6"))
                                         .map((b: any) => (
                                             <option key={b.reference} value={b.reference}>
                                                 {b.code} - {b.name}
@@ -592,7 +597,7 @@ export default function StaffClaimsStudio({ rolePrefix }: StaffClaimsStudioProps
                                     className="w-full px-3 py-2 bg-muted/40 border border-border rounded-xl focus:ring-1 focus:ring-corporate-primary"
                                 >
                                     <option value="">Select Disbursing Account</option>
-                                    {paymentAccountsData?.map((pa: any) => (
+                                    {paymentAccounts.map((pa: any) => (
                                         <option key={pa.reference} value={pa.reference}>
                                             {pa.name} ({pa.account_type || "Bank"})
                                         </option>

@@ -10,7 +10,7 @@ export function useFetchPartners() {
   return useQuery({
     queryKey: ["partners"],
     queryFn: () => getPartners(header),
-    enabled: !!header.headers.Authorization,
+    enabled: !!header.headers.Authorization && header.headers.Authorization !== "Token undefined",
   });
 }
 
@@ -20,6 +20,7 @@ export function useFetchPartner(reference: string) {
   return useQuery({
     queryKey: ["partner", reference],
     queryFn: () => getPartner(reference, header),
-    enabled: !!reference && !!header.headers.Authorization,
+    enabled: !!reference && !!header.headers.Authorization && header.headers.Authorization !== "Token undefined",
   });
 }
+

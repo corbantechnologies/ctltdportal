@@ -15,9 +15,12 @@ export interface TermsAndConditions {
 }
 
 export const getTermsAndConditions = async (headers: { headers: { Authorization: string } }): Promise<TermsAndConditions[]> => {
-    const response: AxiosResponse<PaginatedResponse<TermsAndConditions>> =
+    const response: AxiosResponse<any> =
         await apiActions.get(`/api/v1/termsandconditions/`, headers);
-    return response.data.results || [];
+    const d = response?.data;
+    if (Array.isArray(d)) return d;
+    if (Array.isArray(d?.results)) return d.results;
+    return [];
 };
 
 export const getTermsAndCondition = async (

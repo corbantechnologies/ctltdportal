@@ -13,7 +13,7 @@ export function useFetchAccount() {
   return useQuery({
     queryKey: ["account", member_code],
     queryFn: () => getAccount(member_code!, header),
-    enabled: !!member_code,
+    enabled: !!member_code && !!header.headers.Authorization && header.headers.Authorization !== "Token undefined",
   });
 }
 
@@ -23,7 +23,8 @@ export function useFetchEmployees() {
   return useQuery({
     queryKey: ["employees"],
     queryFn: () => import("@/services/accounts").then((m) => m.getEmployees(header)),
-    enabled: !!header.headers.Authorization,
+    enabled: !!header.headers.Authorization && header.headers.Authorization !== "Token undefined",
   });
 }
+
 

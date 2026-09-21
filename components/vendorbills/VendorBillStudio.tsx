@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
@@ -68,6 +68,14 @@ export default function VendorBillStudio({ billReference, rolePrefix }: VendorBi
     const { data: monthsData } = useFetchFinancialMonths();
     const { data: divisionsData } = useFetchDivisions();
 
+    // Safe normalized arrays
+    const partners = useMemo(() => (Array.isArray(partnersData) ? partnersData : (partnersData as any)?.results || []), [partnersData]);
+    const books = useMemo(() => (Array.isArray(booksData) ? booksData : (booksData as any)?.results || []), [booksData]);
+    const paymentAccounts = useMemo(() => (Array.isArray(paymentAccountsData) ? paymentAccountsData : (paymentAccountsData as any)?.results || []), [paymentAccountsData]);
+    const months = useMemo(() => (Array.isArray(monthsData) ? monthsData : (monthsData as any)?.results || []), [monthsData]);
+    const divisions = useMemo(() => (Array.isArray(divisionsData) ? divisionsData : (divisionsData as any)?.results || []), [divisionsData]);
+    const payments = useMemo(() => (Array.isArray(paymentsData) ? paymentsData : (paymentsData as any)?.results || []), [paymentsData]);
+
     // Form state
     const [vendor, setVendor] = useState("");
     const [vendorBillNumber, setVendorBillNumber] = useState("");
@@ -110,11 +118,11 @@ export default function VendorBillStudio({ billReference, rolePrefix }: VendorBi
 
     // Active financial month default
     useEffect(() => {
-        if (isNew && monthsData && monthsData.length > 0 && !financialMonth) {
-            const active = monthsData.find((m: any) => m.is_active);
+        if (isNew && months.length > 0 && !financialMonth) {
+            const active = months.find((m: any) => m.is_active);
             if (active) setFinancialMonth(active.reference);
         }
-    }, [isNew, monthsData, financialMonth]);
+    }, [isNew, months, financialMonth]);
 
     const handleSaveBill = async () => {
         if (!vendor) return toast.error("Please select a Vendor.");
@@ -231,8 +239,8 @@ export default function VendorBillStudio({ billReference, rolePrefix }: VendorBi
         );
     }
 
-    const selectedVendorObj = partnersData?.find((p: any) => p.reference === vendor);
-    const selectedBookObj = booksData?.find((b: any) => b.reference === expenseBook);
+    const selectedVendorObj = partners.find((p: any) => p.reference === vendor);
+    const selectedBookObj = books.find((b: any) => b.reference === expenseBook);
 
     return (
         <div className="space-y-6">
@@ -332,7 +340,7 @@ export default function VendorBillStudio({ billReference, rolePrefix }: VendorBi
                                 className="w-full px-3 py-2 text-xs bg-muted/40 border border-border rounded-xl focus:ring-1 focus:ring-corporate-primary"
                             >
                                 <option value="">Select Vendor / Supplier</option>
-                                {partnersData?.map((p: any) => (
+                                {partners.map((p: any) => (
                                     <option key={p.reference} value={p.reference}>
                                         {p.name} ({p.code})
                                     </option>
@@ -412,8 +420,8 @@ export default function VendorBillStudio({ billReference, rolePrefix }: VendorBi
                                 className="w-full px-3 py-2 text-xs bg-muted/40 border border-border rounded-xl focus:ring-1 focus:ring-corporate-primary"
                             >
                                 <option value="">Select Expense Book (6xxx)</option>
-                                {booksData
-                                    ?.filter((b: any) => b.account_type === "EXPENSE" || b.code?.startsWith("6"))
+                                {books
+                                    .filter((b: any) => b.account_type === "EXPENSE" || b.code?.startsWith("6"))
                                     .map((b: any) => (
                                         <option key={b.reference} value={b.reference}>
                                             {b.code} - {b.name}
@@ -435,9 +443,9 @@ export default function VendorBillStudio({ billReference, rolePrefix }: VendorBi
                                     className="w-full px-3 py-2 text-xs bg-muted/40 border border-border rounded-xl focus:ring-1 focus:ring-corporate-primary"
                                 >
                                     <option value="">Auto Select Active</option>
-                                    {monthsData?.map((m: any) => (
+                                    {months.map((m: any) => (
                                         <option key={m.reference} value={m.reference}>
-                                            {m.title} {m.is_active ? "(Active)" : ""}
+                                            {m.title || m.name} {m.is_active ? "(Active)" : ""}
                                         </option>
                                     ))}
                                 </select>
@@ -454,7 +462,7 @@ export default function VendorBillStudio({ billReference, rolePrefix }: VendorBi
                                     className="w-full px-3 py-2 text-xs bg-muted/40 border border-border rounded-xl focus:ring-1 focus:ring-corporate-primary"
                                 >
                                     <option value="">Headquarters / General</option>
-                                    {divisionsData?.map((d: any) => (
+                                    {divisions.map((d: any) => (
                                         <option key={d.reference} value={d.reference}>
                                             {d.name} ({d.code})
                                         </option>
@@ -628,8 +636,8 @@ export default function VendorBillStudio({ billReference, rolePrefix }: VendorBi
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-border/50">
-                                            {paymentsData?.results && paymentsData.results.length > 0 ? (
-                                                paymentsData.results.map((p: any) => (
+                                            {payments.length > 0 ? (
+                                                payments.map((p: any) => (
                                                     <tr key={p.reference || p.code} className="hover:bg-muted/20">
                                                         <td className="py-2 px-3 font-mono text-muted-foreground">
                                                             {p.date || p.payment_date}
@@ -688,7 +696,7 @@ export default function VendorBillStudio({ billReference, rolePrefix }: VendorBi
                                     className="w-full px-3 py-2 bg-muted/40 border border-border rounded-xl focus:ring-1 focus:ring-corporate-primary"
                                 >
                                     <option value="">Select Bank / M-Pesa Account</option>
-                                    {paymentAccountsData?.map((pa: any) => (
+                                    {paymentAccounts.map((pa: any) => (
                                         <option key={pa.reference} value={pa.reference}>
                                             {pa.name} ({pa.account_type || "Bank"})
                                         </option>

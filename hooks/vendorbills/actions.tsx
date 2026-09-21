@@ -13,7 +13,7 @@ export function useFetchVendorBills(params: { status?: string; partner?: string;
     return useQuery({
         queryKey: ["vendorbills", params],
         queryFn: () => fetchVendorBills(header, params),
-        enabled: !!header.headers.Authorization,
+        enabled: !!header.headers.Authorization && header.headers.Authorization !== "Token undefined",
     });
 }
 
@@ -22,7 +22,7 @@ export function useFetchVendorBill(reference: string) {
     return useQuery({
         queryKey: ["vendorbill", reference],
         queryFn: () => fetchVendorBillByReference(reference, header),
-        enabled: !!reference && !!header.headers.Authorization,
+        enabled: !!reference && !!header.headers.Authorization && header.headers.Authorization !== "Token undefined",
     });
 }
 
@@ -31,6 +31,7 @@ export function useFetchVendorBillPayments(billReference?: string) {
     return useQuery({
         queryKey: ["vendorbillpayments", billReference],
         queryFn: () => fetchVendorBillPayments(header, billReference),
-        enabled: !!header.headers.Authorization,
+        enabled: !!header.headers.Authorization && header.headers.Authorization !== "Token undefined",
     });
 }
+
