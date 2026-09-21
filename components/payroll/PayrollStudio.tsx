@@ -21,6 +21,7 @@ import {
     deletePayrollItem,
     calculateStatutoryDeductions,
     PayrollItem,
+    RemunerationType,
 } from "@/services/payrollitems";
 import { formatCurrency, formatNumber } from "@/tools/format";
 import {
@@ -33,39 +34,41 @@ import {
     Clock,
     AlertTriangle,
     ChevronLeft,
-    FileText,
-    Printer,
-    Send,
-    ShieldCheck,
     Plus,
-    Trash2,
-    Loader2,
+    Printer,
     Layers,
-    Banknote,
+    Loader2,
+    Trash2,
     Sparkles,
     UserCheck,
+    Briefcase,
+    Zap,
+    FileCheck,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 interface PayrollStudioProps {
-    runReference?: string;
     rolePrefix: "finance" | "director" | "operations";
+    runReference?: string;
+    isNew?: boolean;
 }
 
-export default function PayrollStudio({ runReference, rolePrefix }: PayrollStudioProps) {
+export default function PayrollStudio({
+    rolePrefix,
+    runReference,
+    isNew: isNewProp = false,
+}: PayrollStudioProps) {
     const router = useRouter();
     const queryClient = useQueryClient();
     const headers = useAxiosAuth();
 
-    const isNew = !runReference || runReference === "new";
+    const isNew = isNewProp || !runReference || runReference === "new";
 
-    // Queries
-    const { data: runData, isLoading: isRunLoading, refetch: refetchRun } = useFetchPayrollRun(
-        isNew ? "" : runReference
-    );
+    // Data queries
+    const { data: runData, refetch: refetchRun } = useFetchPayrollRun(runReference || "");
     const { data: itemsData, refetch: refetchItems } = useFetchPayrollItems(
-        isNew ? {} : { payroll_run: runReference }
+        runReference ? { payroll_run: runReference } : {}
     );
     const { data: employeesData } = useFetchEmployees();
     const { data: paymentAccountsData } = useFetchPaymentAccounts();
@@ -87,10 +90,16 @@ export default function PayrollStudio({ runReference, rolePrefix }: PayrollStudi
     const [paymentAccount, setPaymentAccount] = useState("");
     const [notes, setNotes] = useState("");
 
-    // New Item Add State
+    // New Item Add State (Supports Full-Time, Pure Wages, Commission, Contractors, Custom)
     const [selectedEmployee, setSelectedEmployee] = useState("");
+    const [remunerationType, setRemunerationType] = useState<RemunerationType>("FULL_TIME");
+    const [applyNssf, setApplyNssf] = useState(true);
+    const [applyPaye, setApplyPaye] = useState(true);
+    const [applyShif, setApplyShif] = useState(true);
+    const [applyHousingLevy, setApplyHousingLevy] = useState(true);
     const [basicSalary, setBasicSalary] = useState<number | string>("");
     const [allowances, setAllowances] = useState<number | string>("0");
+    const [otherDeductions, setOtherDeductions] = useState<number | string>("0");
 
     // Live preview item auto-calculation
     const [computedPreview, setComputedPreview] = useState<{
@@ -100,6 +109,8 @@ export default function PayrollStudio({ runReference, rolePrefix }: PayrollStudi
         paye: number;
         shif: number;
         housingLevy: number;
+        otherDeductions: number;
+        totalDeductions: number;
         net: number;
     } | null>(null);
 
@@ -108,6 +119,31 @@ export default function PayrollStudio({ runReference, rolePrefix }: PayrollStudi
     const [isAddingItem, setIsAddingItem] = useState(false);
     const [isPostingGL, setIsPostingGL] = useState(false);
     const [deletingItemId, setDeletingItemId] = useState<string | null>(null);
+
+    // Synchronize default deduction flags on remuneration type change
+    useEffect(() => {
+        if (remunerationType === "CASUAL_WAGES") {
+            setApplyNssf(false);
+            setApplyPaye(false);
+            setApplyShif(false);
+            setApplyHousingLevy(false);
+        } else if (remunerationType === "COMMISSION") {
+            setApplyNssf(false);
+            setApplyPaye(true);
+            setApplyShif(false);
+            setApplyHousingLevy(false);
+        } else if (remunerationType === "CONTRACTOR") {
+            setApplyNssf(false);
+            setApplyPaye(true);
+            setApplyShif(false);
+            setApplyHousingLevy(false);
+        } else if (remunerationType === "FULL_TIME") {
+            setApplyNssf(true);
+            setApplyPaye(true);
+            setApplyShif(true);
+            setApplyHousingLevy(true);
+        }
+    }, [remunerationType]);
 
     // Populate existing run
     useEffect(() => {
@@ -129,17 +165,25 @@ export default function PayrollStudio({ runReference, rolePrefix }: PayrollStudi
         }
     }, [isNew, months, financialMonth]);
 
-    // Live compute statutory deductions whenever basic/allowances change
+    // Live compute statutory deductions whenever inputs change
     useEffect(() => {
         const basic = Number(basicSalary) || 0;
         const allow = Number(allowances) || 0;
+        const otherDed = Number(otherDeductions) || 0;
         if (basic > 0) {
-            const result = calculateStatutoryDeductions(basic, allow);
+            const result = calculateStatutoryDeductions(basic, allow, {
+                remunerationType,
+                applyNssf,
+                applyPaye,
+                applyShif,
+                applyHousingLevy,
+                otherDeductions: otherDed,
+            });
             setComputedPreview(result);
         } else {
             setComputedPreview(null);
         }
-    }, [basicSalary, allowances]);
+    }, [basicSalary, allowances, remunerationType, applyNssf, applyPaye, applyShif, applyHousingLevy, otherDeductions]);
 
     const handleCreateRun = async () => {
         if (!title) return toast.error("Please enter a payroll title.");
@@ -170,7 +214,7 @@ export default function PayrollStudio({ runReference, rolePrefix }: PayrollStudi
 
     const handleAddItem = async () => {
         if (!selectedEmployee) return toast.error("Please select an employee.");
-        if (!basicSalary || Number(basicSalary) <= 0) return toast.error("Please enter a valid basic salary.");
+        if (!basicSalary || Number(basicSalary) <= 0) return toast.error("Please enter a valid basic salary or wage.");
 
         try {
             setIsAddingItem(true);
@@ -178,9 +222,15 @@ export default function PayrollStudio({ runReference, rolePrefix }: PayrollStudi
                 {
                     payroll_run: runReference!,
                     employee: selectedEmployee,
+                    remuneration_type: remunerationType,
+                    apply_nssf: applyNssf,
+                    apply_paye: applyPaye,
+                    apply_shif: applyShif,
+                    apply_housing_levy: applyHousingLevy,
                     basic_salary: Number(basicSalary),
                     allowances: Number(allowances) || 0,
                     other_allowances: Number(allowances) || 0,
+                    other_deductions: Number(otherDeductions) || 0,
                 },
                 headers
             );
@@ -188,6 +238,7 @@ export default function PayrollStudio({ runReference, rolePrefix }: PayrollStudi
             setSelectedEmployee("");
             setBasicSalary("");
             setAllowances("0");
+            setOtherDeductions("0");
             refetchItems();
             refetchRun();
             queryClient.invalidateQueries({ queryKey: ["payrollruns"] });
@@ -553,24 +604,41 @@ export default function PayrollStudio({ runReference, rolePrefix }: PayrollStudi
 
                     {/* Add Employee Item Bar (If not locked) */}
                     {!runData?.is_posted && (
-                        <div className="bg-card rounded-2xl border border-border/80 shadow-sm p-4 space-y-3 print:hidden">
-                            <div className="flex items-center justify-between">
+                        <div className="bg-card rounded-2xl border border-border/80 shadow-sm p-5 sm:p-6 space-y-4 print:hidden">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border/60 pb-3">
                                 <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                                    <Sparkles className="w-3.5 h-3.5 text-corporate-primary" /> Compute & Add Employee To Batch
+                                    <Sparkles className="w-4 h-4 text-corporate-primary" /> Compute & Add Staff Compensation
                                 </h3>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-[11px] text-muted-foreground">Category Mode:</span>
+                                    <span className={cn(
+                                        "px-2 py-0.5 rounded text-[10px] font-bold uppercase",
+                                        remunerationType === "CASUAL_WAGES" ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20" :
+                                        remunerationType === "COMMISSION" ? "bg-blue-500/10 text-blue-600 border border-blue-500/20" :
+                                        remunerationType === "CONTRACTOR" ? "bg-purple-500/10 text-purple-600 border border-purple-500/20" :
+                                        remunerationType === "CUSTOM" ? "bg-amber-500/10 text-amber-600 border border-amber-500/20" :
+                                        "bg-secondary text-secondary-foreground"
+                                    )}>
+                                        {remunerationType === "CASUAL_WAGES" ? "Pure Wage (0 Statutory)" :
+                                         remunerationType === "COMMISSION" ? "Commission (NSSF/SHIF Exempt)" :
+                                         remunerationType === "CONTRACTOR" ? "Contractor (5% WHT)" :
+                                         remunerationType === "CUSTOM" ? "Custom Deductions" :
+                                         "Full-Time Statutory"}
+                                    </span>
+                                </div>
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
-                                <div>
-                                    <label className="block font-semibold text-muted-foreground mb-1">
-                                        Select Employee
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 text-xs">
+                                <div className="lg:col-span-3">
+                                    <label className="block font-semibold text-muted-foreground mb-1.5">
+                                        Select Staff / Employee <span className="text-destructive">*</span>
                                     </label>
                                     <select
                                         value={selectedEmployee}
                                         onChange={(e) => setSelectedEmployee(e.target.value)}
-                                        className="w-full px-3 py-2 bg-muted/40 border border-border rounded-xl focus:ring-1 focus:ring-corporate-primary"
+                                        className="w-full px-3 py-2 bg-muted/40 border border-border rounded-xl focus:ring-1 focus:ring-corporate-primary font-medium"
                                     >
-                                        <option value="">Choose Employee</option>
+                                        <option value="">Choose Staff Member</option>
                                         {employees.map((emp: any) => (
                                             <option key={emp.reference || emp.id} value={emp.reference || emp.id}>
                                                 {emp.first_name} {emp.last_name} ({emp.email})
@@ -579,22 +647,41 @@ export default function PayrollStudio({ runReference, rolePrefix }: PayrollStudi
                                     </select>
                                 </div>
 
-                                <div>
-                                    <label className="block font-semibold text-muted-foreground mb-1">
-                                        Basic Salary (KES)
+                                <div className="lg:col-span-3">
+                                    <label className="block font-semibold text-muted-foreground mb-1.5">
+                                        Remuneration Category
+                                    </label>
+                                    <select
+                                        value={remunerationType}
+                                        onChange={(e) => setRemunerationType(e.target.value as RemunerationType)}
+                                        className="w-full px-3 py-2 bg-muted/40 border border-border rounded-xl focus:ring-1 focus:ring-corporate-primary font-medium"
+                                    >
+                                        <option value="FULL_TIME">🏢 Full-Time (Standard Statutory)</option>
+                                        <option value="CASUAL_WAGES">⚡ Pure Wages / Casual (0 Deductions)</option>
+                                        <option value="COMMISSION">💼 Commission Basis (NSSF/SHIF Exempt)</option>
+                                        <option value="CONTRACTOR">📄 Contractor / Consultant (5% WHT)</option>
+                                        <option value="CUSTOM">⚙️ Custom / Manual Deductions</option>
+                                    </select>
+                                </div>
+
+                                <div className="lg:col-span-2">
+                                    <label className="block font-semibold text-muted-foreground mb-1.5">
+                                        {remunerationType === "COMMISSION" ? "Base Retainer (KES)" :
+                                         remunerationType === "CASUAL_WAGES" ? "Wage Amount (KES)" :
+                                         "Basic Salary (KES)"} <span className="text-destructive">*</span>
                                     </label>
                                     <input
                                         type="number"
-                                        placeholder="e.g. 80000"
+                                        placeholder="e.g. 50000"
                                         value={basicSalary}
                                         onChange={(e) => setBasicSalary(e.target.value)}
                                         className="w-full px-3 py-2 font-mono font-bold bg-muted/40 border border-border rounded-xl focus:ring-1 focus:ring-corporate-primary"
                                     />
                                 </div>
 
-                                <div>
-                                    <label className="block font-semibold text-muted-foreground mb-1">
-                                        Allowances (KES)
+                                <div className="lg:col-span-2">
+                                    <label className="block font-semibold text-muted-foreground mb-1.5">
+                                        {remunerationType === "COMMISSION" ? "Commission (KES)" : "Allowances (KES)"}
                                     </label>
                                     <input
                                         type="number"
@@ -605,39 +692,85 @@ export default function PayrollStudio({ runReference, rolePrefix }: PayrollStudi
                                     />
                                 </div>
 
-                                <div className="flex items-end">
-                                    <button
-                                        onClick={handleAddItem}
-                                        disabled={isAddingItem}
-                                        className="w-full flex items-center justify-center gap-1.5 py-2 px-4 text-xs font-semibold rounded-xl bg-corporate-primary text-white hover:bg-corporate-primary/90 transition-colors shadow-sm disabled:opacity-50"
-                                    >
-                                        {isAddingItem ? (
-                                            <Loader2 className="w-4 h-4 animate-spin" />
-                                        ) : (
-                                            <Plus className="w-4 h-4" />
-                                        )}
-                                        <span>Add to Payroll</span>
-                                    </button>
+                                <div className="lg:col-span-2">
+                                    <label className="block font-semibold text-muted-foreground mb-1.5">
+                                        Other Deductions (KES)
+                                    </label>
+                                    <input
+                                        type="number"
+                                        placeholder="0.00"
+                                        value={otherDeductions}
+                                        onChange={(e) => setOtherDeductions(e.target.value)}
+                                        className="w-full px-3 py-2 font-mono font-bold bg-muted/40 border border-border rounded-xl focus:ring-1 focus:ring-corporate-primary"
+                                    />
                                 </div>
                             </div>
 
+                            {/* Custom Statutory Toggles (Visible if Custom) */}
+                            {remunerationType === "CUSTOM" && (
+                                <div className="p-3 bg-muted/20 border border-border/80 rounded-xl flex flex-wrap items-center gap-5 text-xs">
+                                    <span className="font-semibold text-foreground">Apply Deductions:</span>
+                                    <label className="flex items-center gap-1.5 cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            checked={applyNssf}
+                                            onChange={(e) => setApplyNssf(e.target.checked)}
+                                            className="rounded border-border text-corporate-primary focus:ring-corporate-primary"
+                                        />
+                                        <span>NSSF Tier 1 & 2</span>
+                                    </label>
+                                    <label className="flex items-center gap-1.5 cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            checked={applyPaye}
+                                            onChange={(e) => setApplyPaye(e.target.checked)}
+                                            className="rounded border-border text-corporate-primary focus:ring-corporate-primary"
+                                        />
+                                        <span>PAYE Tax</span>
+                                    </label>
+                                    <label className="flex items-center gap-1.5 cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            checked={applyShif}
+                                            onChange={(e) => setApplyShif(e.target.checked)}
+                                            className="rounded border-border text-corporate-primary focus:ring-corporate-primary"
+                                        />
+                                        <span>SHIF (2.75%)</span>
+                                    </label>
+                                    <label className="flex items-center gap-1.5 cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            checked={applyHousingLevy}
+                                            onChange={(e) => setApplyHousingLevy(e.target.checked)}
+                                            className="rounded border-border text-corporate-primary focus:ring-corporate-primary"
+                                        />
+                                        <span>Housing Levy (1.5%)</span>
+                                    </label>
+                                </div>
+                            )}
+
                             {/* Real-time Computed Preview Pill */}
                             {computedPreview && (
-                                <div className="p-3 rounded-xl bg-muted/30 border border-border text-xs flex flex-wrap items-center justify-between gap-3">
+                                <div className="p-3 rounded-xl bg-muted/40 border border-border text-xs flex flex-wrap items-center justify-between gap-3">
                                     <div className="flex items-center gap-2">
                                         <UserCheck className="w-4 h-4 text-emerald-500" />
-                                        <span className="font-semibold text-foreground">Calculated Breakdown:</span>
+                                        <span className="font-semibold text-foreground">
+                                            {remunerationType === "CASUAL_WAGES" ? "Pure Wage Calculation (Zero Statutory Deducted):" :
+                                             remunerationType === "COMMISSION" ? "Commission Calculation (NSSF/SHIF/AHL Exempt):" :
+                                             remunerationType === "CONTRACTOR" ? "Contractor Calculation (5% WHT):" :
+                                             "Statutory Deduction Breakdown:"}
+                                        </span>
                                     </div>
                                     <div className="flex flex-wrap items-center gap-3 font-mono text-[11px]">
                                         <span>Gross: <strong>{formatNumber(computedPreview.gross)}</strong></span>
                                         <span className="text-muted-foreground">•</span>
-                                        <span>NSSF: <strong>{formatNumber(computedPreview.nssf)}</strong></span>
+                                        <span>NSSF: <strong className={computedPreview.nssf === 0 ? "text-muted-foreground font-normal" : ""}>{formatNumber(computedPreview.nssf)}</strong></span>
                                         <span className="text-muted-foreground">•</span>
-                                        <span>PAYE: <strong>{formatNumber(computedPreview.paye)}</strong></span>
+                                        <span>PAYE: <strong className={computedPreview.paye === 0 ? "text-muted-foreground font-normal" : "text-blue-600 dark:text-blue-400"}>{formatNumber(computedPreview.paye)}</strong></span>
                                         <span className="text-muted-foreground">•</span>
-                                        <span>SHIF: <strong>{formatNumber(computedPreview.shif)}</strong></span>
+                                        <span>SHIF: <strong className={computedPreview.shif === 0 ? "text-muted-foreground font-normal" : "text-teal-600 dark:text-teal-400"}>{formatNumber(computedPreview.shif)}</strong></span>
                                         <span className="text-muted-foreground">•</span>
-                                        <span>Housing: <strong>{formatNumber(computedPreview.housingLevy)}</strong></span>
+                                        <span>Housing: <strong className={computedPreview.housingLevy === 0 ? "text-muted-foreground font-normal" : "text-amber-600 dark:text-amber-400"}>{formatNumber(computedPreview.housingLevy)}</strong></span>
                                         <span className="text-muted-foreground">•</span>
                                         <span className="text-corporate-primary font-bold">
                                             Net Pay: {formatNumber(computedPreview.net)}
@@ -645,6 +778,21 @@ export default function PayrollStudio({ runReference, rolePrefix }: PayrollStudi
                                     </div>
                                 </div>
                             )}
+
+                            <div className="flex justify-end pt-1">
+                                <button
+                                    onClick={handleAddItem}
+                                    disabled={isAddingItem}
+                                    className="flex items-center justify-center gap-1.5 py-2 px-5 text-xs font-semibold rounded-xl bg-corporate-primary text-white hover:bg-corporate-primary/90 transition-colors shadow-sm disabled:opacity-50"
+                                >
+                                    {isAddingItem ? (
+                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                    ) : (
+                                        <Plus className="w-4 h-4" />
+                                    )}
+                                    <span>Add to Payroll Batch</span>
+                                </button>
+                            </div>
                         </div>
                     )}
 
@@ -660,8 +808,8 @@ export default function PayrollStudio({ runReference, rolePrefix }: PayrollStudi
                             <table className="w-full text-left text-xs">
                                 <thead className="bg-muted/50 text-muted-foreground font-semibold border-b border-border">
                                     <tr>
-                                        <th className="py-2.5 px-3">Employee</th>
-                                        <th className="py-2.5 px-3 text-right">Basic</th>
+                                        <th className="py-2.5 px-3">Staff / Category</th>
+                                        <th className="py-2.5 px-3 text-right">Basic / Wage</th>
                                         <th className="py-2.5 px-3 text-right">Allowances</th>
                                         <th className="py-2.5 px-3 text-right">Gross Pay</th>
                                         <th className="py-2.5 px-3 text-right">NSSF</th>
@@ -690,11 +838,27 @@ export default function PayrollStudio({ runReference, rolePrefix }: PayrollStudi
                                                     <p className="font-bold text-foreground">
                                                         {item.employee_name || "Staff Member"}
                                                     </p>
-                                                    {item.employee_email && (
-                                                        <p className="text-[10px] text-muted-foreground">
-                                                            {item.employee_email}
-                                                        </p>
-                                                    )}
+                                                    <div className="flex items-center gap-1.5 mt-0.5">
+                                                        <span className={cn(
+                                                            "px-1.5 py-0.5 text-[9px] font-bold uppercase rounded",
+                                                            item.remuneration_type === "CASUAL_WAGES" ? "bg-emerald-500/10 text-emerald-600" :
+                                                            item.remuneration_type === "COMMISSION" ? "bg-blue-500/10 text-blue-600" :
+                                                            item.remuneration_type === "CONTRACTOR" ? "bg-purple-500/10 text-purple-600" :
+                                                            item.remuneration_type === "CUSTOM" ? "bg-amber-500/10 text-amber-600" :
+                                                            "bg-secondary text-secondary-foreground"
+                                                        )}>
+                                                            {item.remuneration_type === "CASUAL_WAGES" ? "Pure Wage" :
+                                                             item.remuneration_type === "COMMISSION" ? "Commission" :
+                                                             item.remuneration_type === "CONTRACTOR" ? "Contractor" :
+                                                             item.remuneration_type === "CUSTOM" ? "Custom" :
+                                                             "Full-Time"}
+                                                        </span>
+                                                        {item.employee_email && (
+                                                            <span className="text-[10px] text-muted-foreground truncate max-w-[130px]">
+                                                                {item.employee_email}
+                                                            </span>
+                                                        )}
+                                                    </div>
                                                 </td>
                                                 <td className="py-2.5 px-3 text-right font-mono">
                                                     {formatNumber(item.basic_salary)}
