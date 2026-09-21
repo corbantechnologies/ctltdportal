@@ -463,7 +463,7 @@ export function ARAgingMatrix({ rolePrefix = "finance" }: ARAgingMatrixProps) {
                                                         >
                                                             <td className="py-2.5 px-3 whitespace-nowrap">
                                                                 <Link
-                                                                    href={`/${rolePrefix}/sales/invoices/${inv.reference}`}
+                                                                    href={`/${rolePrefix}/invoices/${inv.reference}`}
                                                                     className="font-mono font-semibold text-corporate-primary hover:underline"
                                                                 >
                                                                     {inv.code}

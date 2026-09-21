@@ -107,14 +107,14 @@ export default function PayrollRunsList({ rolePrefix }: PayrollRunsListProps) {
 
                 <div className="flex items-center gap-2.5">
                     <Link
-                        href={`/${rolePrefix}/finance/staff-claims`}
+                        href={`/${rolePrefix}/staff-claims`}
                         className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border transition-colors shadow-sm"
                     >
                         <Users className="w-4 h-4" /> Staff Reimbursements
                     </Link>
 
                     <Link
-                        href={`/${rolePrefix}/finance/payroll/new`}
+                        href={`/${rolePrefix}/payroll/new`}
                         className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-xl bg-corporate-primary text-white hover:bg-corporate-primary/90 transition-colors shadow-sm"
                     >
                         <Plus className="w-4 h-4" />
@@ -219,7 +219,7 @@ export default function PayrollRunsList({ rolePrefix }: PayrollRunsListProps) {
                         Generate monthly payroll items with automated Kenyan statutory calculations.
                     </p>
                     <Link
-                        href={`/${rolePrefix}/finance/payroll/new`}
+                        href={`/${rolePrefix}/payroll/new`}
                         className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-xl bg-corporate-primary text-white hover:bg-corporate-primary/90 transition-colors"
                     >
                         <Plus className="w-4 h-4" /> Run First Payroll
@@ -251,7 +251,7 @@ export default function PayrollRunsList({ rolePrefix }: PayrollRunsListProps) {
                                 >
                                     <td className="py-3 px-4 whitespace-nowrap">
                                         <Link
-                                            href={`/${rolePrefix}/finance/payroll/${run.reference}`}
+                                            href={`/${rolePrefix}/payroll/${run.reference}`}
                                             className="font-mono font-bold text-corporate-primary hover:underline"
                                         >
                                             {run.code}
@@ -260,7 +260,7 @@ export default function PayrollRunsList({ rolePrefix }: PayrollRunsListProps) {
                                     <td className="py-3 px-4">
                                         <p className="font-semibold text-foreground">{run.title}</p>
                                         <p className="text-[10px] text-muted-foreground">
-                                            {run.financial_month_details?.name || "Active Month"}
+                                             {run.financial_month_details?.name || "Active Month"}
                                         </p>
                                     </td>
 
@@ -305,7 +305,7 @@ export default function PayrollRunsList({ rolePrefix }: PayrollRunsListProps) {
                                     </td>
                                     <td className="py-3 px-4 text-right whitespace-nowrap">
                                         <Link
-                                            href={`/${rolePrefix}/finance/payroll/${run.reference}`}
+                                            href={`/${rolePrefix}/payroll/${run.reference}`}
                                             className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-lg bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors"
                                         >
                                             <span>Studio</span>
