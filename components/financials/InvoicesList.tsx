@@ -8,7 +8,7 @@ import LoadingSpinner from "@/components/portal/LoadingSpinner";
 import KpiStatCard from "@/components/portal/KpiStatCard";
 import FilterTabs from "@/components/portal/FilterTabs";
 import ProgressBar from "@/components/portal/ProgressBar";
-import RecordReceiptModal from "@/components/invoices/RecordReceiptModal";
+import Link from "next/link";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import { downloadPDF } from "@/lib/download";
 import {
@@ -369,20 +369,13 @@ export default function InvoicesList({ rolePrefix }: InvoicesListProps) {
                       <td className="py-4 px-6 text-right" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center justify-end gap-1.5">
                           {inv.status !== "PAID" && (
-                            <RecordReceiptModal
-                              invoiceReference={inv.reference}
-                              invoiceCode={inv.code}
-                              partnerName={clientName}
-                              balanceDue={balanceDue}
-                              trigger={
-                                <button
-                                  className="p-2 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all shadow-sm"
-                                  title="Record Payment Receipt"
-                                >
-                                  <Receipt className="w-3.5 h-3.5" />
-                                </button>
-                              }
-                            />
+                            <Link
+                              href={`/${rolePrefix}/receipts/new?invoice=${inv.reference}&amount=${balanceDue}`}
+                              className="p-2 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all shadow-sm flex items-center justify-center"
+                              title="Record Payment Receipt (Full Page)"
+                            >
+                              <Receipt className="w-3.5 h-3.5" />
+                            </Link>
                           )}
 
                           <button

@@ -25,7 +25,6 @@ import {
   UserCog
 } from "lucide-react";
 import CreatePartnerQuotation from "@/forms/quotations/CreatePartnerQuotation";
-import CreateInvoiceModal from "@/forms/financials/CreateInvoiceModal";
 import UpdatePartner from "@/forms/partners/UpdatePartner";
 import InteractionTimeline from "@/components/crm/InteractionTimeline";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
@@ -112,16 +111,12 @@ export default function PartnerDetailPage() {
                       }
                     />
 
-                    <CreateInvoiceModal 
-                      rolePrefix="operations"
-                      initialPartner={{ reference: partner.code, name: partner.name }}
-                      trigger={
-                        <DropdownMenu.Item onSelect={(e) => e.preventDefault()} className="flex items-center gap-3 p-3 rounded text-[10px] font-bold uppercase tracking-widest text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 cursor-pointer outline-none transition-colors group">
-                          <Plus className="w-4 h-4 text-slate-400 group-hover:text-emerald-600 transition-colors" />
-                          Initiate Invoice
-                        </DropdownMenu.Item>
-                      }
-                    />
+                    <Link href={`/operations/invoices/new?partner=${partner.code}`}>
+                      <DropdownMenu.Item className="flex items-center gap-3 p-3 rounded text-[10px] font-bold uppercase tracking-widest text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 cursor-pointer outline-none transition-colors group">
+                        <Plus className="w-4 h-4 text-slate-400 group-hover:text-emerald-600 transition-colors" />
+                        Initiate Invoice
+                      </DropdownMenu.Item>
+                    </Link>
 
                     <DropdownMenu.Item 
                       onSelect={() => setIsUpdateModalOpen(true)}

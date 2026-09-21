@@ -20,8 +20,8 @@ import {
   ClipboardList,
 } from "lucide-react";
 import CreateQuotationModal from "@/forms/quotations/CreateQuotationModal";
-import CreateInvoiceModal from "@/forms/financials/CreateInvoiceModal";
 import InteractionTimeline from "@/components/crm/InteractionTimeline";
+import Link from "next/link";
 
 
 export default function PartnerDetailPage() {
@@ -84,16 +84,13 @@ export default function PartnerDetailPage() {
                   </button>
                 }
               />
-              <CreateInvoiceModal 
-                rolePrefix="director"
-                initialPartner={{ reference: partner.code, name: partner.name }}
-                trigger={
-                  <button className="flex items-center gap-2 px-6 py-2.5 bg-[#D0402B] hover:bg-black text-white rounded font-bold text-[10px] uppercase tracking-widest transition-all shadow-xl shadow-[#D0402B]/10 active:scale-95 group">
-                     <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform" />
-                     Initiate Invoice
-                  </button>
-                }
-              />
+              <Link
+                href={`/director/invoices/new?partner=${partner.code}`}
+                className="flex items-center gap-2 px-6 py-2.5 bg-[#D0402B] hover:bg-black text-white rounded font-bold text-[10px] uppercase tracking-widest transition-all shadow-xl shadow-[#D0402B]/10 active:scale-95 group"
+              >
+                <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform" />
+                Initiate Invoice
+              </Link>
             </>
           )}
           {partner?.is_active ? (

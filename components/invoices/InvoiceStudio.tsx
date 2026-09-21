@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
@@ -11,6 +11,7 @@ import { useFetchProducts } from "@/hooks/products/actions";
 import { useFetchPaymentAccounts } from "@/hooks/paymentaccounts/actions";
 import { useFetchTermsAndConditions } from "@/hooks/termsandconditions/actions";
 import { createInvoice, createInvoiceLine, postInvoiceToGL } from "@/services/invoices";
+import LoadingSpinner from "@/components/portal/LoadingSpinner";
 import {
   FileText,
   Building2,
@@ -43,8 +44,10 @@ interface InvoiceLineDraft {
   unitPrice: number;
 }
 
-export default function InvoiceStudio({ rolePrefix }: InvoiceStudioProps) {
+function InvoiceStudioContent({ rolePrefix }: InvoiceStudioProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const urlPartner = searchParams.get("partner") || "";
   const headers = useAxiosAuth();
   const queryClient = useQueryClient();
 
@@ -55,7 +58,13 @@ export default function InvoiceStudio({ rolePrefix }: InvoiceStudioProps) {
 
   // Client Type: "partner" vs "walkin"
   const [clientType, setClientType] = useState<"partner" | "walkin">("partner");
-  const [selectedPartnerCode, setSelectedPartnerCode] = useState("");
+  const [selectedPartnerCode, setSelectedPartnerCode] = useState(urlPartner);
+
+  useEffect(() => {
+    if (urlPartner && !selectedPartnerCode) {
+      setSelectedPartnerCode(urlPartner);
+    }
+  }, [urlPartner, selectedPartnerCode]);
   const [walkinName, setWalkinName] = useState("");
   const [walkinEmail, setWalkinEmail] = useState("");
   const [walkinPhone, setWalkinPhone] = useState("");
@@ -667,5 +676,13 @@ export default function InvoiceStudio({ rolePrefix }: InvoiceStudioProps) {
         </div>
       </form>
     </div>
+  );
+}
+
+export default function InvoiceStudio({ rolePrefix }: InvoiceStudioProps) {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <InvoiceStudioContent rolePrefix={rolePrefix} />
+    </Suspense>
   );
 }

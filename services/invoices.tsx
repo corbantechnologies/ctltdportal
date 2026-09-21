@@ -58,6 +58,7 @@ export interface Invoice {
   amount_paid: string | number;
   balance_due: string | number;
   lines?: InvoiceLineItem[];
+  items?: InvoiceLineItem[];
   receipts?: InvoiceReceiptItem[];
 }
 

@@ -9,6 +9,8 @@ export interface Invoice {
     reference: string;
     code: string;
     partner: string;
+    partner_name?: string;
+    client_name?: string;
     created_by: string;
     updated_by: string;
     date: string;
@@ -21,19 +23,30 @@ export interface Invoice {
     payment_account?: string;
     terms_and_conditions?: string;
     lines?: any[];
+    items?: any[];
+    total_amount?: number;
+    receipts?: any[];
+    is_posted?: boolean;
+    posted_by?: string;
+    journal_reference?: string;
 }
 
 export interface Receipt {
     id: string;
     reference: string;
     invoice: string;
+    invoice_code?: string;
+    partner_name?: string;
     code: string;
     date: string;
     amount: number;
+    payment_method?: string;
+    payment_method_name?: string;
+    journal_reference?: string;
     kra_sales_receipt?: string;
     notes?: string;
-    is_posted: boolean;
-    email_sent: boolean;
+    is_posted?: boolean;
+    email_sent?: boolean;
     created_at: string;
     updated_at: string;
 }

@@ -30,7 +30,6 @@ import {
 import { cn } from "@/lib/utils";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import { downloadPDF } from "@/lib/download";
-import RecordReceiptModal from "@/components/invoices/RecordReceiptModal";
 import Link from "next/link";
 
 interface InvoiceDetailViewProps {
@@ -106,20 +105,15 @@ export default function InvoiceDetailView({ rolePrefix }: InvoiceDetailViewProps
             </button>
           )}
 
-          {/* Record Receipt Modal Trigger */}
+          {/* Record Receipt Full-Page Button */}
           {invoice.status !== "PAID" && invoice.status !== "CANCELLED" && (
-            <RecordReceiptModal
-              invoiceReference={invoice.reference}
-              invoiceCode={invoice.code}
-              partnerName={invoice.partner_name || invoice.partner || undefined}
-              balanceDue={balanceDue}
-              trigger={
-                <button className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold uppercase tracking-wider transition-all shadow-md shadow-emerald-600/20 flex items-center gap-2">
-                  <ReceiptIcon className="w-3.5 h-3.5" />
-                  Record Payment Receipt
-                </button>
-              }
-            />
+            <Link
+              href={`/${rolePrefix}/receipts/new?invoice=${invoice.reference}&amount=${balanceDue}`}
+              className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold uppercase tracking-wider transition-all shadow-md shadow-emerald-600/20 flex items-center gap-2"
+            >
+              <ReceiptIcon className="w-3.5 h-3.5" />
+              Record Payment Receipt
+            </Link>
           )}
 
           {/* Download PDF Button */}
@@ -261,39 +255,57 @@ export default function InvoiceDetailView({ rolePrefix }: InvoiceDetailViewProps
             </h3>
             <div className="overflow-x-auto border border-slate-200 rounded-lg">
               <table className="w-full text-left text-xs">
-                <thead className="bg-slate-100 text-slate-700 font-bold uppercase text-[10px] tracking-wider">
+                <thead className="bg-slate-50 text-slate-500 font-bold uppercase text-[10px] tracking-wider border-b border-slate-200">
                   <tr>
+                    <th className="py-3 px-4">#</th>
                     <th className="py-3 px-4">Item &amp; Description</th>
                     <th className="py-3 px-4 text-center">Qty</th>
                     <th className="py-3 px-4 text-right">Unit Price</th>
-                    <th className="py-3 px-4 text-right">Total Amount</th>
+                    <th className="py-3 px-4 text-right">Total (KES)</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {invoice.lines && invoice.lines.length > 0 ? (
-                    invoice.lines.map((line: any, idx: number) => (
-                      <tr key={idx} className="hover:bg-slate-50/60">
-                        <td className="py-4 px-4">
-                          <p className="font-bold text-slate-900">{line.product_name || line.product || "Service Deliverable"}</p>
-                          {line.description && (
-                            <p className="text-slate-500 text-[11px] mt-0.5">{line.description}</p>
-                          )}
-                        </td>
-                        <td className="py-4 px-4 text-center font-mono font-bold text-slate-800">
-                          {line.quantity}
-                        </td>
-                        <td className="py-4 px-4 text-right font-mono text-slate-600">
-                          KES {parseFloat(line.unit_price).toLocaleString("en-KE", { minimumFractionDigits: 2 })}
-                        </td>
-                        <td className="py-4 px-4 text-right font-mono font-bold text-slate-900">
-                          KES {parseFloat(line.total_price).toLocaleString("en-KE", { minimumFractionDigits: 2 })}
-                        </td>
-                      </tr>
-                    ))
+                  {((invoice.lines || invoice.items || []) as any[]).length > 0 ? (
+                    ((invoice.lines || invoice.items || []) as any[]).map((item: any, idx: number) => {
+                      const itemTotal =
+                        parseFloat(item.total) ||
+                        parseFloat(item.quantity) * parseFloat(item.unit_price) ||
+                        0;
+                      return (
+                        <tr key={item.id || idx} className="hover:bg-slate-50/50">
+                          <td className="py-3.5 px-4 font-mono text-slate-400 text-[11px]">
+                            {idx + 1}
+                          </td>
+                          <td className="py-3.5 px-4">
+                            <span className="font-bold text-slate-900 block">
+                              {item.product_name || item.name || `Item ${idx + 1}`}
+                            </span>
+                            {item.description && (
+                              <span className="text-[11px] text-slate-400 block mt-0.5">
+                                {item.description}
+                              </span>
+                            )}
+                          </td>
+                          <td className="py-3.5 px-4 text-center font-mono text-slate-700">
+                            {item.quantity}
+                          </td>
+                          <td className="py-3.5 px-4 text-right font-mono text-slate-700">
+                            {parseFloat(item.unit_price).toLocaleString("en-KE", {
+                              minimumFractionDigits: 2,
+                            })}
+                          </td>
+                          <td className="py-3.5 px-4 text-right font-mono font-bold text-slate-900">
+                            {itemTotal.toLocaleString("en-KE", {
+                              minimumFractionDigits: 2,
+                            })}
+                          </td>
+                        </tr>
+                      );
+                    })
                   ) : (
                     <tr>
-                      <td colSpan={4} className="py-6 text-center text-slate-400">
-                        No line items added.
+                      <td colSpan={5} className="text-center py-6 text-slate-400">
+                        No line items found.
                       </td>
                     </tr>
                   )}
@@ -326,7 +338,12 @@ export default function InvoiceDetailView({ rolePrefix }: InvoiceDetailViewProps
                     {invoice.receipts.map((rc: any) => (
                       <tr key={rc.reference} className="hover:bg-emerald-50/40">
                         <td className="py-3 px-4 font-mono font-bold text-emerald-800">
-                          {rc.code}
+                          <Link
+                            href={`/${rolePrefix}/receipts/${rc.reference}`}
+                            className="underline underline-offset-2 hover:text-emerald-950"
+                          >
+                            {rc.code}
+                          </Link>
                         </td>
                         <td className="py-3 px-4 text-slate-600">
                           {new Date(rc.date).toLocaleDateString("en-GB")}
