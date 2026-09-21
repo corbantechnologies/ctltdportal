@@ -275,7 +275,7 @@ export default function BulkImportSimpleTransaction({
       <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
 
         {/* Template Download Banner */}
-        <div className="bg-emerald-50 border border-emerald-200/80 rounded-lg p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="bg-emerald-50 border border-emerald-200/80 rounded-lg p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h4 className="text-xs font-bold text-emerald-900 uppercase tracking-wide">
               Need the spreadsheet template?
@@ -287,7 +287,7 @@ export default function BulkImportSimpleTransaction({
           <button
             type="button"
             onClick={downloadSampleCSVTemplate}
-            className="inline-flex items-center gap-2 px-3.5 py-2 rounded bg-emerald-600 text-white hover:bg-emerald-700 text-xs font-semibold transition-all shadow-sm flex-shrink-0"
+            className="inline-flex items-center gap-1.5 px-3 h-8 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 text-xs font-semibold transition-all shadow-sm flex-shrink-0"
           >
             <Download className="w-3.5 h-3.5" />
             Download Sample CSV
@@ -298,7 +298,7 @@ export default function BulkImportSimpleTransaction({
         {!fileName ? (
           <div
             onClick={() => fileInputRef.current?.click()}
-            className="border-2 border-dashed border-slate-300 hover:border-slate-500 rounded-lg p-8 sm:p-12 text-center cursor-pointer transition-all bg-slate-50 hover:bg-slate-100/70 group"
+            className="border-2 border-dashed border-slate-300 hover:border-slate-500 rounded-lg p-6 sm:p-8 text-center cursor-pointer transition-all bg-slate-50 hover:bg-slate-100/70 group"
           >
             <input
               ref={fileInputRef}
@@ -310,20 +310,20 @@ export default function BulkImportSimpleTransaction({
                 if (file) handleFileUpload(file);
               }}
             />
-            <div className="w-12 h-12 rounded-full bg-slate-200/80 group-hover:bg-slate-900 group-hover:text-white text-slate-600 flex items-center justify-center mx-auto mb-3 transition-colors">
-              <UploadCloud className="w-6 h-6" />
+            <div className="w-10 h-10 rounded-full bg-slate-200/80 group-hover:bg-slate-900 group-hover:text-white text-slate-600 flex items-center justify-center mx-auto mb-2.5 transition-colors">
+              <UploadCloud className="w-5 h-5" />
             </div>
-            <p className="text-sm font-bold text-slate-800">
+            <p className="text-xs sm:text-sm font-bold text-slate-800">
               Click to browse or drag and drop your CSV file here
             </p>
-            <p className="text-xs text-slate-400 mt-1 font-medium">
+            <p className="text-[11px] text-slate-400 mt-0.5 font-medium">
               Accepts .csv files up to 5MB
             </p>
           </div>
         ) : (
-          <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 flex items-center justify-between">
+          <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <FileSpreadsheet className="w-6 h-6 text-slate-700" />
+              <FileSpreadsheet className="w-5 h-5 text-slate-700" />
               <div>
                 <p className="text-xs font-bold text-slate-900 font-mono">{fileName}</p>
                 <p className="text-[10px] text-slate-500 mt-0.5">
@@ -334,7 +334,7 @@ export default function BulkImportSimpleTransaction({
             <button
               type="button"
               onClick={handleReset}
-              className="text-xs text-red-600 hover:text-red-700 font-semibold px-3 py-1.5 rounded hover:bg-red-50 transition-colors"
+              className="text-xs text-red-600 hover:text-red-700 font-semibold px-2.5 py-1 rounded hover:bg-red-50 transition-colors"
             >
               Choose Different File
             </button>
@@ -343,22 +343,22 @@ export default function BulkImportSimpleTransaction({
 
         {/* Validation Overview Cards */}
         {parsedRows.length > 0 && (
-          <div className="grid grid-cols-3 gap-3">
-            <div className="bg-slate-50 border border-slate-200 rounded p-3 text-center">
-              <span className="text-[10px] uppercase font-bold text-slate-400">Total Rows</span>
-              <p className="text-base font-bold font-mono text-slate-900 mt-0.5">
+          <div className="grid grid-cols-3 gap-2.5">
+            <div className="bg-slate-50 border border-slate-200/80 rounded-lg p-2.5 text-center">
+              <span className="text-[9px] uppercase font-bold text-slate-400">Total Rows</span>
+              <p className="text-sm font-bold font-mono text-slate-900 mt-0.5">
                 {parsedRows.length}
               </p>
             </div>
-            <div className="bg-emerald-50/80 border border-emerald-200 rounded p-3 text-center">
-              <span className="text-[10px] uppercase font-bold text-emerald-600">Valid Rows</span>
-              <p className="text-base font-bold font-mono text-emerald-700 mt-0.5">
+            <div className="bg-emerald-50/80 border border-emerald-200/60 rounded-lg p-2.5 text-center">
+              <span className="text-[9px] uppercase font-bold text-emerald-600">Valid Rows</span>
+              <p className="text-sm font-bold font-mono text-emerald-700 mt-0.5">
                 {validRows.length}
               </p>
             </div>
-            <div className="bg-red-50/80 border border-red-200 rounded p-3 text-center">
-              <span className="text-[10px] uppercase font-bold text-red-600">Invalid Rows</span>
-              <p className="text-base font-bold font-mono text-red-700 mt-0.5">
+            <div className="bg-red-50/80 border border-red-200/60 rounded-lg p-2.5 text-center">
+              <span className="text-[9px] uppercase font-bold text-red-600">Invalid Rows</span>
+              <p className="text-sm font-bold font-mono text-red-700 mt-0.5">
                 {invalidRows.length}
               </p>
             </div>
@@ -371,15 +371,15 @@ export default function BulkImportSimpleTransaction({
             <table className="w-full text-left text-xs min-w-[900px]">
               <thead className="bg-slate-100/80 border-b border-slate-200 text-slate-700 uppercase font-semibold text-[10px]">
                 <tr>
-                  <th className="py-2.5 px-3 w-14 text-center">Row</th>
-                  <th className="py-2.5 px-3 w-28">Status</th>
-                  <th className="py-2.5 px-3 min-w-[150px]">Description</th>
-                  <th className="py-2.5 px-3 w-28 text-right">Amount (KES)</th>
-                  <th className="py-2.5 px-3 w-28">Date</th>
-                  <th className="py-2.5 px-3 min-w-[130px]">Ledger Book</th>
-                  <th className="py-2.5 px-3 min-w-[120px]">Payment Method</th>
-                  <th className="py-2.5 px-3 min-w-[110px]">Division</th>
-                  <th className="py-2.5 px-3 min-w-[110px]">Journal Type</th>
+                  <th className="py-2 px-3 w-14 text-center">Row</th>
+                  <th className="py-2 px-3 w-28">Status</th>
+                  <th className="py-2 px-3 min-w-[150px]">Description</th>
+                  <th className="py-2 px-3 w-28 text-right">Amount (KES)</th>
+                  <th className="py-2 px-3 w-28">Date</th>
+                  <th className="py-2 px-3 min-w-[130px]">Ledger Book</th>
+                  <th className="py-2 px-3 min-w-[120px]">Payment Method</th>
+                  <th className="py-2 px-3 min-w-[110px]">Division</th>
+                  <th className="py-2 px-3 min-w-[110px]">Journal Type</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 bg-white">
@@ -391,10 +391,10 @@ export default function BulkImportSimpleTransaction({
                       !row.isValid ? "bg-red-50/40" : ""
                     )}
                   >
-                    <td className="py-2.5 px-3 text-center font-mono font-bold text-slate-400">
+                    <td className="py-2 px-3 text-center font-mono font-bold text-slate-400">
                       #{row.rowNumber}
                     </td>
-                    <td className="py-2.5 px-3">
+                    <td className="py-2 px-3">
                       {row.isValid ? (
                         <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">
                           <CheckCircle2 className="w-3 h-3 text-emerald-600" />
@@ -410,25 +410,25 @@ export default function BulkImportSimpleTransaction({
                         </span>
                       )}
                     </td>
-                    <td className="py-2.5 px-3 font-semibold text-slate-900">
+                    <td className="py-2 px-3 font-semibold text-slate-900">
                       {row.data.name || <span className="text-red-500 italic">Missing</span>}
                     </td>
-                    <td className="py-2.5 px-3 text-right font-mono font-bold">
+                    <td className="py-2 px-3 text-right font-mono font-bold">
                       KES {formatNumber(row.data.amount || 0)}
                     </td>
-                    <td className="py-2.5 px-3 font-mono text-slate-600">
+                    <td className="py-2 px-3 font-mono text-slate-600">
                       {row.data.date || <span className="text-red-500 italic">Missing</span>}
                     </td>
-                    <td className="py-2.5 px-3 text-slate-700">
+                    <td className="py-2 px-3 text-slate-700">
                       {row.data.ledger_book}
                     </td>
-                    <td className="py-2.5 px-3 text-slate-700">
+                    <td className="py-2 px-3 text-slate-700">
                       {row.data.payment_method}
                     </td>
-                    <td className="py-2.5 px-3 text-slate-700">
+                    <td className="py-2 px-3 text-slate-700">
                       {row.data.division}
                     </td>
-                    <td className="py-2.5 px-3 text-slate-700">
+                    <td className="py-2 px-3 text-slate-700">
                       {row.data.journal_type}
                     </td>
                   </tr>
@@ -440,8 +440,8 @@ export default function BulkImportSimpleTransaction({
       </div>
 
       {/* Sticky Bottom Actions */}
-      <div className="p-4 sm:p-6 border-t border-slate-100 bg-slate-50/80 flex-shrink-0 flex items-center justify-between gap-3">
-        <div className="text-xs text-slate-500 font-semibold hidden sm:block">
+      <div className="px-5 py-3 sm:py-3.5 border-t border-slate-100 bg-slate-50/80 flex-shrink-0 flex items-center justify-between gap-3">
+        <div className="text-xs text-slate-500 font-medium hidden sm:block">
           {validRows.length > 0 ? (
             <>
               Ready to import <span className="font-bold text-slate-900">{validRows.length}</span> valid transactions.
@@ -450,12 +450,12 @@ export default function BulkImportSimpleTransaction({
             "Upload a CSV to begin."
           )}
         </div>
-        <div className="flex items-center gap-3 w-full sm:w-auto">
+        <div className="flex items-center gap-2.5 w-full sm:w-auto">
           {onClose && (
             <button
               type="button"
               onClick={onClose}
-              className="w-full sm:w-auto px-4 h-11 rounded border border-slate-200 bg-white font-semibold text-xs text-slate-700 hover:bg-slate-100 transition-colors"
+              className="w-full sm:w-auto px-3.5 h-9 rounded-lg border border-slate-200 bg-white font-semibold text-xs text-slate-700 hover:bg-slate-100 transition-colors"
             >
               Cancel
             </button>
@@ -464,14 +464,14 @@ export default function BulkImportSimpleTransaction({
             type="button"
             onClick={handleImportValid}
             disabled={bulkCreateMutation.isPending || validRows.length === 0}
-            className="w-full sm:w-auto px-6 h-11 rounded font-bold text-xs bg-slate-900 text-white hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20 active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-60"
+            className="w-full sm:w-auto px-4 h-9 rounded-lg font-bold text-xs uppercase tracking-wider bg-slate-900 text-white hover:bg-slate-800 transition-all shadow-sm active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-60"
           >
             {bulkCreateMutation.isPending ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
               <>
-                <Zap className="w-4 h-4 text-emerald-400" />
-                Import {validRows.length} Valid Transaction(s)
+                <Zap className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Import {validRows.length} Valid Transaction(s)</span>
               </>
             )}
           </button>

@@ -93,16 +93,16 @@ export function ARAgingMatrix({ rolePrefix = "finance" }: ARAgingMatrixProps) {
     return (
         <div className="space-y-6">
             {/* Header & Controls */}
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-card p-6 rounded-2xl border border-border/80 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-card p-4 sm:p-5 rounded-xl border border-border/80 shadow-sm">
                 <div>
                     <div className="flex items-center gap-2">
                         <span className="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-corporate-primary/10 text-corporate-primary border border-corporate-primary/20">
                             Accounts Receivable
                         </span>
                         <span className="text-xs text-muted-foreground">•</span>
-                        <span className="text-xs text-muted-foreground font-medium">Aging Matrix & DSO</span>
+                        <span className="text-xs text-muted-foreground font-medium">Aging Matrix &amp; DSO</span>
                     </div>
-                    <h1 className="text-2xl font-bold tracking-tight text-foreground mt-1">
+                    <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground mt-1">
                         AR Aging Schedule
                     </h1>
                     <p className="text-xs text-muted-foreground mt-0.5">
@@ -110,9 +110,9 @@ export function ARAgingMatrix({ rolePrefix = "finance" }: ARAgingMatrixProps) {
                     </p>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-3">
-                    <div className="flex items-center gap-2 bg-muted/50 px-3 py-1.5 rounded-xl border border-border">
-                        <Calendar className="w-4 h-4 text-muted-foreground" />
+                <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex items-center gap-1.5 bg-muted/40 px-3 py-1.5 rounded-lg border border-border text-xs">
+                        <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
                         <label className="text-xs font-medium text-muted-foreground">As of:</label>
                         <input
                             type="date"
@@ -124,7 +124,7 @@ export function ARAgingMatrix({ rolePrefix = "finance" }: ARAgingMatrixProps) {
 
                     <button
                         onClick={handlePrint}
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border transition-colors"
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border transition-colors shadow-sm"
                     >
                         <Printer className="w-3.5 h-3.5" /> Print Matrix
                     </button>
@@ -132,13 +132,13 @@ export function ARAgingMatrix({ rolePrefix = "finance" }: ARAgingMatrixProps) {
             </div>
 
             {/* Executive Metric Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
                 {/* Total AR */}
-                <div className="p-4 rounded-2xl bg-card border border-border shadow-sm flex flex-col justify-between">
-                    <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                <div className="p-3.5 rounded-xl bg-card border border-border shadow-sm flex flex-col justify-between">
+                    <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
                         Total Receivables
                     </p>
-                    <p className="text-lg font-bold font-mono text-foreground mt-2">
+                    <p className="text-base sm:text-lg font-bold font-mono text-foreground mt-1.5 tabular-nums">
                         {formatCurrency(data?.total_ar || 0, data?.currency || "KES")}
                     </p>
                     <div className="flex items-center gap-1 text-[10px] text-muted-foreground mt-1">
@@ -151,19 +151,19 @@ export function ARAgingMatrix({ rolePrefix = "finance" }: ARAgingMatrixProps) {
                 <div
                     onClick={() => setSelectedBucket("CURRENT")}
                     className={cn(
-                        "p-4 rounded-2xl border shadow-sm cursor-pointer transition-all flex flex-col justify-between",
+                        "p-3.5 rounded-xl border shadow-sm cursor-pointer transition-all flex flex-col justify-between",
                         selectedBucket === "CURRENT"
                             ? "bg-emerald-500/10 border-emerald-500/50 ring-2 ring-emerald-500/20"
                             : "bg-emerald-500/5 border-emerald-500/20 hover:border-emerald-500/40"
                     )}
                 >
                     <div className="flex items-center justify-between">
-                        <p className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">
+                        <p className="text-[10px] font-semibold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">
                             0-30 Days (Current)
                         </p>
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
                     </div>
-                    <p className="text-lg font-bold font-mono text-emerald-700 dark:text-emerald-400 mt-2">
+                    <p className="text-base sm:text-lg font-bold font-mono text-emerald-700 dark:text-emerald-400 mt-1.5 tabular-nums">
                         {formatCurrency(data?.total_current || 0, data?.currency || "KES")}
                     </p>
                     <span className="text-[10px] text-emerald-600/80 font-medium">On Schedule</span>
@@ -173,19 +173,19 @@ export function ARAgingMatrix({ rolePrefix = "finance" }: ARAgingMatrixProps) {
                 <div
                     onClick={() => setSelectedBucket("31_60")}
                     className={cn(
-                        "p-4 rounded-2xl border shadow-sm cursor-pointer transition-all flex flex-col justify-between",
+                        "p-3.5 rounded-xl border shadow-sm cursor-pointer transition-all flex flex-col justify-between",
                         selectedBucket === "31_60"
                             ? "bg-amber-500/10 border-amber-500/50 ring-2 ring-amber-500/20"
                             : "bg-amber-500/5 border-amber-500/20 hover:border-amber-500/40"
                     )}
                 >
                     <div className="flex items-center justify-between">
-                        <p className="text-[11px] font-semibold text-amber-700 dark:text-amber-400 uppercase tracking-wider">
+                        <p className="text-[10px] font-semibold text-amber-700 dark:text-amber-400 uppercase tracking-wider">
                             31-60 Days
                         </p>
                         <Clock className="w-3.5 h-3.5 text-amber-500" />
                     </div>
-                    <p className="text-lg font-bold font-mono text-amber-700 dark:text-amber-400 mt-2">
+                    <p className="text-base sm:text-lg font-bold font-mono text-amber-700 dark:text-amber-400 mt-1.5 tabular-nums">
                         {formatCurrency(data?.total_31_60 || 0, data?.currency || "KES")}
                     </p>
                     <span className="text-[10px] text-amber-600/80 font-medium">Early Follow-Up</span>
@@ -195,19 +195,19 @@ export function ARAgingMatrix({ rolePrefix = "finance" }: ARAgingMatrixProps) {
                 <div
                     onClick={() => setSelectedBucket("61_90")}
                     className={cn(
-                        "p-4 rounded-2xl border shadow-sm cursor-pointer transition-all flex flex-col justify-between",
+                        "p-3.5 rounded-xl border shadow-sm cursor-pointer transition-all flex flex-col justify-between",
                         selectedBucket === "61_90"
                             ? "bg-orange-500/10 border-orange-500/50 ring-2 ring-orange-500/20"
                             : "bg-orange-500/5 border-orange-500/20 hover:border-orange-500/40"
                     )}
                 >
                     <div className="flex items-center justify-between">
-                        <p className="text-[11px] font-semibold text-orange-700 dark:text-orange-400 uppercase tracking-wider">
+                        <p className="text-[10px] font-semibold text-orange-700 dark:text-orange-400 uppercase tracking-wider">
                             61-90 Days
                         </p>
                         <AlertTriangle className="w-3.5 h-3.5 text-orange-500" />
                     </div>
-                    <p className="text-lg font-bold font-mono text-orange-700 dark:text-orange-400 mt-2">
+                    <p className="text-base sm:text-lg font-bold font-mono text-orange-700 dark:text-orange-400 mt-1.5 tabular-nums">
                         {formatCurrency(data?.total_61_90 || 0, data?.currency || "KES")}
                     </p>
                     <span className="text-[10px] text-orange-600/80 font-medium">Action Required</span>
@@ -217,30 +217,30 @@ export function ARAgingMatrix({ rolePrefix = "finance" }: ARAgingMatrixProps) {
                 <div
                     onClick={() => setSelectedBucket("90_PLUS")}
                     className={cn(
-                        "p-4 rounded-2xl border shadow-sm cursor-pointer transition-all flex flex-col justify-between",
+                        "p-3.5 rounded-xl border shadow-sm cursor-pointer transition-all flex flex-col justify-between",
                         selectedBucket === "90_PLUS"
                             ? "bg-rose-500/10 border-rose-500/50 ring-2 ring-rose-500/20"
                             : "bg-rose-500/5 border-rose-500/20 hover:border-rose-500/40"
                     )}
                 >
                     <div className="flex items-center justify-between">
-                        <p className="text-[11px] font-semibold text-rose-700 dark:text-rose-400 uppercase tracking-wider">
+                        <p className="text-[10px] font-semibold text-rose-700 dark:text-rose-400 uppercase tracking-wider">
                             90+ Days (Critical)
                         </p>
                         <AlertTriangle className="w-3.5 h-3.5 text-rose-500" />
                     </div>
-                    <p className="text-lg font-bold font-mono text-rose-700 dark:text-rose-400 mt-2">
+                    <p className="text-base sm:text-lg font-bold font-mono text-rose-700 dark:text-rose-400 mt-1.5 tabular-nums">
                         {formatCurrency(data?.total_90_plus || 0, data?.currency || "KES")}
                     </p>
                     <span className="text-[10px] text-rose-600/80 font-medium">Critical Overdue</span>
                 </div>
 
                 {/* Days Sales Outstanding (DSO) */}
-                <div className="p-4 rounded-2xl bg-card border border-border shadow-sm flex flex-col justify-between">
-                    <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                <div className="p-3.5 rounded-xl bg-card border border-border shadow-sm flex flex-col justify-between">
+                    <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
                         Days Sales Outstanding
                     </p>
-                    <p className="text-lg font-bold font-mono text-corporate-primary mt-2">
+                    <p className="text-base sm:text-lg font-bold font-mono text-corporate-primary mt-1.5 tabular-nums">
                         {data?.dso_days || 0} Days
                     </p>
                     <span className="text-[10px] text-muted-foreground">Cash Collection Velocity</span>
@@ -248,8 +248,8 @@ export function ARAgingMatrix({ rolePrefix = "finance" }: ARAgingMatrixProps) {
             </div>
 
             {/* Filter Bar & Search */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-card p-4 rounded-2xl border border-border/80 shadow-sm">
-                <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto">
+            <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 bg-card p-3 sm:p-4 rounded-xl border border-border/80 shadow-sm">
+                <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-1 sm:pb-0">
                     {(
                         [
                             { key: "ALL", label: "All Receivables" },
@@ -263,7 +263,7 @@ export function ARAgingMatrix({ rolePrefix = "finance" }: ARAgingMatrixProps) {
                             key={tab.key}
                             onClick={() => setSelectedBucket(tab.key)}
                             className={cn(
-                                "px-3 py-1.5 text-xs font-semibold rounded-xl whitespace-nowrap transition-all",
+                                "px-3 py-1.5 text-xs font-semibold rounded-lg whitespace-nowrap transition-all shadow-none",
                                 selectedBucket === tab.key
                                     ? "bg-corporate-primary text-white shadow-sm"
                                     : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
@@ -274,28 +274,28 @@ export function ARAgingMatrix({ rolePrefix = "finance" }: ARAgingMatrixProps) {
                     ))}
                 </div>
 
-                <div className="flex items-center gap-2 w-full sm:w-auto">
-                    <div className="relative flex-1 sm:w-64">
-                        <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                <div className="flex flex-wrap sm:flex-nowrap items-center gap-2">
+                    <div className="relative flex-1 sm:w-60">
+                        <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                         <input
                             type="text"
                             placeholder="Search client name or code..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-9 pr-3 py-1.5 text-xs bg-muted/40 border border-border rounded-xl focus:outline-none focus:ring-1 focus:ring-corporate-primary"
+                            className="w-full pl-8 pr-3 py-1.5 text-xs bg-muted/40 border border-border rounded-lg focus:outline-none focus:ring-1 focus:ring-corporate-primary"
                         />
                     </div>
 
                     <button
                         onClick={expandAll}
-                        className="px-2.5 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground bg-muted/40 hover:bg-muted rounded-xl border border-border transition-colors"
+                        className="px-2.5 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground bg-muted/40 hover:bg-muted rounded-lg border border-border transition-colors whitespace-nowrap"
                         title="Expand all customer invoice tables"
                     >
                         Expand All
                     </button>
                     <button
                         onClick={collapseAll}
-                        className="px-2.5 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground bg-muted/40 hover:bg-muted rounded-xl border border-border transition-colors"
+                        className="px-2.5 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground bg-muted/40 hover:bg-muted rounded-lg border border-border transition-colors whitespace-nowrap"
                         title="Collapse all"
                     >
                         Collapse

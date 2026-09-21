@@ -23,6 +23,7 @@ import { useFetchPartners } from "@/hooks/partners/actions";
 import { GlobalSearch } from "@/components/navigation/GlobalSearch";
 import ReportsDashboard from "@/components/reports/ReportsDashboard";
 import * as Tabs from "@radix-ui/react-tabs";
+import KpiStatCard from "@/components/portal/KpiStatCard";
 import { cn } from "@/lib/utils";
 
 export default function OperationsDashboard() {
@@ -47,202 +48,180 @@ export default function OperationsDashboard() {
       value: divisions?.length || 0,
       icon: Building2,
       description: "Active Divisions",
-      color: "text-blue-600",
-      bg: "bg-blue-50",
+      color: "blue" as const,
     },
     {
       label: "Active Prospects",
       value: leads?.length || 0,
       icon: Users,
       description: "Pipeline Leads",
-      color: "text-blue-600",
-      bg: "bg-blue-50",
+      color: "emerald" as const,
     },
     {
       label: "Product Portfolio",
       value: products?.length || 0,
       icon: Package,
       description: "Active Units",
-      color: "text-amber-600",
-      bg: "bg-amber-50",
+      color: "amber" as const,
     },
     {
       label: "Partnerships",
       value: partners?.length || 0,
       icon: Briefcase,
       description: "Onboarded Accounts",
-      color: "text-purple-600",
-      bg: "bg-purple-50",
+      color: "purple" as const,
     },
   ];
 
   return (
-    <div className="space-y-10 pb-20">
+    <div className="space-y-6 pb-12">
       {/* Search Interface */}
       <GlobalSearch role="operations" />
 
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200/80 pb-4">
         <div>
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-8 h-8 rounded bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
-              <Activity className="w-4 h-4" />
-            </div>
-            <p className="text-[10px] font-semibold uppercase text-blue-600">
-              Operational Command Hub
-            </p>
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-xl font-bold text-slate-900 tracking-tight">
+              Operations <span className="text-blue-600">Insight</span>
+            </h1>
+            {activeYear && (
+              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-200">
+                FY {activeYear.code}
+              </span>
+            )}
           </div>
-          <h1 className="text-lg md:text-xl font-semibold text-slate-900 tracking-tight italic">
-            Operations <span className="text-blue-600">Insight</span>
-          </h1>
-          <p className="text-slate-400 font-semibold mt-2 text-sm max-w-lg">
-            Welcome back, <span className="text-slate-900">{account?.first_name}</span>.
-            Monitoring active pipelines and corporate structural integrity.
+          <p className="text-xs text-slate-500 mt-1 max-w-lg">
+            Welcome back, <span className="text-slate-900 font-medium">{account?.first_name}</span>. Monitoring active pipelines and corporate structural integrity.
           </p>
         </div>
         <OperationsActionsMenu />
       </div>
 
-      <Tabs.Root defaultValue="health" className="space-y-10">
-        <Tabs.List className="flex w-full overflow-x-auto md:inline-flex md:w-auto p-1.5 bg-slate-100 rounded border border-slate-200 shadow-inner scrollbar-hide">
+      <Tabs.Root defaultValue="health" className="space-y-6">
+        <Tabs.List className="inline-flex p-1 rounded-lg bg-slate-100 border border-slate-200 text-xs font-medium text-slate-600">
           <Tabs.Trigger
             value="health"
-            className="shrink-0 whitespace-nowrap px-4 py-3 rounded text-[10px] font-semibold uppercase transition-all data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-md data-[state=active]:border data-[state=active]:border-slate-100 text-slate-400 hover:text-slate-600"
+            className="px-3.5 py-1.5 rounded-md transition-all data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm data-[state=active]:font-semibold"
           >
-            System Health
+            System Health &amp; Pipeline
           </Tabs.Trigger>
           <Tabs.Trigger
             value="reports"
-            className="shrink-0 whitespace-nowrap px-4 py-3 rounded text-[10px] font-semibold uppercase transition-all data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-md data-[state=active]:border data-[state=active]:border-slate-100 text-slate-400 hover:text-slate-600"
+            className="px-3.5 py-1.5 rounded-md transition-all data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm data-[state=active]:font-semibold"
           >
             Tactical Reports
           </Tabs.Trigger>
         </Tabs.List>
 
-        <Tabs.Content value="health" className="space-y-16 focus-visible:outline-none animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <Tabs.Content value="health" className="space-y-8 focus-visible:outline-none">
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {stats.map((stat, i) => (
-              <div
+              <KpiStatCard
                 key={i}
-                className="bg-white p-6 rounded border border-slate-200 shadow-2xl shadow-slate-100 relative overflow-hidden group hover:-translate-y-1 transition-all duration-500"
-              >
-                <div className={cn("absolute top-0 right-0 w-24 h-24 rounded blur-3xl -translate-y-1/2 translate-x-1/2 opacity-30 group-hover:opacity-60 transition-opacity", stat.bg)} />
-                <div className="relative z-10 flex flex-col gap-4">
-                  <div className={cn("w-12 h-12 rounded flex items-center justify-center shadow-inner", stat.bg, stat.color)}>
-                    <stat.icon className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <p className="text-slate-400 font-semibold uppercase tracking-widest text-[9px] mb-1">
-                      {stat.label}
-                    </p>
-                    <h3 className="text-lg font-semibold text-slate-900 tracking-tight">
-                      {stat.value}
-                    </h3>
-                    <p className="text-[10px] font-semibold text-slate-400 mt-1 uppercase tracking-tighter">
-                      {stat.description}
-                    </p>
-                  </div>
-                </div>
-              </div>
+                title={stat.label}
+                value={stat.value}
+                subtitle={stat.description}
+                icon={stat.icon}
+                accentColor={stat.color}
+              />
             ))}
           </div>
 
-          <div className="space-y-12">
+          <div className="space-y-8">
             {/* Leads Management Section */}
-            <div className="space-y-8">
-                <div className="flex items-center justify-between">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-lg font-semibold text-slate-900 tracking-tight uppercase italic">
-                    Pipeline <span className="text-blue-600">Dynamics</span>
-                    </h2>
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400 mt-1">
-                    Active Capture & Response Cycle
-                    </p>
+                  <h2 className="text-sm font-bold text-slate-900 tracking-tight">
+                    Pipeline Dynamics
+                  </h2>
+                  <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wider mt-0.5">
+                    Active Capture &amp; Response Cycle
+                  </p>
                 </div>
-                <div className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded border border-blue-100 shadow-sm">
-                    <div className="w-2 h-2 rounded bg-blue-500 animate-pulse" />
-                    <span className="text-[10px] font-semibold uppercase tracking-widest">Pipeline Active</span>
+                <div className="flex items-center gap-1.5 px-2.5 py-1 bg-blue-50 text-blue-700 rounded-md border border-blue-200 text-[10px] font-semibold">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+                  <span>Pipeline Active</span>
                 </div>
-                </div>
-                
-                <div className="bg-slate-50/50 p-1 rounded border border-slate-100">
-                    <LeadsList rolePrefix="operations" />
-                </div>
+              </div>
+
+              <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+                <LeadsList rolePrefix="operations" />
+              </div>
             </div>
 
-             {/* Product Inventory Section */}
-             <div className="space-y-8 pt-10 border-t border-slate-100">
-                <div className="flex items-center justify-between">
+            {/* Product Inventory Section */}
+            <div className="space-y-3 pt-4 border-t border-slate-200/80">
+              <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-lg font-semibold text-slate-900 tracking-tight uppercase italic">
-                    Portfolio <span className="text-amber-600">Inventory</span>
-                    </h2>
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400 mt-1">
-                    Active Goods & Services Database
-                    </p>
+                  <h2 className="text-sm font-bold text-slate-900 tracking-tight">
+                    Portfolio Inventory
+                  </h2>
+                  <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wider mt-0.5">
+                    Active Goods &amp; Services Database
+                  </p>
                 </div>
-                <div className="flex items-center gap-2 px-4 py-2 bg-amber-50 text-amber-600 rounded border border-amber-100 shadow-sm animate-pulse">
-                    <div className="w-2 h-2 rounded bg-amber-500" />
-                    <span className="text-[10px] font-semibold uppercase tracking-widest">Inventory Linked</span>
+                <div className="flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 text-amber-700 rounded-md border border-amber-200 text-[10px] font-semibold">
+                  <div className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                  <span>Inventory Linked</span>
                 </div>
-                </div>
-                
-                <div className="bg-slate-50/50 p-1 rounded border border-slate-100">
-                    <ProductsList rolePrefix="operations" />
-                </div>
+              </div>
+
+              <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+                <ProductsList rolePrefix="operations" />
+              </div>
             </div>
 
             {/* Partnerships Management Section */}
-            <div className="space-y-8 pt-10 border-t border-slate-100">
-                <div className="flex items-center justify-between">
+            <div className="space-y-3 pt-4 border-t border-slate-200/80">
+              <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-lg font-semibold text-slate-900 tracking-tight uppercase italic">
-                    Ecosystem <span className="text-purple-600">Partnerships</span>
-                    </h2>
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400 mt-1">
-                    Strategic Vendors & Relationship Network
-                    </p>
+                  <h2 className="text-sm font-bold text-slate-900 tracking-tight">
+                    Partner Directory
+                  </h2>
+                  <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wider mt-0.5">
+                    Vendor &amp; Customer Ledger Profiles
+                  </p>
                 </div>
-                <div className="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-600 rounded border border-purple-100 shadow-sm animate-pulse">
-                    <div className="w-2 h-2 rounded bg-purple-500" />
-                    <span className="text-[10px] font-semibold uppercase tracking-widest">Relationships Linked</span>
+                <div className="flex items-center gap-1.5 px-2.5 py-1 bg-purple-50 text-purple-700 rounded-md border border-purple-200 text-[10px] font-semibold">
+                  <div className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse" />
+                  <span>Network Synced</span>
                 </div>
-                </div>
-                
-                <div className="bg-slate-50/50 p-1 rounded border border-slate-100">
-                    <PartnersList rolePrefix="operations" />
-                </div>
+              </div>
+
+              <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+                <PartnersList rolePrefix="operations" />
+              </div>
             </div>
 
             {/* Organizational Infrastructure Section */}
-            <div className="space-y-8 pt-10 border-t border-slate-100">
-                <div className="flex items-center justify-between">
+            <div className="space-y-3 pt-4 border-t border-slate-200/80">
+              <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-lg font-semibold text-slate-900 tracking-tight uppercase italic text-blue-600">
-                    Unit <span className="text-slate-900">Infrastructure</span>
-                    </h2>
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400 mt-1">
+                  <h2 className="text-sm font-bold text-slate-900 tracking-tight">
+                    Unit Infrastructure
+                  </h2>
+                  <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wider mt-0.5">
                     Corporate Organizational Structure
-                    </p>
+                  </p>
                 </div>
-                <div className="flex items-center gap-2 px-4 py-2 bg-slate-50 text-slate-600 rounded border border-slate-100 shadow-sm animate-pulse">
-                    <div className="w-2 h-2 rounded bg-slate-400" />
-                    <span className="text-[10px] font-semibold uppercase tracking-widest">System Architecture</span>
+                <div className="flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 text-slate-700 rounded-md border border-slate-200 text-[10px] font-semibold">
+                  <div className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-pulse" />
+                  <span>System Architecture</span>
                 </div>
-                </div>
-                
-                <div className="bg-slate-50/50 p-1 rounded border border-slate-100">
-                    <DivisionsList rolePrefix="operations" />
-                </div>
+              </div>
+
+              <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+                <DivisionsList rolePrefix="operations" />
+              </div>
             </div>
           </div>
         </Tabs.Content>
 
-        <Tabs.Content value="reports" className="focus-visible:outline-none animate-in fade-in slide-in-from-bottom-4 duration-700">
-          <div>
-            <ReportsDashboard rolePrefix="operations" />
-          </div>
+        <Tabs.Content value="reports" className="focus-visible:outline-none">
+          <ReportsDashboard rolePrefix="operations" />
         </Tabs.Content>
       </Tabs.Root>
     </div>

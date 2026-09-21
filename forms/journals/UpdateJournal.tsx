@@ -125,11 +125,11 @@ export default function UpdateJournal({
         </div>
 
         {/* Editable fields */}
-        <form onSubmit={formik.handleSubmit} className="space-y-6">
-          <div className="space-y-2.5">
+        <form onSubmit={formik.handleSubmit} className="space-y-4">
+          <div className="space-y-1.5">
             <label
               htmlFor="date"
-              className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400 ml-1.5"
+              className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 ml-1"
             >
               Transaction Date
             </label>
@@ -137,24 +137,24 @@ export default function UpdateJournal({
               id="date"
               name="date"
               type="date"
-              className="border border-slate-200 bg-slate-50/50 focus:outline-none focus:ring-4 focus:ring-emerald-600/10 w-full h-14 rounded-2xl focus:bg-white focus:border-emerald-600 focus:shadow-sm transition-all font-bold px-6 text-sm"
+              className="border border-slate-200 bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 w-full h-9 sm:h-10 rounded focus:bg-white focus:border-emerald-600 transition-all font-semibold px-3 sm:px-4 text-xs sm:text-sm text-slate-900"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.date}
             />
           </div>
 
-          <div className="space-y-2.5">
+          <div className="space-y-1.5">
             <label
               htmlFor="description"
-              className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400 ml-1.5"
+              className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 ml-1"
             >
               Batch Description
             </label>
             <textarea
               id="description"
               name="description"
-              className="border border-slate-200 bg-slate-50/50 focus:outline-none focus:ring-4 focus:ring-emerald-600/10 w-full min-h-[140px] rounded-2xl focus:bg-white focus:border-emerald-600 focus:shadow-sm transition-all font-bold p-6 text-sm resize-none leading-relaxed"
+              className="border border-slate-200 bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 w-full min-h-[90px] rounded focus:bg-white focus:border-emerald-600 transition-all font-semibold p-3 sm:p-4 text-xs sm:text-sm text-slate-900 resize-none leading-relaxed"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.description}
@@ -162,14 +162,14 @@ export default function UpdateJournal({
             />
           </div>
 
-          <div className="space-y-2.5">
-            <label className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400 ml-1.5">
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 ml-1">
               Base Currency
             </label>
             <div className="relative">
               <select
                 name="currency"
-                className="focus:outline-none focus:ring-4 focus:ring-emerald-600/10 flex h-14 w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-6 text-sm font-bold focus:bg-white focus:border-emerald-600 transition-all appearance-none"
+                className="focus:outline-none focus:ring-2 focus:ring-emerald-600/20 flex h-9 sm:h-10 w-full rounded border border-slate-200 bg-slate-50/50 px-3 sm:px-4 text-xs sm:text-sm font-semibold focus:bg-white focus:border-emerald-600 transition-all appearance-none text-slate-900 cursor-pointer"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.currency}
@@ -179,7 +179,7 @@ export default function UpdateJournal({
                 <option value="EUR">EUR (Euro)</option>
                 <option value="GBP">GBP (British Pound)</option>
               </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-6 text-slate-400">
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 sm:px-4 text-slate-400">
                 <svg className="h-4 w-4 fill-current" viewBox="0 0 20 20">
                   <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
                 </svg>
@@ -187,17 +187,17 @@ export default function UpdateJournal({
             </div>
           </div>
 
-          <div className="pt-4">
+          <div className="pt-2">
             <button
               type="submit"
               disabled={formik.isSubmitting}
-              className="w-full h-12 sm:h-14 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-black hover:to-slate-800 text-white rounded-xl font-bold text-sm tracking-wide transition-all shadow-[0_8px_16px_-6px_rgba(5,150,105,0.4)] active:scale-[0.98] active:shadow-inner group flex items-center justify-center gap-3 disabled:opacity-50 disabled:active:scale-100"
+              className="w-full h-9 sm:h-10 bg-emerald-600 hover:bg-slate-900 text-white rounded font-semibold text-xs sm:text-sm tracking-wider transition-all shadow-md active:scale-[0.98] group flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {formik.isSubmitting ? (
-                <Loader2 className="w-6 h-6 animate-spin text-white/80" />
+                <Loader2 className="w-4 h-4 animate-spin text-white/80" />
               ) : (
                 <>
-                  <Save className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
                   <span>Update Batch Details</span>
                 </>
               )}

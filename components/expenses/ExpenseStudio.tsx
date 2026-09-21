@@ -224,19 +224,19 @@ export default function ExpenseStudio({ rolePrefix }: ExpenseStudioProps) {
         /* Studio Form Layout */
         <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column: Form details */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-5">
             {/* Primary Expense Info */}
-            <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 sm:p-8 space-y-6">
-              <div className="flex items-center gap-2.5 pb-4 border-b border-slate-100">
-                <Receipt className="w-5 h-5 text-slate-700" />
-                <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900">
+            <div className="bg-white rounded-xl border border-slate-200/80 shadow-sm p-4 sm:p-6 space-y-4">
+              <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
+                <Receipt className="w-4 h-4 text-slate-700" />
+                <h2 className="text-xs font-bold uppercase tracking-wider text-slate-900">
                   Expense Details &amp; Purpose
                 </h2>
               </div>
 
-              <div className="space-y-4">
-                <div className="space-y-1.5">
-                  <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+              <div className="space-y-3">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
                     Expense Title / Memo <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -245,13 +245,13 @@ export default function ExpenseStudio({ rolePrefix }: ExpenseStudioProps) {
                     placeholder="e.g. AWS Cloud Hosting, Office Rent, Internet Subscription"
                     value={expenseName}
                     onChange={(e) => setExpenseName(e.target.value)}
-                    className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-slate-900 focus:ring-0 text-sm font-semibold transition-all"
+                    className="w-full h-9 px-3 rounded-lg border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-slate-900 focus:ring-0 text-xs sm:text-sm font-medium transition-all"
                   />
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1.5">
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
                       Amount (KES) <span className="text-rose-500">*</span>
                     </label>
                     <input
@@ -262,12 +262,12 @@ export default function ExpenseStudio({ rolePrefix }: ExpenseStudioProps) {
                       placeholder="0.00"
                       value={amount}
                       onChange={(e) => setAmount(e.target.value)}
-                      className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-slate-900 focus:ring-0 text-base font-mono font-bold transition-all"
+                      className="w-full h-9 px-3 rounded-lg border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-slate-900 focus:ring-0 text-xs sm:text-sm font-mono font-bold transition-all"
                     />
                   </div>
 
-                  <div className="space-y-1.5">
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
                       Expense Date <span className="text-rose-500">*</span>
                     </label>
                     <input
@@ -275,7 +275,7 @@ export default function ExpenseStudio({ rolePrefix }: ExpenseStudioProps) {
                       required
                       value={date}
                       onChange={(e) => setDate(e.target.value)}
-                      className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-slate-900 focus:ring-0 text-xs font-semibold transition-all"
+                      className="w-full h-9 px-3 rounded-lg border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-slate-900 focus:ring-0 text-xs font-medium transition-all"
                     />
                   </div>
                 </div>
@@ -283,24 +283,24 @@ export default function ExpenseStudio({ rolePrefix }: ExpenseStudioProps) {
             </div>
 
             {/* General Ledger Categorization */}
-            <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 sm:p-8 space-y-6">
-              <div className="flex items-center gap-2.5 pb-4 border-b border-slate-100">
-                <Layers className="w-5 h-5 text-slate-700" />
-                <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900">
+            <div className="bg-white rounded-xl border border-slate-200/80 shadow-sm p-4 sm:p-6 space-y-4">
+              <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
+                <Layers className="w-4 h-4 text-slate-700" />
+                <h2 className="text-xs font-bold uppercase tracking-wider text-slate-900">
                   Chart of Accounts &amp; Payment Method
                 </h2>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
                     Debit Account (Expense Head) <span className="text-rose-500">*</span>
                   </label>
                   <select
                     required
                     value={selectedBook}
                     onChange={(e) => setSelectedBook(e.target.value)}
-                    className="w-full h-12 px-3.5 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-slate-900 focus:ring-0 text-xs font-semibold"
+                    className="w-full h-9 px-3 rounded-lg border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-slate-900 focus:ring-0 text-xs font-medium"
                   >
                     <option value="">Select Expense Account...</option>
                     {expenseBooks.map((b: any) => (
@@ -311,15 +311,15 @@ export default function ExpenseStudio({ rolePrefix }: ExpenseStudioProps) {
                   </select>
                 </div>
 
-                <div className="space-y-1.5">
-                  <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
                     Credit Account (Disbursement Source) <span className="text-rose-500">*</span>
                   </label>
                   <select
                     required
                     value={selectedPaymentMethod}
                     onChange={(e) => setSelectedPaymentMethod(e.target.value)}
-                    className="w-full h-12 px-3.5 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-slate-900 focus:ring-0 text-xs font-semibold"
+                    className="w-full h-9 px-3 rounded-lg border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-slate-900 focus:ring-0 text-xs font-medium"
                   >
                     <option value="">Select Payment Method / Account...</option>
                     {paymentMethods?.map((pm: any) => (
@@ -330,14 +330,14 @@ export default function ExpenseStudio({ rolePrefix }: ExpenseStudioProps) {
                   </select>
                 </div>
 
-                <div className="space-y-1.5">
-                  <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
                     Operational Division
                   </label>
                   <select
                     value={selectedDivision}
                     onChange={(e) => setSelectedDivision(e.target.value)}
-                    className="w-full h-12 px-3.5 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-slate-900 focus:ring-0 text-xs font-semibold"
+                    className="w-full h-9 px-3 rounded-lg border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-slate-900 focus:ring-0 text-xs font-medium"
                   >
                     {divisions?.map((div: any) => (
                       <option key={div.reference} value={div.reference}>
@@ -347,8 +347,8 @@ export default function ExpenseStudio({ rolePrefix }: ExpenseStudioProps) {
                   </select>
                 </div>
 
-                <div className="space-y-1.5">
-                  <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
                     Payee / Vendor (Optional)
                   </label>
                   <input
@@ -356,24 +356,24 @@ export default function ExpenseStudio({ rolePrefix }: ExpenseStudioProps) {
                     placeholder="e.g. Safaricom PLC, Landlord, Amazon Web Services"
                     value={payeeName}
                     onChange={(e) => setPayeeName(e.target.value)}
-                    className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-slate-900 focus:ring-0 text-xs font-semibold"
+                    className="w-full h-9 px-3 rounded-lg border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-slate-900 focus:ring-0 text-xs font-medium"
                   />
                 </div>
               </div>
             </div>
 
             {/* Vendor Document & Receipt Upload */}
-            <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 sm:p-8 space-y-6">
-              <div className="flex items-center gap-2.5 pb-4 border-b border-slate-100">
-                <FileText className="w-5 h-5 text-slate-700" />
-                <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900">
+            <div className="bg-white rounded-xl border border-slate-200/80 shadow-sm p-4 sm:p-6 space-y-4">
+              <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
+                <FileText className="w-4 h-4 text-slate-700" />
+                <h2 className="text-xs font-bold uppercase tracking-wider text-slate-900">
                   Supporting Document &amp; Vendor Invoice
                 </h2>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
                     Bill / Voucher Number
                   </label>
                   <input
@@ -381,19 +381,19 @@ export default function ExpenseStudio({ rolePrefix }: ExpenseStudioProps) {
                     placeholder="e.g. INV-99881, REC-4412"
                     value={documentNumber}
                     onChange={(e) => setDocumentNumber(e.target.value)}
-                    className="w-full h-11 px-3.5 rounded-lg border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-slate-900 focus:ring-0 text-xs font-mono font-semibold"
+                    className="w-full h-9 px-3 rounded-lg border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-slate-900 focus:ring-0 text-xs font-mono font-medium"
                   />
                 </div>
 
-                <div className="space-y-1.5">
-                  <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
                     Receipt / Document Upload
                   </label>
                   <input
                     type="file"
                     accept="image/*,application/pdf"
                     onChange={(e) => setDocumentFile(e.target.files?.[0] || null)}
-                    className="w-full text-xs text-slate-500 file:mr-3 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-slate-900 file:text-white hover:file:bg-slate-800 cursor-pointer"
+                    className="w-full text-xs text-slate-500 file:mr-2.5 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-900 file:text-white hover:file:bg-slate-800 cursor-pointer"
                   />
                 </div>
               </div>
@@ -401,44 +401,44 @@ export default function ExpenseStudio({ rolePrefix }: ExpenseStudioProps) {
           </div>
 
           {/* Right Column: Sticky Double-Entry Ledger Preview */}
-          <div className="space-y-6">
-            <div className="sticky top-24 bg-slate-900 text-white rounded-2xl shadow-2xl p-6 sm:p-8 space-y-6 border border-slate-800">
-              <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+          <div className="space-y-4">
+            <div className="sticky top-24 bg-slate-900 text-white rounded-xl shadow-xl p-4 sm:p-6 space-y-4 border border-slate-800">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-800">
                 <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-5 h-5 text-rose-400" />
+                  <ShieldCheck className="w-4 h-4 text-rose-400" />
                   <span className="text-xs font-bold uppercase tracking-wider text-rose-400">
                     GL Double-Entry Preview
                   </span>
                 </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400">
+                <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">
                   Automated Entry
                 </span>
               </div>
 
               {/* Journal Lines Breakdown */}
-              <div className="space-y-3 py-2 text-xs">
-                <div className="p-3 rounded-xl bg-slate-800/80 border border-slate-700/80 space-y-1">
-                  <div className="flex justify-between items-center text-rose-400 font-bold uppercase text-[10px]">
+              <div className="space-y-2.5 py-1 text-xs">
+                <div className="p-2.5 rounded-lg bg-slate-800/80 border border-slate-700/80 space-y-0.5">
+                  <div className="flex justify-between items-center text-rose-400 font-bold uppercase text-[9px]">
                     <span>DEBIT (Expense Increase)</span>
                     <span className="font-mono">DR</span>
                   </div>
-                  <p className="font-semibold text-white truncate">
+                  <p className="font-semibold text-white truncate text-xs">
                     {currentBookObj ? `${currentBookObj.code} - ${currentBookObj.name}` : "Select Expense Account"}
                   </p>
-                  <p className="font-mono font-bold text-sm text-white pt-1">
+                  <p className="font-mono font-bold text-xs sm:text-sm text-white pt-0.5">
                     KES {parsedAmount.toLocaleString("en-KE", { minimumFractionDigits: 2 })}
                   </p>
                 </div>
 
-                <div className="p-3 rounded-xl bg-slate-800/80 border border-slate-700/80 space-y-1">
-                  <div className="flex justify-between items-center text-emerald-400 font-bold uppercase text-[10px]">
+                <div className="p-2.5 rounded-lg bg-slate-800/80 border border-slate-700/80 space-y-0.5">
+                  <div className="flex justify-between items-center text-emerald-400 font-bold uppercase text-[9px]">
                     <span>CREDIT (Asset Decrease)</span>
                     <span className="font-mono">CR</span>
                   </div>
-                  <p className="font-semibold text-white truncate">
+                  <p className="font-semibold text-white truncate text-xs">
                     {currentPaymentMethodObj ? currentPaymentMethodObj.name : "Select Payment Method"}
                   </p>
-                  <p className="font-mono font-bold text-sm text-white pt-1">
+                  <p className="font-mono font-bold text-xs sm:text-sm text-white pt-0.5">
                     KES {parsedAmount.toLocaleString("en-KE", { minimumFractionDigits: 2 })}
                   </p>
                 </div>
@@ -449,7 +449,7 @@ export default function ExpenseStudio({ rolePrefix }: ExpenseStudioProps) {
                 <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
                   Total Outflow:
                 </span>
-                <span className="text-2xl font-mono font-bold text-rose-400">
+                <span className="text-xl font-mono font-bold text-rose-400">
                   KES {parsedAmount.toLocaleString("en-KE", { minimumFractionDigits: 2 })}
                 </span>
               </div>
@@ -458,17 +458,17 @@ export default function ExpenseStudio({ rolePrefix }: ExpenseStudioProps) {
               <button
                 type="submit"
                 disabled={isSubmitting || parsedAmount <= 0}
-                className="w-full py-4 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold uppercase tracking-widest transition-all shadow-xl shadow-rose-600/25 flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50"
+                className="w-full h-10 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-xs font-bold uppercase tracking-wider transition-all shadow-md shadow-rose-600/25 flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50"
               >
                 {isSubmitting ? (
                   <>
-                    <RefreshCw className="w-4 h-4 animate-spin" />
-                    Committing to Ledger...
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                    <span>Committing to Ledger...</span>
                   </>
                 ) : (
                   <>
-                    <Wallet className="w-4 h-4" />
-                    Log Expense &amp; Post to GL
+                    <Wallet className="w-3.5 h-3.5" />
+                    <span>Log Expense &amp; Post to GL</span>
                   </>
                 )}
               </button>

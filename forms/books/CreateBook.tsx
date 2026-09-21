@@ -94,25 +94,25 @@ export default function CreateBook({
       className={`w-full border-black/5 shadow-2xl rounded overflow-hidden bg-white/80 backdrop-blur-xl ${className}`}
     >
       <div
-        className="p-8 border-b border-black/5"
+        className="p-4 sm:p-5 border-b border-black/5"
         style={{ backgroundColor: `${primaryColor}0D` }}
       >
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center gap-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
             <div
-              className="w-12 h-12 rounded flex items-center justify-center text-white shadow-lg"
+              className="w-9 h-9 rounded flex items-center justify-center text-white shadow-md"
               style={{
                 backgroundColor: primaryColor,
-                boxShadow: `0 10px 15px -3px ${primaryColor}4D`,
+                boxShadow: `0 4px 6px -1px ${primaryColor}4D`,
               }}
             >
-              <BookOpen className="w-6 h-6" />
+              <BookOpen className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-2xl font-semibold text-black tracking-tight">
+              <h2 className="text-base font-semibold text-black tracking-tight">
                 Create Account Book
               </h2>
-              <p className="text-black/50 font-semibold uppercase text-[10px] tracking-widest mt-1">
+              <p className="text-black/50 font-semibold uppercase text-[10px] tracking-widest">
                 General Ledger Infrastructure
               </p>
             </div>
@@ -121,18 +121,17 @@ export default function CreateBook({
             <button
               type="button"
               onClick={onClose}
-
-              className="hover:bg-red-50 hover:text-red-500 rounded p-2"
+              className="hover:bg-red-50 hover:text-red-500 rounded p-1.5"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
           )}
         </div>
       </div>
-      <div className="p-8">
-        <form onSubmit={formik.handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
+      <div className="p-4 sm:p-5">
+        <form onSubmit={formik.handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
               <label
                 htmlFor="code"
                 className="text-[10px] font-semibold uppercase tracking-widest text-black/40 ml-1"
@@ -144,7 +143,7 @@ export default function CreateBook({
                 name="code"
                 type="text"
                 placeholder="e.g. BK-100"
-                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 w-full h-14 rounded focus:bg-slate-50 transition-all font-semibold px-5"
+                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 w-full h-9 sm:h-10 rounded focus:bg-slate-50 transition-all font-medium px-3 text-xs sm:text-sm text-slate-900"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.code}
@@ -157,7 +156,7 @@ export default function CreateBook({
               )}
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <label
                 htmlFor="name"
                 className="text-[10px] font-semibold uppercase tracking-widest text-black/40 ml-1"
@@ -169,7 +168,7 @@ export default function CreateBook({
                 name="name"
                 type="text"
                 placeholder="e.g. Main Cash Book"
-                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 w-full h-14 rounded focus:bg-slate-50 transition-all font-semibold px-5"
+                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 w-full h-9 sm:h-10 rounded focus:bg-slate-50 transition-all font-medium px-3 text-xs sm:text-sm text-slate-900"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.name}
@@ -183,7 +182,7 @@ export default function CreateBook({
             </div>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <label
               htmlFor="account_type"
               className="text-[10px] font-semibold uppercase tracking-widest text-black/40 ml-1"
@@ -194,7 +193,7 @@ export default function CreateBook({
               id="account_type"
               name="account_type"
               disabled={isLoadingCOAs || !!initialCOA}
-              className="focus:outline-none focus:ring-2 focus:ring-emerald-600/20 flex h-14 w-full rounded border border-slate-200 bg-slate-50 px-5 py-2 text-sm font-semibold ring-offset-white transition-all appearance-none cursor-pointer disabled:opacity-50"
+              className="focus:outline-none focus:ring-2 focus:ring-emerald-600/20 flex h-9 sm:h-10 w-full rounded border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs sm:text-sm font-medium text-slate-900 ring-offset-white transition-all appearance-none cursor-pointer disabled:opacity-50"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.account_type}
@@ -214,9 +213,9 @@ export default function CreateBook({
             )}
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
             <div
-              className={`flex flex-col items-center justify-center p-4 rounded border border-black/5 transition-all gap-2 group cursor-pointer ${formik.values.is_active ? "bg-black/5" : "bg-white"}`}
+              className={`flex flex-col items-center justify-center p-2.5 rounded border border-black/5 transition-all gap-1.5 group cursor-pointer ${formik.values.is_active ? "bg-black/5" : "bg-white"}`}
               onClick={() =>
                 formik.setFieldValue("is_active", !formik.values.is_active)
               }
@@ -230,7 +229,7 @@ export default function CreateBook({
                 name="is_active"
                 checked={formik.values.is_active}
                 onChange={formik.handleChange}
-                className="w-5 h-5 rounded transition-colors cursor-pointer"
+                className="w-4 h-4 rounded transition-colors cursor-pointer"
                 style={{ accentColor: primaryColor }}
               />
               <span className="text-[10px] font-semibold uppercase text-black/60 group-hover:text-black">
@@ -238,7 +237,7 @@ export default function CreateBook({
               </span>
             </div>
             <div
-              className={`flex flex-col items-center justify-center p-4 rounded border border-black/5 transition-all gap-2 group cursor-pointer ${formik.values.is_bank ? "bg-black/5" : "bg-white"}`}
+              className={`flex flex-col items-center justify-center p-2.5 rounded border border-black/5 transition-all gap-1.5 group cursor-pointer ${formik.values.is_bank ? "bg-black/5" : "bg-white"}`}
               onClick={() =>
                 formik.setFieldValue("is_bank", !formik.values.is_bank)
               }
@@ -251,7 +250,7 @@ export default function CreateBook({
                 name="is_bank"
                 checked={formik.values.is_bank}
                 onChange={formik.handleChange}
-                className="w-5 h-5 rounded transition-colors cursor-pointer"
+                className="w-4 h-4 rounded transition-colors cursor-pointer"
                 style={{ accentColor: primaryColor }}
               />
               <span className="text-[10px] font-semibold uppercase text-black/60 group-hover:text-black">
@@ -259,7 +258,7 @@ export default function CreateBook({
               </span>
             </div>
             <div
-              className={`flex flex-col items-center justify-center p-4 rounded border border-black/5 transition-all gap-2 group cursor-pointer ${formik.values.is_tax ? "bg-black/5" : "bg-white"}`}
+              className={`flex flex-col items-center justify-center p-2.5 rounded border border-black/5 transition-all gap-1.5 group cursor-pointer ${formik.values.is_tax ? "bg-black/5" : "bg-white"}`}
               onClick={() =>
                 formik.setFieldValue("is_tax", !formik.values.is_tax)
               }
@@ -272,7 +271,7 @@ export default function CreateBook({
                 name="is_tax"
                 checked={formik.values.is_tax}
                 onChange={formik.handleChange}
-                className="w-5 h-5 rounded transition-colors cursor-pointer"
+                className="w-4 h-4 rounded transition-colors cursor-pointer"
                 style={{ accentColor: primaryColor }}
               />
               <span className="text-[10px] font-semibold uppercase text-black/60 group-hover:text-black">
@@ -280,7 +279,7 @@ export default function CreateBook({
               </span>
             </div>
             <div
-              className={`flex flex-col items-center justify-center p-4 rounded border border-black/5 transition-all gap-2 group cursor-pointer ${formik.values.is_cash ? "bg-black/5" : "bg-white"}`}
+              className={`flex flex-col items-center justify-center p-2.5 rounded border border-black/5 transition-all gap-1.5 group cursor-pointer ${formik.values.is_cash ? "bg-black/5" : "bg-white"}`}
               onClick={() =>
                 formik.setFieldValue("is_cash", !formik.values.is_cash)
               }
@@ -293,7 +292,7 @@ export default function CreateBook({
                 name="is_cash"
                 checked={formik.values.is_cash}
                 onChange={formik.handleChange}
-                className="w-5 h-5 rounded transition-colors cursor-pointer"
+                className="w-4 h-4 rounded transition-colors cursor-pointer"
                 style={{ accentColor: primaryColor }}
               />
               <span className="text-[10px] font-semibold uppercase text-black/60 group-hover:text-black text-center leading-tight">
@@ -301,7 +300,7 @@ export default function CreateBook({
               </span>
             </div>
             <div
-              className={`flex flex-col items-center justify-center p-4 rounded border border-black/5 transition-all gap-2 group cursor-pointer ${formik.values.is_current ? "bg-black/5" : "bg-white"}`}
+              className={`flex flex-col items-center justify-center p-2.5 rounded border border-black/5 transition-all gap-1.5 group cursor-pointer ${formik.values.is_current ? "bg-black/5" : "bg-white"}`}
               onClick={() =>
                 formik.setFieldValue("is_current", !formik.values.is_current)
               }
@@ -314,7 +313,7 @@ export default function CreateBook({
                 name="is_current"
                 checked={formik.values.is_current}
                 onChange={formik.handleChange}
-                className="w-5 h-5 rounded transition-colors cursor-pointer"
+                className="w-4 h-4 rounded transition-colors cursor-pointer"
                 style={{ accentColor: primaryColor }}
               />
               <span className="text-[10px] font-semibold uppercase text-black/60 group-hover:text-black text-center leading-tight">
@@ -322,7 +321,7 @@ export default function CreateBook({
               </span>
             </div>
             <div
-              className={`flex flex-col items-center justify-center p-4 rounded border border-black/5 transition-all gap-2 group cursor-pointer ${formik.values.is_ar ? "bg-black/5" : "bg-white"}`}
+              className={`flex flex-col items-center justify-center p-2.5 rounded border border-black/5 transition-all gap-1.5 group cursor-pointer ${formik.values.is_ar ? "bg-black/5" : "bg-white"}`}
               onClick={() =>
                 formik.setFieldValue("is_ar", !formik.values.is_ar)
               }
@@ -335,7 +334,7 @@ export default function CreateBook({
                 name="is_ar"
                 checked={formik.values.is_ar}
                 onChange={formik.handleChange}
-                className="w-5 h-5 rounded transition-colors cursor-pointer"
+                className="w-4 h-4 rounded transition-colors cursor-pointer"
                 style={{ accentColor: primaryColor }}
               />
               <span className="text-[10px] font-semibold uppercase text-black/60 group-hover:text-black text-center leading-tight">
@@ -343,7 +342,7 @@ export default function CreateBook({
               </span>
             </div>
             <div
-              className={`flex flex-col items-center justify-center p-4 rounded border border-black/5 transition-all gap-2 group cursor-pointer ${formik.values.is_ap ? "bg-black/5" : "bg-white"}`}
+              className={`flex flex-col items-center justify-center p-2.5 rounded border border-black/5 transition-all gap-1.5 group cursor-pointer ${formik.values.is_ap ? "bg-black/5" : "bg-white"}`}
               onClick={() =>
                 formik.setFieldValue("is_ap", !formik.values.is_ap)
               }
@@ -356,7 +355,7 @@ export default function CreateBook({
                 name="is_ap"
                 checked={formik.values.is_ap}
                 onChange={formik.handleChange}
-                className="w-5 h-5 rounded transition-colors cursor-pointer"
+                className="w-4 h-4 rounded transition-colors cursor-pointer"
                 style={{ accentColor: primaryColor }}
               />
               <span className="text-[10px] font-semibold uppercase text-black/60 group-hover:text-black text-center leading-tight">
@@ -365,7 +364,7 @@ export default function CreateBook({
             </div>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <label
               htmlFor="description"
               className="text-[10px] font-semibold uppercase tracking-widest text-black/40 ml-1"
@@ -376,7 +375,7 @@ export default function CreateBook({
               id="description"
               name="description"
               placeholder="Provide a brief description of this book..."
-              className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 w-full min-h-[120px] rounded focus:bg-slate-50 transition-all font-semibold p-5"
+              className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 w-full min-h-[75px] rounded focus:bg-slate-50 transition-all font-medium p-3 text-xs sm:text-sm text-slate-900 resize-none"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.description}
@@ -389,21 +388,21 @@ export default function CreateBook({
             )}
           </div>
 
-          <div className="pt-4">
+          <div className="pt-2">
             <button
               type="submit"
               disabled={formik.isSubmitting}
-              className="w-full h-16 text-white rounded font-semibold text-lg transition-all shadow-xl active:scale-[0.98] group flex items-center justify-center"
+              className="w-full h-9 sm:h-10 text-white rounded font-semibold text-xs sm:text-sm transition-all shadow-sm active:scale-[0.98] group flex items-center justify-center gap-2"
               style={{
                 backgroundColor: primaryColor,
-                boxShadow: `0 10px 20px -5px ${primaryColor}4D`,
+                boxShadow: `0 4px 10px -2px ${primaryColor}4D`,
               }}
             >
               {formik.isSubmitting ? (
-                <Loader2 className="w-6 h-6 animate-spin" />
+                <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
-                <div className="flex items-center gap-3">
-                  <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform" />
+                <div className="flex items-center gap-2">
+                  <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform" />
                   Initialize Account Book
                 </div>
               )}

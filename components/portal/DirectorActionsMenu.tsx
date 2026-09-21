@@ -25,20 +25,18 @@ export default function DirectorActionsMenu() {
       {/* The Dropdown Menu */}
       <DropdownMenu.Root>
         <DropdownMenu.Trigger asChild>
-          <button className="h-14 px-8 bg-slate-900 hover:bg-corporate-primary text-white rounded font-semibold text-sm tracking-tight transition-all shadow-xl hover:shadow-corporate-primary/20 active:scale-[0.98] flex items-center gap-3 group data-[state=open]:bg-corporate-primary">
-            <div className="w-8 h-8 rounded bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
-              <Plus className="w-4 h-4" />
-            </div>
-            Quick Actions
-            <ChevronDown className="w-4 h-4 text-white/50 group-hover:text-white transition-transform duration-300 group-data-[state=open]:rotate-180" />
+          <button className="h-9 sm:h-10 px-3.5 sm:px-4 bg-slate-900 hover:bg-corporate-primary text-white rounded-lg font-semibold text-xs tracking-tight transition-all shadow-sm active:scale-[0.98] flex items-center gap-2 group data-[state=open]:bg-corporate-primary">
+            <Plus className="w-3.5 h-3.5" />
+            <span>Quick Actions</span>
+            <ChevronDown className="w-3.5 h-3.5 text-white/50 group-hover:text-white transition-transform duration-200 group-data-[state=open]:rotate-180" />
           </button>
         </DropdownMenu.Trigger>
 
         <DropdownMenu.Portal>
           <DropdownMenu.Content
             align="end"
-            sideOffset={8}
-            className="z-[200] w-64 p-2 bg-white rounded shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-slate-100 animate-in fade-in zoom-in-95 data-[side=bottom]:slide-in-from-top-2"
+            sideOffset={6}
+            className="z-[200] w-56 sm:w-64 p-1.5 bg-white rounded-xl shadow-xl border border-slate-200 animate-in fade-in zoom-in-95 max-w-[calc(100vw-2rem)]"
           >
             <DropdownMenu.Item
               onSelect={() => divisionTriggerRef.current?.click()}

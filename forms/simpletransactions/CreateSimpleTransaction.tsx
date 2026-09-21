@@ -96,17 +96,17 @@ export default function CreateSimpleTransaction({
   const isLoading = loadingBooks || loadingDivisions || loadingJournalTypes || loadingPaymentMethods;
 
   return (
-    <div className="mx-auto w-full border border-slate-200 shadow-2xl rounded overflow-hidden bg-white max-h-[90vh] flex flex-col">
+    <div className="mx-auto w-full border border-slate-200 shadow-2xl rounded-xl overflow-hidden bg-white max-h-[90vh] flex flex-col">
       {/* Header */}
-      <div className="p-4 sm:p-6 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white flex-shrink-0">
+      <div className="px-5 py-3.5 sm:py-4 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white flex-shrink-0">
         <div className="flex items-start justify-between">
-          <div className="flex items-center gap-3 sm:gap-4">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded flex items-center justify-center text-white shadow-xl bg-slate-900 flex-shrink-0">
-              <Zap className="w-5 h-5 sm:w-6 sm:h-6" />
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg flex items-center justify-center text-white shadow-md bg-slate-900 flex-shrink-0">
+              <Zap className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">Log Transaction</h2>
-              <p className="text-slate-400 font-semibold text-[10px] uppercase tracking-widest mt-0.5">
+              <h2 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">Log Transaction</h2>
+              <p className="text-slate-400 font-semibold text-[10px] uppercase tracking-wider mt-0.5">
                 Journal entry auto-generated on save
               </p>
             </div>
@@ -115,56 +115,56 @@ export default function CreateSimpleTransaction({
             <button
               type="button"
               onClick={onClose}
-              className="hover:bg-red-50 hover:text-red-500 rounded text-slate-300 p-2 sm:p-2.5 transition-all active:scale-95 flex-shrink-0 ml-2"
+              className="hover:bg-red-50 hover:text-red-500 rounded-lg text-slate-400 p-1.5 transition-all active:scale-95 flex-shrink-0 ml-2"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
           )}
         </div>
       </div>
 
       {/* Scrollable form body */}
-      <div className="flex-1 overflow-y-auto p-4 sm:p-6">
-        <form id="simple-tx-form" onSubmit={formik.handleSubmit} className="space-y-5">
+      <div className="flex-1 overflow-y-auto p-4 sm:p-5">
+        <form id="simple-tx-form" onSubmit={formik.handleSubmit} className="space-y-4">
 
           {/* Transaction Type Toggle */}
-          <div className="space-y-2">
-            <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 ml-1">
               Transaction Type <span className="text-red-500">*</span>
             </label>
-            <div className="grid grid-cols-2 gap-2 sm:gap-3">
+            <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
                 onClick={() => formik.setFieldValue("transaction_type", "MONEY_OUT")}
                 className={cn(
-                  "flex items-center justify-center gap-1.5 sm:gap-2 h-11 sm:h-12 rounded border font-semibold text-xs sm:text-sm transition-all",
+                  "flex items-center justify-center gap-1.5 h-9 rounded-lg border font-semibold text-xs transition-all",
                   !isMoneyIn
-                    ? "bg-red-600 text-white border-red-600 shadow-lg shadow-red-600/20"
-                    : "bg-slate-50 text-slate-500 border-slate-200 hover:border-red-200 hover:text-red-500"
+                    ? "bg-red-600 text-white border-red-600 shadow-sm"
+                    : "bg-slate-50 text-slate-600 border-slate-200 hover:border-red-200 hover:text-red-500"
                 )}
               >
-                <ArrowUpRight className="w-4 h-4 flex-shrink-0" />
+                <ArrowUpRight className="w-3.5 h-3.5 flex-shrink-0" />
                 Money Out
               </button>
               <button
                 type="button"
                 onClick={() => formik.setFieldValue("transaction_type", "MONEY_IN")}
                 className={cn(
-                  "flex items-center justify-center gap-1.5 sm:gap-2 h-11 sm:h-12 rounded border font-semibold text-xs sm:text-sm transition-all",
+                  "flex items-center justify-center gap-1.5 h-9 rounded-lg border font-semibold text-xs transition-all",
                   isMoneyIn
-                    ? "bg-emerald-600 text-white border-emerald-600 shadow-lg shadow-emerald-600/20"
-                    : "bg-slate-50 text-slate-500 border-slate-200 hover:border-emerald-200 hover:text-emerald-500"
+                    ? "bg-emerald-600 text-white border-emerald-600 shadow-sm"
+                    : "bg-slate-50 text-slate-600 border-slate-200 hover:border-emerald-200 hover:text-emerald-500"
                 )}
               >
-                <ArrowDownLeft className="w-4 h-4 flex-shrink-0" />
+                <ArrowDownLeft className="w-3.5 h-3.5 flex-shrink-0" />
                 Money In
               </button>
             </div>
           </div>
 
           {/* Description */}
-          <div className="space-y-2">
-            <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 ml-1">
               Description <span className="text-red-500">*</span>
             </label>
             <input
@@ -172,16 +172,16 @@ export default function CreateSimpleTransaction({
               type="text"
               required
               placeholder="e.g. Bought water, Office supplies..."
-              className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-900/10 w-full h-12 rounded focus:bg-white focus:border-slate-900 transition-all font-semibold px-4 text-sm"
+              className="border border-slate-200 bg-slate-50/70 focus:outline-none focus:ring-1 focus:ring-slate-900 w-full h-9 rounded-lg focus:bg-white focus:border-slate-400 transition-all font-medium px-3 text-xs sm:text-sm"
               onChange={formik.handleChange}
               value={formik.values.name}
             />
           </div>
 
           {/* Amount + Date */}
-          <div className="grid grid-cols-2 gap-3 sm:gap-4">
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 ml-1">
                 Amount (KES) <span className="text-red-500">*</span>
               </label>
               <input
@@ -191,20 +191,20 @@ export default function CreateSimpleTransaction({
                 step="0.01"
                 min="0.01"
                 placeholder="0.00"
-                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-900/10 w-full h-12 rounded focus:bg-white focus:border-slate-900 transition-all font-semibold px-3 sm:px-4 text-sm font-mono"
+                className="border border-slate-200 bg-slate-50/70 focus:outline-none focus:ring-1 focus:ring-slate-900 w-full h-9 rounded-lg focus:bg-white focus:border-slate-400 transition-all font-bold px-3 text-xs sm:text-sm font-mono"
                 onChange={formik.handleChange}
                 value={formik.values.amount}
               />
             </div>
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 ml-1">
                 Date <span className="text-red-500">*</span>
               </label>
               <input
                 name="date"
                 type="date"
                 required
-                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-900/10 w-full h-12 rounded focus:bg-white focus:border-slate-900 transition-all font-semibold px-3 sm:px-4 text-sm"
+                className="border border-slate-200 bg-slate-50/70 focus:outline-none focus:ring-1 focus:ring-slate-900 w-full h-9 rounded-lg focus:bg-white focus:border-slate-400 transition-all font-medium px-3 text-xs sm:text-sm"
                 onChange={formik.handleChange}
                 value={formik.values.date}
               />
@@ -212,7 +212,7 @@ export default function CreateSimpleTransaction({
           </div>
 
           {/* Ledger Book + Payment Method */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <SearchableSelect
               label={isMoneyIn ? "Credit Book (Destination)" : "Debit Book (What is bought/paid)"}
               options={bookOptions}
@@ -234,7 +234,7 @@ export default function CreateSimpleTransaction({
           </div>
 
           {/* Division + Journal Type */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <SearchableSelect
               label="Division"
               options={divisionOptions}
@@ -266,34 +266,34 @@ export default function CreateSimpleTransaction({
           />
 
           {/* Documentation */}
-          <div className="pt-4 border-t border-slate-100 space-y-4">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+          <div className="pt-3 border-t border-slate-100 space-y-3">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
               Documentation (Optional)
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 ml-1">
                   Source Document
                 </label>
                 <input
                   name="source_document"
                   type="text"
                   placeholder="Invoice, Receipt, Tax Receipt, etc."
-                  className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-900/10 w-full h-12 rounded focus:bg-white focus:border-slate-900 transition-all font-semibold px-4 text-sm"
+                  className="border border-slate-200 bg-slate-50/70 focus:outline-none focus:ring-1 focus:ring-slate-900 w-full h-9 rounded-lg focus:bg-white focus:border-slate-400 transition-all font-medium px-3 text-xs sm:text-sm"
                   onChange={formik.handleChange}
                   value={formik.values.source_document}
                 />
               </div>
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 ml-1">
                   Document Number
                 </label>
                 <input
                   name="document_number"
                   type="text"
                   placeholder="INV-001, RCT-2024, etc."
-                  className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-900/10 w-full h-12 rounded focus:bg-white focus:border-slate-900 transition-all font-semibold px-4 text-sm"
+                  className="border border-slate-200 bg-slate-50/70 focus:outline-none focus:ring-1 focus:ring-slate-900 w-full h-9 rounded-lg focus:bg-white focus:border-slate-400 transition-all font-medium px-3 text-xs sm:text-sm font-mono"
                   onChange={formik.handleChange}
                   value={formik.values.document_number}
                 />
@@ -301,8 +301,8 @@ export default function CreateSimpleTransaction({
             </div>
 
             {/* File Upload */}
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 ml-1">
                 Attach Proof (Receipt / Invoice image)
               </label>
               <div className="relative">
@@ -318,14 +318,14 @@ export default function CreateSimpleTransaction({
                 <label
                   htmlFor="simple-tx-file"
                   className={cn(
-                    "flex h-12 sm:h-14 border-2 border-dashed rounded items-center px-4 gap-3 cursor-pointer transition-all group",
+                    "flex h-9 sm:h-10 border border-dashed rounded-lg items-center px-3 gap-2.5 cursor-pointer transition-all group",
                     formik.values.document_file
                       ? "border-emerald-400 bg-emerald-50 text-emerald-700"
-                      : "border-slate-200 bg-slate-50 text-slate-400 hover:border-slate-400 hover:bg-slate-100"
+                      : "border-slate-300 bg-slate-50 text-slate-500 hover:border-slate-400 hover:bg-slate-100"
                   )}
                 >
-                  <FileUp className={cn("w-4 h-4 flex-shrink-0", formik.values.document_file ? "text-emerald-600" : "")} />
-                  <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wide truncate">
+                  <FileUp className={cn("w-3.5 h-3.5 flex-shrink-0", formik.values.document_file ? "text-emerald-600" : "")} />
+                  <span className="text-[10px] sm:text-xs font-semibold truncate">
                     {formik.values.document_file
                       ? formik.values.document_file.name
                       : "Tap to upload receipt or invoice"}
@@ -339,7 +339,7 @@ export default function CreateSimpleTransaction({
                         formik.setFieldValue("document_file", null);
                       }}
                     >
-                      <X className="w-4 h-4" />
+                      <X className="w-3.5 h-3.5" />
                     </button>
                   )}
                 </label>
@@ -351,25 +351,24 @@ export default function CreateSimpleTransaction({
       </div>
 
       {/* Sticky Submit Button */}
-      <div className="p-4 sm:p-6 border-t border-slate-100 bg-slate-50/50 flex-shrink-0">
+      <div className="px-5 py-3 sm:py-3.5 border-t border-slate-100 bg-slate-50/50 flex-shrink-0">
         <button
           type="submit"
           form="simple-tx-form"
           disabled={formik.isSubmitting || isLoading}
           className={cn(
-            "w-full h-12 sm:h-14 text-white rounded font-bold text-sm transition-all shadow-lg active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-60",
+            "w-full h-9 sm:h-10 text-white rounded-lg font-bold text-xs uppercase tracking-wider transition-all shadow-sm active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-60",
             isMoneyIn
-              ? "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/30"
-              : "bg-slate-900 hover:bg-slate-800 shadow-slate-900/30"
+              ? "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/20"
+              : "bg-slate-900 hover:bg-slate-800 shadow-slate-900/20"
           )}
         >
           {formik.isSubmitting ? (
-            <Loader2 className="w-5 h-5 animate-spin" />
+            <Loader2 className="w-4 h-4 animate-spin" />
           ) : (
             <>
-              <Zap className="w-4 h-4" />
-              <span className="hidden sm:inline">LOG TRANSACTION &amp; AUTO-GENERATE JOURNAL</span>
-              <span className="sm:hidden">LOG TRANSACTION</span>
+              <Zap className="w-3.5 h-3.5" />
+              <span>LOG TRANSACTION &amp; POST JOURNAL</span>
             </>
           )}
         </button>

@@ -79,25 +79,25 @@ export default function CreateCOA({
       className={`mx-auto w-full border-black/5 shadow-2xl rounded overflow-hidden bg-white/80 backdrop-blur-xl ${className}`}
     >
       <div
-        className="p-8 border-b border-black/5"
+        className="p-4 sm:p-5 border-b border-black/5"
         style={{ backgroundColor: `${primaryColor}0D` }}
       >
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center gap-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
             <div
-              className="w-12 h-12 rounded flex items-center justify-center text-white shadow-lg"
+              className="w-9 h-9 rounded flex items-center justify-center text-white shadow-md"
               style={{
                 backgroundColor: primaryColor,
-                boxShadow: `0 10px 15px -3px ${primaryColor}4D`,
+                boxShadow: `0 4px 6px -1px ${primaryColor}4D`,
               }}
             >
-              <FileText className="w-6 h-6" />
+              <FileText className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-2xl font-semibold text-black tracking-tight">
+              <h2 className="text-base font-semibold text-black tracking-tight">
                 Add Chart of Account
               </h2>
-              <p className="text-black/50 font-semibold uppercase text-[10px] tracking-widest mt-1">
+              <p className="text-black/50 font-semibold uppercase text-[10px] tracking-widest">
                 Financial Classification
               </p>
             </div>
@@ -106,17 +106,17 @@ export default function CreateCOA({
             <button
               type="button"
               onClick={onClose}
-              className="hover:bg-red-50 hover:text-red-500 rounded p-2 transition-colors"
+              className="hover:bg-red-50 hover:text-red-500 rounded p-1.5 transition-colors"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
           )}
         </div>
       </div>
-      <div className="p-8">
-        <form onSubmit={formik.handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
+      <div className="p-4 sm:p-5">
+        <form onSubmit={formik.handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
               <label
                 htmlFor="code"
                 className="text-[10px] font-semibold uppercase tracking-widest text-black/40 ml-1"
@@ -128,7 +128,7 @@ export default function CreateCOA({
                 name="code"
                 type="text"
                 placeholder="e.g. 1000"
-                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 w-full h-14 rounded focus:bg-slate-50 transition-all font-semibold px-5"
+                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 w-full h-9 sm:h-10 rounded focus:bg-slate-50 transition-all font-medium px-3 text-xs sm:text-sm text-slate-900"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.code}
@@ -141,7 +141,7 @@ export default function CreateCOA({
               )}
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <label
                 htmlFor="order"
                 className="text-[10px] font-semibold uppercase tracking-widest text-black/40 ml-1"
@@ -153,7 +153,7 @@ export default function CreateCOA({
                 name="order"
                 type="number"
                 placeholder="e.g. 10"
-                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 w-full h-14 rounded focus:bg-slate-50 transition-all font-semibold px-5"
+                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 w-full h-9 sm:h-10 rounded focus:bg-slate-50 transition-all font-medium px-3 text-xs sm:text-sm text-slate-900"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.order}
@@ -167,7 +167,7 @@ export default function CreateCOA({
             </div>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <label
               htmlFor="name"
               className="text-[10px] font-semibold uppercase tracking-widest text-black/40 ml-1"
@@ -179,7 +179,7 @@ export default function CreateCOA({
               name="name"
               type="text"
               placeholder="e.g. Liquidity Fund"
-              className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 w-full h-14 rounded focus:bg-slate-50 transition-all font-semibold px-5"
+              className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 w-full h-9 sm:h-10 rounded focus:bg-slate-50 transition-all font-medium px-3 text-xs sm:text-sm text-slate-900"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.name}
@@ -192,8 +192,8 @@ export default function CreateCOA({
             )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
               <label
                 htmlFor="normal_balance"
                 className="text-[10px] font-semibold uppercase tracking-widest text-black/40 ml-1"
@@ -203,7 +203,7 @@ export default function CreateCOA({
               <select
                 id="normal_balance"
                 name="normal_balance"
-                className="focus:outline-none focus:ring-2 focus:ring-emerald-600/20 flex h-14 w-full rounded border border-slate-200 bg-slate-50 px-5 py-2 text-sm font-semibold ring-offset-white transition-all appearance-none cursor-pointer"
+                className="focus:outline-none focus:ring-2 focus:ring-emerald-600/20 flex h-9 sm:h-10 w-full rounded border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs sm:text-sm font-medium text-slate-900 ring-offset-white transition-all appearance-none cursor-pointer"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.normal_balance}
@@ -219,7 +219,7 @@ export default function CreateCOA({
               )}
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <label
                 htmlFor="report_role"
                 className="text-[10px] font-semibold uppercase tracking-widest text-black/40 ml-1"
@@ -229,7 +229,7 @@ export default function CreateCOA({
               <select
                 id="report_role"
                 name="report_role"
-                className="focus:outline-none focus:ring-2 focus:ring-emerald-600/20 flex h-14 w-full rounded border border-slate-200 bg-slate-50 px-5 py-2 text-sm font-semibold ring-offset-white transition-all appearance-none cursor-pointer"
+                className="focus:outline-none focus:ring-2 focus:ring-emerald-600/20 flex h-9 sm:h-10 w-full rounded border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs sm:text-sm font-medium text-slate-900 ring-offset-white transition-all appearance-none cursor-pointer"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.report_role}
@@ -250,12 +250,12 @@ export default function CreateCOA({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="flex items-center gap-3 p-4 bg-black/5 rounded border border-black/5 hover:bg-black/10 transition-colors cursor-pointer group">
+            <div className="flex items-center gap-2.5 p-2.5 bg-black/5 rounded border border-black/5 hover:bg-black/10 transition-colors cursor-pointer group">
               <input
                 id="is_active"
                 name="is_active"
                 type="checkbox"
-                className="w-5 h-5 rounded border-black/5 transition-colors cursor-pointer"
+                className="w-4 h-4 rounded border-black/5 transition-colors cursor-pointer"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 checked={formik.values.is_active}
@@ -263,28 +263,28 @@ export default function CreateCOA({
               />
               <label
                 htmlFor="is_active"
-                className="text-sm font-semibold text-black cursor-pointer group-hover:text-opacity-70 transition-opacity"
+                className="text-xs font-semibold text-black cursor-pointer group-hover:text-opacity-70 transition-opacity"
               >
                 Active Account
               </label>
             </div>
           </div>
 
-          <div className="pt-4 pb-2">
+          <div className="pt-2">
             <button
               type="submit"
               disabled={formik.isSubmitting}
-              className="w-full h-16 text-white rounded font-semibold text-lg transition-all shadow-xl active:scale-[0.98] group flex items-center justify-center"
+              className="w-full h-9 sm:h-10 text-white rounded font-semibold text-xs sm:text-sm transition-all shadow-sm active:scale-[0.98] group flex items-center justify-center gap-2"
               style={{
                 backgroundColor: primaryColor,
-                boxShadow: `0 10px 20px -5px ${primaryColor}4D`,
+                boxShadow: `0 4px 10px -2px ${primaryColor}4D`,
               }}
             >
               {formik.isSubmitting ? (
-                <Loader2 className="w-6 h-6 animate-spin" />
+                <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
-                <div className="flex items-center gap-3">
-                  <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform" />
+                <div className="flex items-center gap-2">
+                  <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform" />
                   Register Account
                 </div>
               )}

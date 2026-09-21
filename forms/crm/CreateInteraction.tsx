@@ -53,27 +53,27 @@ export default function CreateInteractionModal({ leadId, partnerId, trigger }: C
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] animate-in fade-in duration-300" />
         <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-white rounded shadow-2xl z-[101] overflow-hidden animate-in zoom-in-95 duration-300 border border-slate-200">
-          <div className="p-8 border-b border-slate-100 bg-slate-50/50">
+          <div className="p-4 sm:p-5 border-b border-slate-100 bg-slate-50/50">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded bg-slate-900 flex items-center justify-center text-white shadow-lg">
-                  <MessageSquare className="w-5 h-5" />
+                <div className="w-8 h-8 rounded bg-slate-900 flex items-center justify-center text-white shadow-md">
+                  <MessageSquare className="w-4 h-4" />
                 </div>
                 <div>
-                  <Dialog.Title className="text-xl font-semibold text-slate-900 tracking-tight">Log CRM Activity</Dialog.Title>
+                  <Dialog.Title className="text-base font-semibold text-slate-900 tracking-tight">Log CRM Activity</Dialog.Title>
                   <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Record an interaction or note</p>
                 </div>
               </div>
               <Dialog.Close className="w-8 h-8 rounded hover:bg-white flex items-center justify-center text-slate-400 transition-colors">
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </Dialog.Close>
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="p-8 space-y-8">
-            <div className="space-y-4">
+          <form onSubmit={handleSubmit} className="p-4 sm:p-5 space-y-4">
+            <div className="space-y-2">
               <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Activity Type</p>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                 {INTERACTION_TYPES.map((type) => {
                   const Icon = type.icon;
                   const isSelected = formData.interaction_type === type.value;
@@ -83,15 +83,15 @@ export default function CreateInteractionModal({ leadId, partnerId, trigger }: C
                       type="button"
                       onClick={() => setFormData({ ...formData, interaction_type: type.value })}
                       className={cn(
-                        "flex flex-col items-center gap-2 p-4 rounded border transition-all hover:border-slate-300 relative",
-                        isSelected ? cn("ring-2 ring-slate-900 shadow-lg", type.color) : "bg-white text-slate-400 border-slate-100"
+                        "flex flex-col items-center gap-1.5 p-2.5 rounded border transition-all hover:border-slate-300 relative",
+                        isSelected ? cn("ring-2 ring-slate-900 shadow-sm", type.color) : "bg-white text-slate-400 border-slate-100"
                       )}
                     >
-                      <Icon className="w-5 h-5" />
+                      <Icon className="w-4 h-4" />
                       <span className="text-[9px] font-bold uppercase tracking-widest text-center leading-tight">{type.label}</span>
                       {isSelected && (
-                        <div className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-slate-900 rounded flex items-center justify-center text-white ring-2 ring-white">
-                          <Check className="w-2.5 h-2.5" />
+                        <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-slate-900 rounded flex items-center justify-center text-white ring-1 ring-white">
+                          <Check className="w-2 h-2" />
                         </div>
                       )}
                     </button>
@@ -100,7 +100,7 @@ export default function CreateInteractionModal({ leadId, partnerId, trigger }: C
               </div>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-3">
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Subject Title</label>
                 <input
@@ -109,7 +109,7 @@ export default function CreateInteractionModal({ leadId, partnerId, trigger }: C
                   placeholder="E.g., Intro call regarding proposalX"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="w-full h-12 px-5 bg-slate-50 border-slate-100 rounded text-sm font-semibold text-slate-900 focus:bg-white focus:border-slate-900 transition-all"
+                  className="w-full h-9 sm:h-10 px-3 bg-slate-50 border border-slate-200 rounded text-xs sm:text-sm font-medium text-slate-900 focus:bg-white focus:border-slate-900 transition-all outline-none"
                 />
               </div>
 
@@ -120,14 +120,14 @@ export default function CreateInteractionModal({ leadId, partnerId, trigger }: C
                   placeholder="Provide details about the interaction..."
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                  className="w-full h-32 px-5 py-4 bg-slate-50 border-slate-100 rounded text-sm font-semibold text-slate-900 focus:bg-white focus:border-slate-900 transition-all resize-none"
+                  className="w-full h-20 p-3 bg-slate-50 border border-slate-200 rounded text-xs sm:text-sm font-medium text-slate-900 focus:bg-white focus:border-slate-900 transition-all resize-none outline-none"
                 />
               </div>
             </div>
 
             <button
               disabled={createMutation.isPending}
-              className="w-full h-14 bg-slate-900 hover:bg-blue-600 text-white rounded font-bold text-xs uppercase tracking-widest transition-all shadow-xl shadow-slate-900/10 disabled:opacity-50 active:scale-95"
+              className="w-full h-9 sm:h-10 bg-slate-900 hover:bg-blue-600 text-white rounded font-semibold text-xs sm:text-sm tracking-tight transition-all shadow-sm active:scale-95"
             >
               {createMutation.isPending ? "Logging Activity..." : "Record Activity"}
             </button>

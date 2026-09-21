@@ -186,7 +186,7 @@ export default function UpdatePartner({
                   id="email"
                   name="email"
                   type="email"
-                  className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 w-full h-12 rounded focus:bg-white transition-all font-semibold px-5 text-slate-900"
+                  className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 w-full h-9 sm:h-10 rounded focus:bg-white transition-all font-semibold px-3 sm:px-4 text-xs sm:text-sm text-slate-900"
                   style={{"--tw-ring-color": primaryColor + "33"} as any}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -211,7 +211,7 @@ export default function UpdatePartner({
                 <input
                   id="phone"
                   name="phone"
-                  className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 w-full h-12 rounded focus:bg-white transition-all font-semibold px-5 text-slate-900"
+                  className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 w-full h-9 sm:h-10 rounded focus:bg-white transition-all font-semibold px-3 sm:px-4 text-xs sm:text-sm text-slate-900"
                   style={{"--tw-ring-color": primaryColor + "33"} as any}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -230,7 +230,7 @@ export default function UpdatePartner({
                   id="partner_type"
                   name="partner_type"
                   disabled={isLoadingTypes}
-                  className="focus:outline-none focus:ring-2 flex h-12 w-full rounded border border-slate-200 bg-slate-50 px-5 py-2 text-sm font-semibold transition-all appearance-none text-slate-900"
+                  className="focus:outline-none focus:ring-2 flex h-9 sm:h-10 w-full rounded border border-slate-200 bg-slate-50 px-3 sm:px-4 py-1 text-xs sm:text-sm font-semibold transition-all appearance-none text-slate-900 cursor-pointer"
                   style={{"--tw-ring-color": primaryColor + "33"} as any}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -255,7 +255,7 @@ export default function UpdatePartner({
                   id="division"
                   name="division"
                   disabled={isLoadingDivisions}
-                  className="focus:outline-none focus:ring-2 flex h-12 w-full rounded border border-slate-200 bg-slate-50 px-5 py-2 text-sm font-semibold transition-all appearance-none text-slate-900"
+                  className="focus:outline-none focus:ring-2 flex h-9 sm:h-10 w-full rounded border border-slate-200 bg-slate-50 px-3 sm:px-4 py-1 text-xs sm:text-sm font-semibold transition-all appearance-none text-slate-900 cursor-pointer"
                   style={{"--tw-ring-color": primaryColor + "33"} as any}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -284,7 +284,7 @@ export default function UpdatePartner({
                 <input
                   id="tax_pin"
                   name="tax_pin"
-                  className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 w-full h-12 rounded focus:bg-white transition-all font-semibold px-5 text-slate-900"
+                  className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 w-full h-9 sm:h-10 rounded focus:bg-white transition-all font-semibold px-3 sm:px-4 text-xs sm:text-sm text-slate-900"
                   style={{"--tw-ring-color": primaryColor + "33"} as any}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -302,7 +302,7 @@ export default function UpdatePartner({
                 <select
                   id="currency"
                   name="currency"
-                  className="focus:outline-none focus:ring-2 flex h-12 w-full rounded border border-slate-200 bg-slate-50 px-5 py-2 text-sm font-semibold transition-all appearance-none text-slate-900"
+                  className="focus:outline-none focus:ring-2 flex h-9 sm:h-10 w-full rounded border border-slate-200 bg-slate-50 px-3 sm:px-4 py-1 text-xs sm:text-sm font-semibold transition-all appearance-none text-slate-900 cursor-pointer"
                   style={{"--tw-ring-color": primaryColor + "33"} as any}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -327,7 +327,7 @@ export default function UpdatePartner({
                   name="wht_rate"
                   type="number"
                   step="0.01"
-                  className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 w-full h-12 rounded focus:bg-white transition-all font-semibold px-5 text-slate-900"
+                  className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 w-full h-9 sm:h-10 rounded focus:bg-white transition-all font-semibold px-3 sm:px-4 text-xs sm:text-sm text-slate-900"
                   style={{"--tw-ring-color": primaryColor + "33"} as any}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -346,7 +346,7 @@ export default function UpdatePartner({
               <input
                 id="payment_terms"
                 name="payment_terms"
-                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 w-full h-12 rounded focus:bg-white transition-all font-semibold px-5 text-slate-900"
+                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 w-full h-9 sm:h-10 rounded focus:bg-white transition-all font-semibold px-3 sm:px-4 text-xs sm:text-sm text-slate-900"
                 style={{"--tw-ring-color": primaryColor + "33"} as any}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -355,13 +355,13 @@ export default function UpdatePartner({
             </div>
 
             <div
-              className="flex items-center gap-3 p-4 rounded border border-black/5 transition-colors bg-slate-50/50"
+              className="flex items-center gap-3 p-3 rounded border border-black/5 transition-colors bg-slate-50/50"
             >
               <input
                 id="is_active"
                 name="is_active"
                 type="checkbox"
-                className="w-5 h-5 rounded border-black/5 focus:ring-0 cursor-pointer"
+                className="w-4 h-4 rounded border-black/5 focus:ring-0 cursor-pointer"
                 style={{
                   accentColor: primaryColor,
                 }}
@@ -371,27 +371,27 @@ export default function UpdatePartner({
               />
               <label
                 htmlFor="is_active"
-                className="text-sm font-bold text-slate-700 cursor-pointer"
+                className="text-xs sm:text-sm font-semibold text-slate-700 cursor-pointer"
               >
                 Keep Partner Active
               </label>
             </div>
 
-            <div className="pt-4 pb-2">
+            <div className="pt-2 pb-1">
               <button
                 type="submit"
                 disabled={formik.isSubmitting}
-                className="w-full h-14 text-white rounded font-bold text-sm uppercase tracking-widest transition-all shadow-xl active:scale-[0.98] group flex items-center justify-center gap-3"
+                className="w-full h-9 sm:h-10 text-white rounded font-semibold text-xs sm:text-sm transition-all shadow-md active:scale-[0.98] group flex items-center justify-center gap-2"
                 style={{
                   backgroundColor: primaryColor,
-                  boxShadow: `0 10px 20px -5px ${primaryColor}4D`,
+                  boxShadow: `0 4px 12px -2px ${primaryColor}4D`,
                 }}
               >
                 {formik.isSubmitting ? (
-                  <Loader2 className="w-6 h-6 animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
                   <>
-                    <Save className="w-5 h-5" />
+                    <Save className="w-4 h-4" />
                     Commit Profile Changes
                   </>
                 )}
@@ -407,7 +407,7 @@ export default function UpdatePartner({
     <>
       <div onClick={() => setOpen(true)} className="contents cursor-pointer">
         {trigger || (
-          <button className="flex items-center justify-center gap-2 h-12 px-4 bg-white hover:bg-black/5 text-black border border-black/5 rounded font-semibold text-xs uppercase tracking-widest shadow-sm transition-colors">
+          <button className="flex items-center justify-center gap-2 h-8 sm:h-9 px-3 bg-white hover:bg-black/5 text-black border border-black/5 rounded font-semibold text-xs uppercase tracking-wider shadow-sm transition-colors">
             <Edit3 className="w-4 h-4" />
             Edit Profile
           </button>

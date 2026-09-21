@@ -98,16 +98,16 @@ export default function CreateFiscalYear({
                 type="text"
                 required
                 placeholder="e.g., FY2025/2026"
-                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-red-600/20 w-full h-14 rounded focus:bg-slate-50 transition-all font-medium px-5 text-black"
+                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-red-600/20 w-full h-9 sm:h-10 rounded focus:bg-white transition-all font-semibold px-3 sm:px-4 text-xs sm:text-sm text-slate-900"
                 onChange={formik.handleChange}
                 value={formik.values.code}
               />
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <label
                 htmlFor="estimated_profit"
-                className="text-sm font-semibold uppercase tracking-widest text-black/40 ml-1 flex items-center gap-1"
+                className="text-xs font-semibold uppercase tracking-wider text-slate-500 ml-1 flex items-center gap-1"
               >
                 Estimated Profit (Baseline)
               </label>
@@ -117,16 +117,16 @@ export default function CreateFiscalYear({
                 type="number"
                 step="0.01"
                 placeholder="0.00"
-                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-red-600/20 w-full h-14 rounded focus:bg-slate-50 transition-all font-medium px-5 text-black"
+                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-red-600/20 w-full h-9 sm:h-10 rounded focus:bg-white transition-all font-semibold px-3 sm:px-4 text-xs sm:text-sm text-slate-900"
                 onChange={formik.handleChange}
                 value={formik.values.estimated_profit}
               />
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <label
                 htmlFor="start_date"
-                className="text-sm font-semibold uppercase tracking-widest text-black/40 ml-1 flex items-center gap-1"
+                className="text-xs font-semibold uppercase tracking-wider text-slate-500 ml-1 flex items-center gap-1"
               >
                 Cycle Start Date{" "}
                 <span className="text-red-500 text-xs font-semibold">*</span>
@@ -136,16 +136,16 @@ export default function CreateFiscalYear({
                 name="start_date"
                 type="date"
                 required
-                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-red-600/20 w-full h-14 rounded focus:bg-slate-50 transition-all font-medium px-5 text-black"
+                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-red-600/20 w-full h-9 sm:h-10 rounded focus:bg-white transition-all font-semibold px-3 sm:px-4 text-xs sm:text-sm text-slate-900"
                 onChange={formik.handleChange}
                 value={formik.values.start_date}
               />
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <label
                 htmlFor="end_date"
-                className="text-sm font-semibold uppercase tracking-widest text-black/40 ml-1 flex items-center gap-1"
+                className="text-xs font-semibold uppercase tracking-wider text-slate-500 ml-1 flex items-center gap-1"
               >
                 Cycle End Date{" "}
                 <span className="text-red-500 text-xs font-semibold">*</span>
@@ -155,28 +155,28 @@ export default function CreateFiscalYear({
                 name="end_date"
                 type="date"
                 required
-                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-red-600/20 w-full h-14 rounded focus:bg-slate-50 transition-all font-medium px-5 text-black"
+                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-red-600/20 w-full h-9 sm:h-10 rounded focus:bg-white transition-all font-semibold px-3 sm:px-4 text-xs sm:text-sm text-slate-900"
                 onChange={formik.handleChange}
                 value={formik.values.end_date}
               />
             </div>
           </div>
 
-          <div className="pt-6">
+          <div className="pt-2">
             <button
               type="submit"
               disabled={formik.isSubmitting}
-              className="w-full h-16 text-white rounded font-semibold text-lg transition-all shadow-xl active:scale-[0.98] group flex items-center justify-center"
+              className="w-full h-9 sm:h-10 text-white rounded font-semibold text-xs sm:text-sm transition-all shadow-md active:scale-[0.98] group flex items-center justify-center gap-2"
               style={{
                 backgroundColor: primaryColor,
-                boxShadow: `0 10px 20px -5px ${primaryColor}4D`,
+                boxShadow: `0 4px 12px -2px ${primaryColor}4D`,
               }}
             >
               {formik.isSubmitting ? (
-                <Loader2 className="w-6 h-6 animate-spin" />
+                <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
-                <div className="flex items-center gap-3">
-                  <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform" />
+                <div className="flex items-center gap-2">
+                  <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform" />
                   Initialize Fiscal Cycle
                 </div>
               )}

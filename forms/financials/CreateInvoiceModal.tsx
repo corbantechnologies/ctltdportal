@@ -117,37 +117,37 @@ export default function CreateInvoiceModal({
       <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100] animate-in fade-in duration-300" />
-        <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl bg-white rounded shadow-2xl z-[101] overflow-hidden animate-in zoom-in-95 duration-300">
+        <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl bg-white rounded shadow-2xl z-[101] overflow-hidden animate-in zoom-in-95 duration-200">
 
-          <div className="flex h-[85vh]">
+          <div className="flex flex-col md:flex-row h-[90vh] md:h-[80vh]">
             {/* Sidebar with distinct branding */}
-            <div className="w-72 bg-slate-900 text-white p-10 flex flex-col justify-between relative overflow-hidden">
+            <div className="w-full md:w-60 bg-slate-900 text-white p-4 md:p-5 flex md:flex-col justify-between items-center md:items-stretch relative overflow-hidden flex-shrink-0 border-b md:border-b-0 md:border-r border-slate-800">
               {/* Decorative accent */}
-              <div className="absolute top-0 right-0 w-40 h-40 bg-blue-600/20 rounded blur-3xl -translate-y-1/2 translate-x-1/2" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/20 rounded blur-2xl -translate-y-1/2 translate-x-1/2" />
 
-              <div className="space-y-10 relative z-10">
-                <div className="w-12 h-12 rounded bg-blue-600 flex items-center justify-center text-white shadow-xl shadow-blue-600/30">
-                  <CreditCard className="w-6 h-6" />
+              <div className="space-y-4 md:space-y-6 relative z-10 flex md:flex-col items-center md:items-start gap-4 md:gap-0">
+                <div className="w-9 h-9 rounded bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-600/30">
+                  <CreditCard className="w-5 h-5" />
                 </div>
 
-                <div className="space-y-8">
+                <div className="flex md:flex-col gap-2 md:gap-3">
                   {[
                     { s: 1, l: "Obligation Discovery", i: Building2 },
                     { s: 2, l: "Line Items", i: Plus },
                     { s: 3, l: "Validation", i: ShieldCheck }
                   ].map((item) => (
-                    <div key={item.s} className="flex items-center gap-4 group">
+                    <div key={item.s} className="flex items-center gap-2.5 group">
                       <div className={cn(
-                        "w-10 h-10 rounded flex items-center justify-center transition-all border-2",
-                        step >= item.s ? "bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-600/20" : "bg-white/5 border-white/10 text-white/20"
+                        "w-7 h-7 rounded flex items-center justify-center transition-all border",
+                        step >= item.s ? "bg-blue-600 border-blue-600 text-white shadow-sm shadow-blue-600/20" : "bg-white/5 border-white/10 text-white/20"
                       )}>
-                        <item.i className="w-5 h-5" />
+                        <item.i className="w-3.5 h-3.5" />
                       </div>
-                      <div className="text-left text-white">
-                        <p className={cn("text-[10px] font-bold uppercase tracking-[0.2em] opacity-40")}>
-                          Phase 0{item.s}
+                      <div className="hidden sm:block text-left text-white">
+                        <p className={cn("text-[9px] font-semibold uppercase tracking-wider opacity-40 leading-none")}>
+                          0{item.s}
                         </p>
-                        <p className={cn("text-xs font-bold", step >= item.s ? "opacity-100" : "opacity-30")}>
+                        <p className={cn("text-xs font-semibold", step >= item.s ? "opacity-100" : "opacity-30")}>
                           {item.l}
                         </p>
                       </div>
@@ -156,63 +156,63 @@ export default function CreateInvoiceModal({
                 </div>
               </div>
 
-              <div className="bg-white/5 p-6 rounded border border-white/10 shadow-sm space-y-4 relative z-10">
-                <div className="flex items-center gap-2 text-white/30">
-                  <Calculator className="w-4 h-4" />
-                  <span className="text-[10px] font-bold uppercase tracking-widest">Total Valuation</span>
+              <div className="bg-white/5 p-2.5 sm:p-3.5 rounded border border-white/10 shadow-sm relative z-10">
+                <div className="flex items-center gap-1.5 text-white/40">
+                  <Calculator className="w-3.5 h-3.5" />
+                  <span className="text-[9px] font-bold uppercase tracking-wider">Total</span>
                 </div>
-                <p className="text-2xl font-bold text-white tracking-tighter tabular-nums">
+                <p className="text-base sm:text-lg font-bold text-white tracking-tight tabular-nums mt-0.5">
                   {totalAmount.toLocaleString('en-KE', { style: 'currency', currency: 'KES' })}
                 </p>
               </div>
             </div>
 
             {/* Main Content Area */}
-            <div className="flex-1 flex flex-col bg-slate-50/30">
-              <div className="p-10 border-b border-slate-100 flex items-center justify-between bg-white">
-                <Dialog.Title className="text-2xl font-bold text-slate-900 tracking-tight">
+            <div className="flex-1 flex flex-col bg-slate-50/30 overflow-hidden">
+              <div className="px-4 py-3 sm:px-6 sm:py-3.5 border-b border-slate-100 flex items-center justify-between bg-white flex-shrink-0">
+                <Dialog.Title className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
                   Initiate <span className="text-blue-600">Standard Invoice</span>
                 </Dialog.Title>
-                <Dialog.Close className="w-10 h-10 rounded hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-colors">
-                  <X className="w-5 h-5" />
+                <Dialog.Close className="w-8 h-8 rounded hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-colors">
+                  <X className="w-4 h-4" />
                 </Dialog.Close>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-10">
+              <div className="flex-1 overflow-y-auto p-4 sm:p-6">
                 {step === 1 && (
-                  <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
-                    <div className="grid grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Invoice Generation Date</label>
+                  <div className="space-y-4 animate-in slide-in-from-bottom-2 duration-300">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 ml-1">Invoice Generation Date</label>
                         <div className="relative">
-                          <Calendar className="absolute left-5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-300" />
+                          <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                           <input
                             type="date"
                             value={date}
                             onChange={(e) => setDate(e.target.value)}
-                            className="w-full h-14 pl-14 pr-6 rounded bg-white border border-slate-100 focus:border-blue-600 focus:ring-4 focus:ring-blue-600/5 font-semibold text-sm transition-all outline-none"
+                            className="w-full h-9 pl-9 pr-3 rounded bg-white border border-slate-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 font-semibold text-xs sm:text-sm transition-all outline-none"
                           />
                         </div>
                       </div>
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Settlement Deadline</label>
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 ml-1">Settlement Deadline</label>
                         <input
                           type="date"
                           value={dueDate}
                           onChange={(e) => setDueDate(e.target.value)}
-                          className="w-full h-14 px-6 rounded bg-white border border-slate-100 focus:border-blue-600 focus:ring-4 focus:ring-blue-600/5 font-semibold text-sm transition-all outline-none"
+                          className="w-full h-9 px-3 rounded bg-white border border-slate-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 font-semibold text-xs sm:text-sm transition-all outline-none"
                         />
                       </div>
                     </div>
 
                     {!initialPartner && (
-                      <div className="space-y-4">
-                        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Target Merchant Record</label>
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 ml-1">Target Merchant Record</label>
                         <div className="relative group">
-                          <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 group-focus-within:text-blue-600 transition-colors" />
+                          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
                           <select
                             value={selectedPartner}
-                            className="w-full h-16 pl-16 pr-6 rounded bg-white border border-slate-100 focus:border-blue-600 focus:ring-4 focus:ring-blue-600/5 appearance-none font-bold text-slate-900 transition-all outline-none"
+                            className="w-full h-9 pl-9 pr-3 rounded bg-white border border-slate-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 appearance-none font-semibold text-xs sm:text-sm text-slate-900 transition-all outline-none"
                             onChange={(e) => setSelectedPartner(e.target.value)}
                           >
                             <option value="">Identify Targeted Partner...</option>
@@ -224,48 +224,48 @@ export default function CreateInvoiceModal({
                       </div>
                     )}
 
-                    <div className="space-y-4">
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Strategic Remarks</label>
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 ml-1">Strategic Remarks</label>
                       <textarea
                         placeholder="Detail the scope of this invoice or any special terms..."
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
-                        className="w-full h-32 p-6 rounded bg-white border border-slate-100 focus:border-blue-600 focus:ring-4 focus:ring-blue-600/5 font-medium text-sm resize-none transition-all outline-none"
+                        className="w-full h-24 p-3 rounded bg-white border border-slate-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 font-medium text-xs sm:text-sm resize-none transition-all outline-none"
                       />
                     </div>
                   </div>
                 )}
 
                 {step === 2 && (
-                  <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
+                  <div className="space-y-4 animate-in slide-in-from-bottom-2 duration-300">
                     <div className="flex items-center justify-between">
-                      <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400">Inventory Items</p>
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Inventory Items</p>
                       <button
                         onClick={addLine}
-                        className="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded text-[10px] font-bold uppercase tracking-widest hover:bg-slate-900 transition-all shadow-lg shadow-blue-600/20"
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white rounded text-[10px] font-bold uppercase tracking-wider hover:bg-slate-900 transition-all shadow-sm"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         Add Line
                       </button>
                     </div>
 
-                    <div className="space-y-4 pb-10">
+                    <div className="space-y-3">
                       {lines.map((line, index) => (
-                        <div key={index} className="bg-white p-8 rounded border border-slate-100 flex flex-col gap-6 relative group transition-all hover:shadow-xl hover:shadow-blue-600/5 hover:border-blue-600/20">
+                        <div key={index} className="bg-white p-3.5 sm:p-4 rounded border border-slate-200 flex flex-col gap-3 relative group transition-all hover:shadow-md">
                           <button
                             onClick={() => removeLine(index)}
-                            className="absolute -top-3 -right-3 w-8 h-8 bg-white text-red-500 rounded border border-slate-100 shadow-sm flex items-center justify-center hover:bg-red-500 hover:text-white transition-all opacity-0 group-hover:opacity-100"
+                            className="absolute -top-2 -right-2 w-6 h-6 bg-white text-red-500 rounded border border-slate-200 shadow-sm flex items-center justify-center hover:bg-red-500 hover:text-white transition-all"
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <Trash2 className="w-3 h-3" />
                           </button>
 
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="space-y-2">
-                              <label className="text-[9px] font-bold uppercase tracking-widest text-slate-400 ml-1">Asset Identity</label>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div className="space-y-1">
+                              <label className="text-[9px] font-bold uppercase tracking-wider text-slate-400 ml-1">Asset Identity</label>
                               <select
                                 value={line.product}
                                 onChange={(e) => updateLine(index, "product", e.target.value)}
-                                className="w-full h-12 px-6 rounded bg-slate-50 border-none focus:ring-2 focus:ring-blue-600 transition-all font-bold text-sm outline-none"
+                                className="w-full h-9 px-3 rounded bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-blue-600 transition-all font-semibold text-xs outline-none"
                               >
                                 <option value="">Select Catalog Item...</option>
                                 {products?.map(p => (
@@ -273,36 +273,36 @@ export default function CreateInvoiceModal({
                                 ))}
                               </select>
                             </div>
-                            <div className="grid grid-cols-2 gap-4">
-                              <div className="space-y-2">
-                                <label className="text-[9px] font-bold uppercase tracking-widest text-slate-400 ml-1">Qty</label>
+                            <div className="grid grid-cols-2 gap-2">
+                              <div className="space-y-1">
+                                <label className="text-[9px] font-bold uppercase tracking-wider text-slate-400 ml-1">Qty</label>
                                 <input
                                   type="number"
                                   value={line.quantity}
                                   onChange={(e) => updateLine(index, "quantity", parseFloat(e.target.value))}
-                                  className="w-full h-12 px-6 rounded bg-slate-50 border-none focus:ring-2 focus:ring-blue-600 transition-all font-bold text-sm"
+                                  className="w-full h-9 px-3 rounded bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-blue-600 transition-all font-semibold text-xs"
                                 />
                               </div>
-                              <div className="space-y-2">
-                                <label className="text-[9px] font-bold uppercase tracking-widest text-slate-400 ml-1">Valuation</label>
+                              <div className="space-y-1">
+                                <label className="text-[9px] font-bold uppercase tracking-wider text-slate-400 ml-1">Valuation</label>
                                 <input
                                   type="number"
                                   value={line.unit_price}
                                   onChange={(e) => updateLine(index, "unit_price", parseFloat(e.target.value))}
-                                  className="w-full h-12 px-6 rounded bg-slate-50 border-none focus:ring-2 focus:ring-blue-600 transition-all font-bold text-sm"
+                                  className="w-full h-9 px-3 rounded bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-blue-600 transition-all font-semibold text-xs"
                                 />
                               </div>
                             </div>
                           </div>
 
-                          <div className="space-y-2">
-                            <label className="text-[9px] font-bold uppercase tracking-widest text-slate-400 ml-1">Official Clarifications</label>
+                          <div className="space-y-1">
+                            <label className="text-[9px] font-bold uppercase tracking-wider text-slate-400 ml-1">Official Clarifications</label>
                             <input
                               type="text"
                               placeholder="Brief context for this line item..."
                               value={line.description}
                               onChange={(e) => updateLine(index, "description", e.target.value)}
-                              className="w-full h-12 px-6 rounded bg-slate-50 border-none focus:ring-2 focus:ring-blue-600 transition-all font-medium text-sm"
+                              className="w-full h-9 px-3 rounded bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-blue-600 transition-all font-medium text-xs"
                             />
                           </div>
                         </div>
@@ -312,35 +312,35 @@ export default function CreateInvoiceModal({
                 )}
 
                 {step === 3 && (
-                  <div className="space-y-10 animate-in slide-in-from-bottom-4 duration-500">
-                    <div className="bg-blue-50/50 p-10 rounded border border-blue-100 shadow-inner space-y-8">
+                  <div className="space-y-4 animate-in slide-in-from-bottom-2 duration-300">
+                    <div className="bg-blue-50/50 p-4 sm:p-5 rounded border border-blue-100 space-y-4">
                       <div className="flex items-center justify-between">
-                        <h3 className="text-xl font-bold text-slate-900 tracking-tight italic">Draft Verification</h3>
-                        <span className="px-4 py-1.5 bg-blue-600 text-white rounded text-[10px] font-bold uppercase tracking-widest">Awaiting Submission</span>
+                        <h3 className="text-base font-bold text-slate-900 tracking-tight">Draft Verification</h3>
+                        <span className="px-2.5 py-1 bg-blue-600 text-white rounded text-[9px] font-bold uppercase tracking-wider">Awaiting Submission</span>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-10">
-                        <div className="space-y-6 pr-10 border-r border-blue-200/50">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="space-y-3 sm:pr-4 sm:border-r border-blue-200/50">
                           <div>
-                            <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">Target Entity</p>
-                            <p className="text-sm font-bold text-slate-900 truncate">
+                            <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-0.5">Target Entity</p>
+                            <p className="text-xs sm:text-sm font-bold text-slate-900 truncate">
                               {selectedPartner ? partners?.find(p => p.code === selectedPartner)?.name : "Not Identified"}
                             </p>
                           </div>
                           <div>
-                            <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">Settlement Cycle</p>
-                            <p className="text-sm font-bold text-slate-900">{date} — {dueDate}</p>
+                            <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-0.5">Settlement Cycle</p>
+                            <p className="text-xs sm:text-sm font-semibold text-slate-900">{date} — {dueDate}</p>
                           </div>
                         </div>
 
-                        <div className="space-y-6">
+                        <div className="space-y-3">
                           <div>
-                            <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">Items for Billing</p>
-                            <p className="text-sm font-bold text-slate-900">{lines.length} Dimension Lines</p>
+                            <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-0.5">Items for Billing</p>
+                            <p className="text-xs sm:text-sm font-semibold text-slate-900">{lines.length} Dimension Lines</p>
                           </div>
                           <div>
-                            <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">Final Settlement Goal</p>
-                            <p className="text-3xl font-bold text-blue-600 tracking-tighter tabular-nums">
+                            <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-0.5">Final Settlement Goal</p>
+                            <p className="text-xl sm:text-2xl font-bold text-blue-600 tracking-tight tabular-nums">
                               {totalAmount.toLocaleString('en-KE', { style: 'currency', currency: 'KES' })}
                             </p>
                           </div>
@@ -348,8 +348,8 @@ export default function CreateInvoiceModal({
                       </div>
                     </div>
 
-                    <div className="bg-slate-900 p-8 rounded text-white/60 text-[11px] font-medium leading-relaxed flex items-start gap-4">
-                      <ShieldCheck className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
+                    <div className="bg-slate-900 p-4 rounded text-white/70 text-[10px] sm:text-xs font-medium leading-relaxed flex items-start gap-3">
+                      <ShieldCheck className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
                       <p>
                         Confirmation: This document will be serialized as a DRAFT. Once initialized, the Finance team can authorize transmission to the partner or record an immediate payment.
                       </p>
@@ -358,28 +358,28 @@ export default function CreateInvoiceModal({
                 )}
               </div>
 
-              <div className="p-10 border-t border-slate-100 flex items-center justify-between bg-white">
+              <div className="px-4 py-3 sm:px-6 sm:py-3.5 border-t border-slate-100 flex items-center justify-between bg-white flex-shrink-0">
                 <button
                   onClick={() => setStep(s => Math.max(1, s - 1))}
                   disabled={step === 1}
-                  className="px-8 py-4 rounded font-bold text-[11px] uppercase tracking-widest text-slate-400 hover:text-slate-900 disabled:opacity-0 transition-all font-bold"
+                  className="px-3 py-1.5 rounded font-semibold text-[11px] uppercase tracking-wider text-slate-400 hover:text-slate-900 disabled:opacity-0 transition-all"
                 >
-                  Return to Phase 0{step - 1}
+                  Back (Phase 0{step - 1})
                 </button>
 
                 {step < 3 ? (
                   <button
                     onClick={() => setStep(s => s + 1)}
-                    className="flex items-center gap-3 px-10 py-5 bg-slate-900 text-white rounded font-bold text-[11px] uppercase tracking-[0.2em] hover:bg-blue-600 transition-all shadow-xl active:scale-95 group"
+                    className="flex items-center gap-2 h-9 px-4 sm:px-5 bg-slate-900 text-white rounded font-semibold text-xs uppercase tracking-wider hover:bg-blue-600 transition-all shadow-md active:scale-95 group"
                   >
-                    Next Dimension
-                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    Next
+                    <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                   </button>
                 ) : (
                   <button
                     disabled={createMutation.isPending}
                     onClick={handleSubmit}
-                    className="flex items-center gap-3 px-14 py-5 bg-blue-600 text-white rounded font-bold text-[11px] uppercase tracking-[0.2em] hover:bg-slate-900 transition-all shadow-2xl shadow-blue-600/20 active:scale-95 disabled:opacity-50"
+                    className="flex items-center gap-2 h-9 px-5 sm:px-6 bg-blue-600 text-white rounded font-semibold text-xs uppercase tracking-wider hover:bg-slate-900 transition-all shadow-md shadow-blue-600/20 active:scale-95 disabled:opacity-50"
                   >
                     {createMutation.isPending ? "Generating..." : "Authorize Issuance"}
                   </button>

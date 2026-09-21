@@ -84,14 +84,14 @@ export default function ReverseJournalModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-5 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800">
+        <div className="px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-rose-500/20 text-rose-400 flex items-center justify-center">
-              <RotateCcw className="w-5 h-5" />
+            <div className="w-8 h-8 rounded-lg bg-rose-500/20 text-rose-400 flex items-center justify-center flex-shrink-0">
+              <RotateCcw className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-white">{title}</h3>
-              <p className="text-xs text-slate-400">Target Record: {originalCode}</p>
+              <h3 className="text-sm sm:text-base font-bold text-white">{title}</h3>
+              <p className="text-[10px] text-slate-400 font-mono">Target Record: {originalCode}</p>
             </div>
           </div>
           <button
@@ -99,22 +99,22 @@ export default function ReverseJournalModal({
             disabled={isLoading}
             className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-5">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-5 space-y-4">
           {/* Explanatory Warning Banner */}
-          <div className="p-3.5 rounded-lg bg-amber-50 border border-amber-200 flex items-start gap-3">
-            <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
-            <div className="text-xs text-amber-900 leading-relaxed">
-              <strong>Audit Notice:</strong> This action permanently voids the transaction by posting an exact offsetting counter-entry (inverted Debits/Credits) to the General Ledger. The historical record will be locked and marked as <strong>REVERSED</strong>.
+          <div className="p-3 rounded-lg bg-amber-50 border border-amber-200 flex items-start gap-2.5">
+            <AlertTriangle className="w-3.5 h-3.5 text-amber-600 flex-shrink-0 mt-0.5" />
+            <div className="text-[11px] text-amber-900 leading-relaxed">
+              <strong>Audit Notice:</strong> This action voids the transaction by posting an exact offsetting entry to the General Ledger. The record will be locked and marked as <strong>REVERSED</strong>.
             </div>
           </div>
 
           {/* Record Summary */}
-          <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs space-y-1.5">
+          <div className="p-2.5 bg-slate-50 rounded-lg border border-slate-200 text-xs space-y-1">
             <div className="flex justify-between">
               <span className="text-slate-500">Original Date:</span>
               <span className="font-semibold text-slate-900">{originalDate}</span>
@@ -122,7 +122,7 @@ export default function ReverseJournalModal({
             {amount !== undefined && (
               <div className="flex justify-between">
                 <span className="text-slate-500">Amount:</span>
-                <span className="font-bold text-slate-900">KES {Number(amount).toLocaleString()}</span>
+                <span className="font-bold font-mono text-slate-900">KES {Number(amount).toLocaleString()}</span>
               </div>
             )}
             {description && (
@@ -134,13 +134,13 @@ export default function ReverseJournalModal({
           </div>
 
           {/* Reversal Date Selection */}
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+              <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
                 <Calendar className="w-3.5 h-3.5 text-emerald-600" />
                 Reversal Posting Date *
               </label>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
                 <button
                   type="button"
                   onClick={() => setReversalDate(today)}
@@ -174,16 +174,16 @@ export default function ReverseJournalModal({
               value={reversalDate}
               onChange={(e) => setReversalDate(e.target.value)}
               required
-              className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all font-mono"
+              className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all font-mono"
             />
-            <p className="text-[11px] text-slate-500">
+            <p className="text-[10px] text-slate-400">
               Note: The date must fall in an active/open financial month.
             </p>
           </div>
 
           {/* Reason Input */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+          <div className="space-y-1">
+            <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
               <FileText className="w-3.5 h-3.5 text-emerald-600" />
               Reason for Reversal *
             </label>
@@ -191,43 +191,43 @@ export default function ReverseJournalModal({
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               required
-              rows={3}
-              placeholder="e.g. Duplicate transaction logged by mistake, wrong amount entered, or incorrect ledger account selected..."
-              className="w-full bg-white border border-slate-300 rounded-lg p-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all resize-none"
+              rows={2}
+              placeholder="e.g. Duplicate transaction logged, wrong amount, or incorrect ledger account..."
+              className="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all resize-none"
             />
           </div>
 
           {/* Error Message */}
           {error && (
-            <div className="p-3 rounded-lg bg-rose-50 border border-rose-200 text-xs text-rose-700 font-medium flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+            <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-xs text-rose-700 font-medium flex items-center gap-2">
+              <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" />
               <span>{error}</span>
             </div>
           )}
 
           {/* Footer Actions */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+          <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
             <button
               type="button"
               onClick={onClose}
               disabled={isLoading}
-              className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-slate-600 hover:text-slate-900 transition-colors"
+              className="px-3.5 h-9 text-xs font-semibold rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isLoading || !reason.trim()}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white text-xs font-bold uppercase tracking-wider transition-all shadow-lg shadow-rose-600/20"
+              className="flex items-center gap-1.5 px-4 h-9 rounded-lg bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white text-xs font-bold uppercase tracking-wider transition-all shadow-sm shadow-rose-600/20 active:scale-95"
             >
               {isLoading ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
                   <span>Processing...</span>
                 </>
               ) : (
                 <>
-                  <RotateCcw className="w-4 h-4" />
+                  <RotateCcw className="w-3.5 h-3.5" />
                   <span>Confirm & Reverse</span>
                 </>
               )}

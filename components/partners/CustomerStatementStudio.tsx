@@ -85,44 +85,50 @@ export function CustomerStatementStudio({
                 </div>
 
                 {/* Filter and Actions */}
-                <div className="flex flex-wrap items-center gap-2.5">
-                    <div className="flex items-center gap-1.5 bg-muted/40 px-3 py-1.5 rounded-xl border border-border text-xs">
-                        <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
-                        <span className="text-muted-foreground">From:</span>
-                        <input
-                            type="date"
-                            value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
-                            className="bg-transparent text-xs font-medium text-foreground focus:outline-none"
-                        />
-                        <span className="text-muted-foreground ml-1">To:</span>
-                        <input
-                            type="date"
-                            value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
-                            className="bg-transparent text-xs font-medium text-foreground focus:outline-none"
-                        />
+                <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 bg-muted/40 p-1.5 sm:px-3 sm:py-1.5 rounded-lg border border-border text-xs w-full sm:w-auto">
+                        <div className="flex items-center gap-1.5">
+                            <Calendar className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+                            <span className="text-muted-foreground text-[11px]">From:</span>
+                            <input
+                                type="date"
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)}
+                                className="bg-transparent text-xs font-medium text-foreground focus:outline-none"
+                            />
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                            <span className="text-muted-foreground text-[11px]">To:</span>
+                            <input
+                                type="date"
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)}
+                                className="bg-transparent text-xs font-medium text-foreground focus:outline-none"
+                            />
+                        </div>
                     </div>
 
-                    <button
-                        onClick={handlePrint}
-                        className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border transition-colors shadow-sm"
-                    >
-                        <Printer className="w-4 h-4" /> Print / PDF
-                    </button>
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={handlePrint}
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border transition-colors shadow-sm"
+                        >
+                            <Printer className="w-3.5 h-3.5" /> Print / PDF
+                        </button>
 
-                    <button
-                        onClick={handleEmailStatement}
-                        disabled={isEmailing}
-                        className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-corporate-primary text-white hover:bg-corporate-primary/90 transition-colors shadow-sm disabled:opacity-50"
-                    >
-                        {isEmailing ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : (
-                            <Mail className="w-4 h-4" />
-                        )}
-                        <span>Email Statement</span>
-                    </button>
+                        <button
+                            onClick={handleEmailStatement}
+                            disabled={isEmailing}
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-corporate-primary text-white hover:bg-corporate-primary/90 transition-colors shadow-sm disabled:opacity-50"
+                        >
+                            {isEmailing ? (
+                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            ) : (
+                                <Mail className="w-3.5 h-3.5" />
+                            )}
+                            <span>Email Statement</span>
+                        </button>
+                    </div>
                 </div>
             </div>
 

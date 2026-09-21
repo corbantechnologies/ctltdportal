@@ -188,16 +188,16 @@ export default function MultiLineJournalEntry({
           )}
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6 space-y-8">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4">
           {/* Metadata Section */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 p-5 bg-slate-50/50 rounded border border-slate-100">
-            <div className="space-y-2 md:col-span-1">
-              <label className="text-[9px] font-bold uppercase tracking-widest text-slate-400 ml-1">Payment Channel</label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 p-3 sm:p-4 bg-slate-50/50 rounded border border-slate-100">
+            <div className="space-y-1 md:col-span-1">
+              <label className="text-[9px] font-bold uppercase tracking-wider text-slate-400 ml-1">Payment Channel</label>
               <select
                 name="payment_method"
                 value={formik.values.payment_method}
                 onChange={formik.handleChange}
-                className="w-full h-11 bg-white border border-slate-200 rounded px-3 text-xs font-semibold focus:ring-4 focus:ring-emerald-600/10 transition-all outline-none"
+                className="w-full h-9 bg-white border border-slate-200 rounded px-2.5 text-xs font-semibold focus:ring-2 focus:ring-emerald-600/20 transition-all outline-none"
               >
                 <option value="BANK_TRANSFER">Bank Transfer</option>
                 <option value="CASH">Cash</option>
@@ -206,13 +206,13 @@ export default function MultiLineJournalEntry({
               </select>
             </div>
 
-            <div className="space-y-2 md:col-span-1">
-              <label className="text-[9px] font-bold uppercase tracking-widest text-slate-400 ml-1">Evidence Type</label>
+            <div className="space-y-1 md:col-span-1">
+              <label className="text-[9px] font-bold uppercase tracking-wider text-slate-400 ml-1">Evidence Type</label>
               <select
                 name="source_document"
                 value={formik.values.source_document}
                 onChange={formik.handleChange}
-                className="w-full h-11 bg-white border border-slate-200 rounded px-3 text-xs font-semibold focus:ring-4 focus:ring-emerald-600/10 transition-all outline-none"
+                className="w-full h-9 bg-white border border-slate-200 rounded px-2.5 text-xs font-semibold focus:ring-2 focus:ring-emerald-600/20 transition-all outline-none"
               >
                 <option value="INVOICE">Invoice</option>
                 <option value="RECEIPT">Receipt</option>
@@ -221,21 +221,21 @@ export default function MultiLineJournalEntry({
               </select>
             </div>
 
-            <div className="space-y-2 md:col-span-1">
-              <label className="text-[9px] font-bold uppercase tracking-widest text-slate-400 ml-1">Ref Number</label>
+            <div className="space-y-1 md:col-span-1">
+              <label className="text-[9px] font-bold uppercase tracking-wider text-slate-400 ml-1">Ref Number</label>
               <input
                 name="document_number"
                 placeholder="e.g. INV-001"
                 value={formik.values.document_number}
                 onChange={formik.handleChange}
-                className="w-full h-11 bg-white border border-slate-200 rounded px-4 text-xs font-semibold focus:ring-4 focus:ring-emerald-600/10 transition-all outline-none"
+                className="w-full h-9 bg-white border border-slate-200 rounded px-3 text-xs font-semibold focus:ring-2 focus:ring-emerald-600/20 transition-all outline-none"
               />
             </div>
 
-            <div className="space-y-2 md:col-span-1">
-              <label className="text-[9px] font-bold uppercase tracking-widest text-slate-400 ml-1">Attach Link/File</label>
-              <label className="flex h-11 bg-white border border-slate-200 rounded items-center px-3 gap-2 text-slate-400 hover:border-slate-300 transition-colors cursor-pointer">
-                <FileUp className="w-4 h-4" />
+            <div className="space-y-1 md:col-span-1">
+              <label className="text-[9px] font-bold uppercase tracking-wider text-slate-400 ml-1">Attach Link/File</label>
+              <label className="flex h-9 bg-white border border-slate-200 rounded items-center px-2.5 gap-2 text-slate-400 hover:border-slate-300 transition-colors cursor-pointer">
+                <FileUp className="w-3.5 h-3.5" />
                 <span className="text-[10px] font-semibold truncate">{formik.values.document_file?.name || "Upload Proof..."}</span>
                 <input 
                   type="file" 
@@ -252,16 +252,16 @@ export default function MultiLineJournalEntry({
           </div>
 
           {/* Transaction Lines */}
-          <div className="space-y-4">
+          <div className="space-y-3">
             <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-              <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
                 <CreditCard className="w-3.5 h-3.5" />
                 Ledger Distribution
               </h3>
               <button
                 type="button"
                 onClick={() => formik.setFieldValue("lines", [...formik.values.lines, { book: "", partner: "", division: "", debit: 0, credit: 0, project: "" }])}
-                className="text-[10px] font-bold text-emerald-600 hover:text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded transition-colors flex items-center gap-1.5"
+                className="text-[10px] font-bold text-emerald-600 hover:text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded transition-colors flex items-center gap-1"
               >
                 <Plus className="w-3 h-3" /> Add Row
               </button>
@@ -269,10 +269,10 @@ export default function MultiLineJournalEntry({
 
             <FieldArray name="lines">
               {({ remove }) => (
-                <div className="space-y-3">
+                <div className="space-y-2.5">
                   {formik.values.lines.map((line, index) => (
                     <div key={index} className={cn(
-                      "group grid grid-cols-1 md:grid-cols-12 gap-3 items-end p-4 rounded border border-slate-100 transition-all",
+                      "group grid grid-cols-1 md:grid-cols-12 gap-2.5 items-end p-3 rounded border border-slate-100 transition-all",
                       line.debit > 0 ? "bg-emerald-50/20 border-emerald-100" : line.credit > 0 ? "bg-indigo-50/20 border-indigo-100" : "bg-white"
                     )}>
                       <div className="md:col-span-3">
@@ -305,8 +305,8 @@ export default function MultiLineJournalEntry({
                           disabled={isLoadingPartners}
                         />
                       </div>
-                      <div className="md:col-span-2">
-                        <label className="text-[9px] font-bold uppercase tracking-widest text-emerald-600/60 ml-1">Debit Amount</label>
+                      <div className="md:col-span-2 space-y-1">
+                        <label className="text-[9px] font-bold uppercase tracking-wider text-emerald-600/60 ml-1">Debit Amount</label>
                         <input
                           type="number"
                           name={`lines.${index}.debit`}
@@ -317,12 +317,12 @@ export default function MultiLineJournalEntry({
                             if (Number(val) > 0) newLine.credit = 0;
                             formik.setFieldValue(`lines.${index}`, newLine);
                           }}
-                          className="w-full h-11 bg-white border border-emerald-100 rounded px-4 text-sm font-bold text-emerald-700 outline-none focus:ring-4 focus:ring-emerald-600/10 placeholder:text-emerald-200"
+                          className="w-full h-9 bg-white border border-emerald-200 rounded px-3 text-xs sm:text-sm font-bold text-emerald-700 outline-none focus:ring-2 focus:ring-emerald-600/20 placeholder:text-emerald-200"
                           placeholder="0.00"
                         />
                       </div>
-                      <div className="md:col-span-2">
-                        <label className="text-[9px] font-bold uppercase tracking-widest text-indigo-600/60 ml-1">Credit Amount</label>
+                      <div className="md:col-span-2 space-y-1">
+                        <label className="text-[9px] font-bold uppercase tracking-wider text-indigo-600/60 ml-1">Credit Amount</label>
                         <input
                           type="number"
                           name={`lines.${index}.credit`}
@@ -333,21 +333,21 @@ export default function MultiLineJournalEntry({
                             if (Number(val) > 0) newLine.debit = 0;
                             formik.setFieldValue(`lines.${index}`, newLine);
                           }}
-                          className="w-full h-11 bg-white border border-indigo-100 rounded px-4 text-sm font-bold text-indigo-700 outline-none focus:ring-4 focus:ring-indigo-600/10 placeholder:text-indigo-200"
+                          className="w-full h-9 bg-white border border-indigo-200 rounded px-3 text-xs sm:text-sm font-bold text-indigo-700 outline-none focus:ring-2 focus:ring-indigo-600/20 placeholder:text-indigo-200"
                           placeholder="0.00"
                         />
                       </div>
-                      <div className="md:col-span-1 flex justify-center pb-1">
+                      <div className="md:col-span-1 flex justify-center pb-0.5">
                         <button
                           type="button"
                           onClick={() => index > 0 && remove(index)}
                           className={cn(
-                            "p-2.5 rounded transition-all",
+                            "p-2 rounded transition-all",
                             index === 0 ? "opacity-20 cursor-not-allowed text-slate-300" : "text-slate-300 hover:text-red-500 hover:bg-red-50"
                           )}
                           disabled={index === 0}
                         >
-                          <Trash2 className="w-5 h-5" />
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
                     </div>
@@ -359,24 +359,24 @@ export default function MultiLineJournalEntry({
         </div>
 
         {/* Footer Balance Bar */}
-        <div className="p-6 bg-slate-900 text-white">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="flex gap-8">
+        <div className="p-3 sm:p-4 bg-slate-900 text-white flex-shrink-0">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-3">
+            <div className="flex gap-4 sm:gap-6">
               <div className="flex flex-col">
-                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Total Debit</span>
-                <span className="text-lg font-bold text-emerald-400">{formik.values.currency} {totals.debit.toLocaleString()}</span>
+                <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider">Total Debit</span>
+                <span className="text-sm sm:text-base font-bold text-emerald-400">{formik.values.currency} {totals.debit.toLocaleString()}</span>
               </div>
-              <div className="flex flex-col border-l border-slate-700 pl-8">
-                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Total Credit</span>
-                <span className="text-lg font-bold text-indigo-400">{formik.values.currency} {totals.credit.toLocaleString()}</span>
+              <div className="flex flex-col border-l border-slate-700 pl-4 sm:pl-6">
+                <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider">Total Credit</span>
+                <span className="text-sm sm:text-base font-bold text-indigo-400">{formik.values.currency} {totals.credit.toLocaleString()}</span>
               </div>
-              <div className="flex flex-col border-l border-slate-700 pl-8">
-                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Balance</span>
-                <div className="flex items-center gap-2">
-                  <span className={cn("text-lg font-bold", totals.balance === 0 ? "text-white" : "text-red-400")}>
+              <div className="flex flex-col border-l border-slate-700 pl-4 sm:pl-6">
+                <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider">Balance</span>
+                <div className="flex items-center gap-1.5">
+                  <span className={cn("text-sm sm:text-base font-bold", totals.balance === 0 ? "text-white" : "text-red-400")}>
                     {totals.balance.toLocaleString()}
                   </span>
-                  {totals.balance === 0 ? <CheckCircle2 className="w-5 h-5 text-emerald-400" /> : <AlertCircle className="w-5 h-5 text-red-500 animate-pulse" />}
+                  {totals.balance === 0 ? <CheckCircle2 className="w-4 h-4 text-emerald-400" /> : <AlertCircle className="w-4 h-4 text-red-500 animate-pulse" />}
                 </div>
               </div>
             </div>
@@ -385,15 +385,15 @@ export default function MultiLineJournalEntry({
               type="submit"
               disabled={formik.isSubmitting || totals.balance !== 0}
               className={cn(
-                "h-14 px-10 rounded font-bold text-sm transition-all shadow-xl flex items-center justify-center gap-2.5",
+                "h-9 sm:h-10 px-5 rounded font-semibold text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2",
                 totals.balance === 0 && !formik.isSubmitting
                   ? "bg-emerald-600 text-white hover:bg-emerald-500 active:scale-95"
                   : "bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700"
               )}
             >
-              {formik.isSubmitting ? <Loader2 className="animate-spin w-5 h-5" /> : (
+              {formik.isSubmitting ? <Loader2 className="animate-spin w-4 h-4" /> : (
                 <>
-                  <Plus className="w-4 h-4" />
+                  <Plus className="w-3.5 h-3.5" />
                   RECORD TRANSACTION
                 </>
               )}

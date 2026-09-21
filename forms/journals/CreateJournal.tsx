@@ -112,10 +112,10 @@ export default function CreateJournal({
       <div className="p-4 sm:p-6 pb-8 overflow-y-auto">
         <form onSubmit={formik.handleSubmit} className="space-y-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <label
                 htmlFor="date"
-                className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1 flex items-center gap-1"
+                className="text-[10px] font-bold uppercase tracking-wider text-slate-400 ml-1 flex items-center gap-1"
               >
                 Transaction Date <span className="text-red-500">*</span>
               </label>
@@ -125,13 +125,13 @@ export default function CreateJournal({
                   name="date"
                   type="date"
                   required
-                  className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-4 focus:ring-emerald-600/10 w-full h-14 rounded focus:bg-white focus:border-emerald-600 transition-all font-semibold px-5 text-sm"
+                  className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-1 focus:ring-slate-900 w-full h-9 rounded-lg focus:bg-white focus:border-slate-400 transition-all font-medium px-3 text-xs sm:text-sm"
                   onChange={formik.handleChange}
                   value={formik.values.date}
                 />
               </div>
               <p className="text-[9px] text-slate-400 font-medium ml-1">
-                The system will automatically link this to the correct Financial Year & Month.
+                The system will automatically link this to the correct Financial Year &amp; Month.
               </p>
             </div>
 
@@ -146,10 +146,10 @@ export default function CreateJournal({
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <label
               htmlFor="description"
-              className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1 flex items-center gap-1"
+              className="text-[10px] font-bold uppercase tracking-wider text-slate-400 ml-1 flex items-center gap-1"
             >
               Batch Narrative <span className="text-red-500">*</span>
             </label>
@@ -157,25 +157,26 @@ export default function CreateJournal({
               id="description"
               name="description"
               required
+              rows={3}
               placeholder="Provide a clear description of this journal batch (e.g., 'Jan 2026 Admin Expenses')"
-              className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-4 focus:ring-emerald-600/10 w-full min-h-[120px] rounded focus:bg-white focus:border-emerald-600 transition-all font-semibold p-5 text-sm resize-none"
+              className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-1 focus:ring-slate-900 w-full rounded-lg focus:bg-white focus:border-slate-400 transition-all font-medium p-3 text-xs sm:text-sm resize-none"
               onChange={formik.handleChange}
               value={formik.values.description}
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
-            <div className="space-y-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-end">
+            <div className="space-y-1.5">
               <label
                 htmlFor="currency"
-                className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1 flex items-center gap-1"
+                className="text-[10px] font-bold uppercase tracking-wider text-slate-400 ml-1 flex items-center gap-1"
               >
                 Base Currency <span className="text-red-500">*</span>
               </label>
               <select
                 name="currency"
                 required
-                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-4 focus:ring-emerald-600/10 w-full h-14 rounded focus:bg-white focus:border-emerald-600 transition-all font-semibold px-5 text-sm appearance-none"
+                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-1 focus:ring-slate-900 w-full h-9 rounded-lg focus:bg-white focus:border-slate-400 transition-all font-medium px-3 text-xs sm:text-sm"
                 onChange={formik.handleChange}
                 value={formik.values.currency}
               >
@@ -189,17 +190,16 @@ export default function CreateJournal({
             <button
               type="submit"
               disabled={formik.isSubmitting}
-              className="w-full h-14 text-white rounded font-bold text-sm transition-all shadow-lg active:scale-[0.98] group flex items-center justify-center relative overflow-hidden"
+              className="w-full h-9 text-white rounded-lg font-bold text-xs uppercase tracking-wider transition-all shadow-sm active:scale-[0.98] group flex items-center justify-center relative overflow-hidden"
               style={{
                 backgroundColor: primaryColor,
-                boxShadow: `0 10px 20px -5px ${primaryColor}60`,
               }}
             >
               {formik.isSubmitting ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
-                <div className="flex items-center gap-2.5">
-                  <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" />
+                <div className="flex items-center gap-1.5">
+                  <Plus className="w-3.5 h-3.5 group-hover:rotate-90 transition-transform duration-300" />
                   <span>INITIALIZE BATCH</span>
                 </div>
               )}

@@ -66,50 +66,58 @@ export default function SearchableSelect({
 
       <div
         className={cn(
-          "h-14 w-full rounded border bg-slate-50 px-4 flex items-center justify-between cursor-pointer transition-all",
-          isOpen ? "border-emerald-600 ring-4 ring-emerald-600/10 shadow-sm" : "border-slate-200 hover:border-slate-300",
+          "min-h-[40px] w-full rounded-lg border bg-slate-50/70 px-3 py-2 flex items-center justify-between cursor-pointer transition-all",
+          isOpen ? "border-emerald-600 ring-2 ring-emerald-600/10 shadow-sm bg-white" : "border-slate-200 hover:border-slate-300",
           disabled && "opacity-50 cursor-not-allowed",
           error && "border-red-500"
         )}
         onClick={() => !disabled && setIsOpen(!isOpen)}
       >
-        <div className="flex flex-col truncate">
+        <div className="flex flex-col truncate pr-2">
           {selectedOption ? (
             <>
-              <span className="text-sm font-semibold text-black truncate">
+              <span className="text-xs sm:text-sm font-semibold text-slate-900 truncate">
                 {selectedOption.label}
               </span>
               {selectedOption.secondaryLabel && (
-                <span className="text-[9px] font-mono text-black/40 uppercase truncate">
+                <span className="text-[9px] font-mono text-slate-400 uppercase truncate">
                   {selectedOption.secondaryLabel}
                 </span>
               )}
             </>
           ) : (
-            <span className="text-sm text-black/40">{placeholder}</span>
+            <span className="text-xs sm:text-sm text-slate-400">{placeholder}</span>
           )}
         </div>
-        <ChevronDown className={cn("w-4 h-4 text-black/20 transition-transform", isOpen && "rotate-180")} />
+        <ChevronDown className={cn("w-3.5 h-3.5 text-slate-400 transition-transform flex-shrink-0", isOpen && "rotate-180")} />
       </div>
 
       {isOpen && (
-        <div className="absolute z-50 w-full mt-2 bg-white border border-slate-200 rounded shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-150">
-          <div className="p-3 border-b border-slate-100 bg-slate-50/50">
+        <div className="absolute z-50 w-full mt-1.5 bg-white border border-slate-200 rounded-lg shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-150 max-h-64 flex flex-col">
+          <div className="p-2 border-b border-slate-100 bg-slate-50/80 flex-shrink-0">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-black/30" />
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
               <input
-                autoFocus
                 type="text"
-                className="w-full bg-white border border-slate-200 rounded pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600/20 font-medium"
                 placeholder="Type to filter..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                onClick={(e) => e.stopPropagation()}
+                className="w-full bg-white border border-slate-200 rounded-md pl-8 pr-7 py-1.5 text-xs text-slate-900 focus:outline-none focus:border-slate-400 font-medium"
+                autoFocus
               />
+              {searchTerm && (
+                <button
+                  type="button"
+                  onClick={() => setSearchTerm("")}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              )}
             </div>
           </div>
 
-          <div className="max-h-[40vh] overflow-y-auto p-1">
+          <div className="overflow-y-auto max-h-48 divide-y divide-slate-50">
             {filteredOptions.length > 0 ? (
               filteredOptions.map((opt) => (
                 <div

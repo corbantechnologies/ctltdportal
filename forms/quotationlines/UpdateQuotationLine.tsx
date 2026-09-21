@@ -55,23 +55,23 @@ export default function UpdateQuotationLine({
     <div
       className={`mx-auto w-full border border-slate-100 shadow-2xl rounded overflow-hidden bg-white backdrop-blur-xl flex flex-col ${className}`}
     >
-      <div className="p-8 border-b border-slate-100 bg-gradient-to-r from-white to-slate-50/50 flex-shrink-0">
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center gap-4">
+      <div className="p-4 sm:p-5 border-b border-slate-100 bg-gradient-to-r from-white to-slate-50/50 flex-shrink-0">
+        <div className="flex items-start justify-between">
+          <div className="flex items-center gap-3">
             <div
-              className="w-12 h-12 rounded flex items-center justify-center text-white shadow-lg"
+              className="w-9 h-9 rounded flex items-center justify-center text-white shadow-md"
               style={{
                 backgroundColor: primaryColor,
-                boxShadow: `0 10px 15px -3px ${primaryColor}4D`,
+                boxShadow: `0 4px 10px -2px ${primaryColor}4D`,
               }}
             >
-              <Package className="w-6 h-6" />
+              <Package className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-2xl font-semibold text-black tracking-tight">
+              <h2 className="text-base sm:text-lg font-semibold text-black tracking-tight">
                 Update Row Component
               </h2>
-              <p className="text-black font-medium text-sm mt-1">
+              <p className="text-slate-500 font-medium text-xs mt-0.5">
                 Refining asset configuration
               </p>
             </div>
@@ -80,21 +80,21 @@ export default function UpdateQuotationLine({
             <button
               type="button"
               onClick={onClose}
-              className="hover:bg-slate-100 rounded text-black p-2 transition-colors"
+              className="hover:bg-slate-100 rounded text-black p-1.5 transition-colors"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
           )}
         </div>
       </div>
 
-      <div className="p-8 overflow-y-auto max-h-[min(80vh,600px)]">
-        <form onSubmit={formik.handleSubmit} className="space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="md:col-span-2 space-y-2">
+      <div className="p-4 sm:p-5 overflow-y-auto max-h-[min(80vh,600px)]">
+        <form onSubmit={formik.handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+            <div className="md:col-span-2 space-y-1.5">
               <label
                 htmlFor="product"
-                className="text-sm font-semibold uppercase tracking-widest text-black ml-1 flex items-center gap-1"
+                className="text-xs font-semibold uppercase tracking-wider text-black ml-1 flex items-center gap-1"
               >
                 Physical Asset <span className="text-amber-500 text-xs font-semibold">*</span>
               </label>
@@ -102,7 +102,7 @@ export default function UpdateQuotationLine({
                 id="product"
                 name="product"
                 required
-                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-amber-600/20 w-full h-14 rounded focus:bg-slate-50 transition-all font-medium px-5 appearance-none text-slate-900"
+                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-amber-600/20 w-full h-9 sm:h-10 rounded focus:bg-white transition-all font-medium px-3 text-xs sm:text-sm appearance-none text-slate-900 cursor-pointer"
                 onChange={(e) => {
                     const product = products?.find(p => p.name === e.target.value);
                     formik.setFieldValue("product", e.target.value);
@@ -118,10 +118,10 @@ export default function UpdateQuotationLine({
               </select>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <label
                 htmlFor="quantity"
-                className="text-sm font-semibold uppercase tracking-widest text-black ml-1 flex items-center gap-1"
+                className="text-xs font-semibold uppercase tracking-wider text-black ml-1 flex items-center gap-1"
               >
                 Quantity <span className="text-amber-500 text-xs font-semibold">*</span>
               </label>
@@ -130,16 +130,16 @@ export default function UpdateQuotationLine({
                 name="quantity"
                 type="number"
                 required
-                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-amber-600/20 w-full h-14 rounded focus:bg-slate-50 transition-all font-medium px-5 text-slate-900"
+                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-amber-600/20 w-full h-9 sm:h-10 rounded focus:bg-white transition-all font-medium px-3 text-xs sm:text-sm text-slate-900"
                 onChange={formik.handleChange}
                 value={formik.values.quantity}
               />
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <label
                 htmlFor="unit_price"
-                className="text-sm font-semibold uppercase tracking-widest text-black ml-1 flex items-center gap-1"
+                className="text-xs font-semibold uppercase tracking-wider text-black ml-1 flex items-center gap-1"
               >
                 Unit Rate <span className="text-amber-500 text-xs font-semibold">*</span>
               </label>
@@ -148,46 +148,46 @@ export default function UpdateQuotationLine({
                 name="unit_price"
                 type="number"
                 required
-                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-amber-600/20 w-full h-14 rounded focus:bg-slate-50 transition-all font-medium px-5 text-slate-900"
+                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-amber-600/20 w-full h-9 sm:h-10 rounded focus:bg-white transition-all font-medium px-3 text-xs sm:text-sm text-slate-900"
                 onChange={formik.handleChange}
                 value={formik.values.unit_price}
               />
             </div>
 
-            <div className="md:col-span-2 space-y-2">
+            <div className="md:col-span-2 space-y-1.5">
               <label
                 htmlFor="description"
-                className="text-sm font-semibold uppercase tracking-widest text-black ml-1 flex items-center gap-1"
+                className="text-xs font-semibold uppercase tracking-wider text-black ml-1 flex items-center gap-1"
               >
                 Strategic Context
               </label>
               <textarea
                 id="description"
                 name="description"
-                rows={3}
+                rows={2}
                 placeholder="Details of this specific component..."
-                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-amber-600/20 w-full p-5 rounded focus:bg-slate-50 transition-all font-medium resize-none text-sm text-slate-900"
+                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-amber-600/20 w-full p-3 rounded focus:bg-white transition-all font-medium resize-none text-xs sm:text-sm text-slate-900"
                 onChange={formik.handleChange}
                 value={formik.values.description}
               />
             </div>
           </div>
 
-          <div className="pt-6">
+          <div className="pt-2">
             <button
               type="submit"
               disabled={formik.isSubmitting}
-              className="w-full h-16 text-white rounded font-semibold text-lg transition-all shadow-xl active:scale-[0.98] group flex items-center justify-center translate-y-0 hover:-translate-y-1"
+              className="w-full h-9 sm:h-10 text-white rounded font-semibold text-xs sm:text-sm transition-all shadow-md active:scale-[0.98] group flex items-center justify-center gap-2"
               style={{
                 backgroundColor: primaryColor,
-                boxShadow: `0 10px 20px -5px ${primaryColor}4D`,
+                boxShadow: `0 4px 12px -2px ${primaryColor}4D`,
               }}
             >
               {formik.isSubmitting ? (
-                <Loader2 className="w-6 h-6 animate-spin" />
+                <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
-                <div className="flex items-center gap-3">
-                  <Save className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                <div className="flex items-center gap-2">
+                  <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
                   Update Project Item
                 </div>
               )}

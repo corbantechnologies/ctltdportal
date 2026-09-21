@@ -45,9 +45,9 @@ export default function CreateOperations({ trigger }: CreateOperationsProps) {
     <>
       <div onClick={() => setOpen(true)} className="cursor-pointer">
         {trigger || (
-          <button className="h-14 px-8 bg-slate-900 hover:bg-corporate-primary text-white rounded font-semibold text-sm tracking-tight transition-all shadow-xl hover:shadow-corporate-primary/20 active:scale-[0.98] flex items-center gap-3 group">
-            <div className="w-8 h-8 rounded bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
-              <Plus className="w-4 h-4" />
+          <button className="h-9 sm:h-10 px-4 sm:px-5 bg-slate-900 hover:bg-corporate-primary text-white rounded font-semibold text-xs sm:text-sm tracking-tight transition-all shadow-md active:scale-[0.98] flex items-center gap-2 group">
+            <div className="w-5 h-5 rounded bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+              <Plus className="w-3.5 h-3.5" />
             </div>
             Establish Operations Member
           </button>
@@ -57,36 +57,36 @@ export default function CreateOperations({ trigger }: CreateOperationsProps) {
       {open && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-md animate-in fade-in duration-300" onClick={() => setOpen(false)} />
-          <div className="relative w-full max-w-lg bg-white rounded shadow-2xl border border-slate-200 overflow-hidden z-[101] animate-in zoom-in-95 fade-in duration-300">
-            <div className="bg-slate-900 p-8 text-white relative">
+          <div className="relative w-full max-w-md bg-white rounded shadow-2xl border border-slate-200 overflow-hidden z-[101] animate-in zoom-in-95 fade-in duration-200">
+            <div className="bg-slate-900 p-4 sm:p-5 text-white relative">
               <div className="absolute top-0 right-0 w-32 h-32 bg-corporate-primary/10 rounded blur-3xl -translate-y-1/2 translate-x-1/2" />
 
-              <div className="flex items-center gap-4 relative z-10">
-                <div className="w-12 h-12 rounded bg-white/10 backdrop-blur-md flex items-center justify-center text-white border border-white/10">
-                  <Users className="w-6 h-6" />
+              <div className="flex items-center gap-3 relative z-10">
+                <div className="w-9 h-9 rounded bg-white/10 backdrop-blur-md flex items-center justify-center text-white border border-white/10">
+                  <Users className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-semibold tracking-tight italic">
+                  <h2 className="text-base sm:text-lg font-semibold tracking-tight">
                     Establish <span className="text-corporate-primary">Operations</span>
                   </h2>
-                  <p className="text-slate-400 font-semibold uppercase text-[10px] tracking-widest mt-1">
+                  <p className="text-slate-400 font-semibold uppercase text-[9px] tracking-wider mt-0.5">
                     System Access Provisioning
                   </p>
                 </div>
               </div>
 
-              <button type="button" onClick={() => setOpen(false)} className="absolute top-8 right-8 p-2 rounded bg-white/5 hover:bg-white/10 text-white/40 hover:text-white transition-all border border-white/5 z-10">
-                <X className="w-5 h-5" />
+              <button type="button" onClick={() => setOpen(false)} className="absolute top-4 right-4 p-1.5 rounded bg-white/5 hover:bg-white/10 text-white/40 hover:text-white transition-all border border-white/5 z-10">
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="p-8">
-              <form onSubmit={formik.handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
+            <div className="p-4 sm:p-5">
+              <form onSubmit={formik.handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
                     <label
                       htmlFor="first_name"
-                      className="text-[10px] font-semibold uppercase tracking-widest text-slate-400 ml-1 block"
+                      className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 ml-1 block"
                     >
                       First Name
                     </label>
@@ -95,7 +95,7 @@ export default function CreateOperations({ trigger }: CreateOperationsProps) {
                       name="first_name"
                       type="text"
                       placeholder="e.g. John"
-                      className="w-full h-14 rounded border border-slate-200 bg-slate-50 focus:bg-slate-50 focus:border-corporate-primary/30 focus:ring-0 transition-all font-semibold px-6 text-sm text-slate-900 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-corporate-primary/20"
+                      className="w-full h-9 sm:h-10 rounded border border-slate-200 bg-slate-50 focus:bg-white focus:border-corporate-primary/30 focus:ring-0 transition-all font-semibold px-3 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-corporate-primary/20"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       value={formik.values.first_name}
@@ -106,10 +106,10 @@ export default function CreateOperations({ trigger }: CreateOperationsProps) {
                       </p>
                     )}
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-1.5">
                     <label
                       htmlFor="last_name"
-                      className="text-[10px] font-semibold uppercase tracking-widest text-slate-400 ml-1 block"
+                      className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 ml-1 block"
                     >
                       Last Name
                     </label>
@@ -118,7 +118,7 @@ export default function CreateOperations({ trigger }: CreateOperationsProps) {
                       name="last_name"
                       type="text"
                       placeholder="e.g. Doe"
-                      className="w-full h-14 rounded border border-slate-200 bg-slate-50 focus:bg-slate-50 focus:border-corporate-primary/30 focus:ring-0 transition-all font-semibold px-6 text-sm text-slate-900 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-corporate-primary/20"
+                      className="w-full h-9 sm:h-10 rounded border border-slate-200 bg-slate-50 focus:bg-white focus:border-corporate-primary/30 focus:ring-0 transition-all font-semibold px-3 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-corporate-primary/20"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       value={formik.values.last_name}
@@ -131,10 +131,10 @@ export default function CreateOperations({ trigger }: CreateOperationsProps) {
                   </div>
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <label
                     htmlFor="email"
-                    className="text-[10px] font-semibold uppercase tracking-widest text-slate-400 ml-1 block"
+                    className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 ml-1 block"
                   >
                     Email Address
                   </label>
@@ -143,7 +143,7 @@ export default function CreateOperations({ trigger }: CreateOperationsProps) {
                     name="email"
                     type="email"
                     placeholder="e.g. john@example.com"
-                    className="w-full h-14 rounded border border-slate-200 bg-slate-50 focus:bg-slate-50 focus:border-corporate-primary/30 focus:ring-0 transition-all font-semibold px-6 text-sm text-slate-900 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-corporate-primary/20"
+                    className="w-full h-9 sm:h-10 rounded border border-slate-200 bg-slate-50 focus:bg-white focus:border-corporate-primary/30 focus:ring-0 transition-all font-semibold px-3 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-corporate-primary/20"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     value={formik.values.email}
@@ -155,17 +155,17 @@ export default function CreateOperations({ trigger }: CreateOperationsProps) {
                   )}
                 </div>
 
-                <div className="pt-4">
+                <div className="pt-2">
                   <button
                     type="submit"
                     disabled={formik.isSubmitting}
-                    className="w-full h-16 bg-slate-900 hover:bg-corporate-primary text-white rounded font-semibold text-base transition-all shadow-xl hover:shadow-corporate-primary/20 active:scale-[0.98] group relative overflow-hidden flex items-center justify-center"
+                    className="w-full h-9 sm:h-10 bg-slate-900 hover:bg-corporate-primary text-white rounded font-semibold text-xs sm:text-sm transition-all shadow-md hover:shadow-corporate-primary/20 active:scale-[0.98] group relative overflow-hidden flex items-center justify-center"
                   >
                     {formik.isSubmitting ? (
-                      <Loader2 className="w-6 h-6 animate-spin mx-auto" />
+                      <Loader2 className="w-4 h-4 animate-spin mx-auto" />
                     ) : (
-                      <div className="flex items-center justify-center gap-3">
-                        <Shield className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                      <div className="flex items-center justify-center gap-2">
+                        <Shield className="w-4 h-4 group-hover:scale-110 transition-transform" />
                         Establish Member
                       </div>
                     )}

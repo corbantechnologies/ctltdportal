@@ -281,68 +281,63 @@ export default function Navbar() {
       {/* Side Menu Drawer */}
       <aside
         className={cn(
-          "fixed right-0 top-0 h-full w-[340px] bg-slate-900 z-[70] shadow-[0_0_50px_-12px_rgba(0,0,0,0.5)] transform transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1) border-l border-slate-800",
+          "fixed right-0 top-0 h-full w-[300px] sm:w-[340px] max-w-[85vw] bg-slate-900 z-[70] shadow-2xl transform transition-transform duration-300 cubic-bezier(0.4, 0, 0.2, 1) border-l border-slate-800",
           menuOpen ? "translate-x-0" : "translate-x-full",
         )}
       >
         <div className="flex flex-col h-full">
           {/* Drawer Header */}
-          <div className="p-2 border-b border-slate-800 flex items-center justify-between bg-slate-900/50 backdrop-blur-xl">
+          <div className="p-3 border-b border-slate-800 flex items-center justify-between bg-slate-900/80 backdrop-blur-xl">
             <Image
               src="/logo.png"
               alt="Logo"
-              width={120}
-              height={32}
+              width={110}
+              height={30}
               className="h-6 w-auto object-contain brightness-0 invert"
             />
             <button
               onClick={() => setMenuOpen(false)}
-              className="p-2 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition-colors border border-transparent hover:border-slate-700"
+              className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition-colors border border-transparent hover:border-slate-700 min-h-[36px] min-w-[36px] flex items-center justify-center"
             >
-              <X className="w-6 h-6" />
+              <X className="w-5 h-5" />
             </button>
           </div>
 
           {/* User Info Section */}
-          <div className="p-2 bg-gradient-to-b from-slate-900 to-slate-950/50 border-b border-slate-800">
-            <div className="flex items-center gap-5">
+          <div className="p-3.5 bg-slate-950/60 border-b border-slate-800">
+            <div className="flex items-center gap-3">
               <div className={cn(
-                "w-8 h-8 rounded flex items-center justify-center text-white text-sm border shadow transition-transform hover:scale-105",
+                "w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-bold border shadow flex-shrink-0",
                 isDirector
-                  ? "bg-corporate-primary border-corporate-primary/20 shadow-corporate-primary/10"
+                  ? "bg-corporate-primary border-corporate-primary/30"
                   : isFinance
-                    ? "bg-emerald-600 border-emerald-600/20 shadow-emerald-600/10"
+                    ? "bg-emerald-600 border-emerald-600/30"
                     : "bg-slate-800 border-slate-700"
               )}>
                 {account?.first_name?.[0]}
                 {account?.last_name?.[0]}
               </div>
-              <div>
-                <p className="text-white text-xl tracking-tight">
+              <div className="min-w-0 flex-1">
+                <p className="text-white text-sm font-semibold tracking-tight truncate">
                   {account?.first_name} {account?.last_name}
                 </p>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  <div className={cn(
-                    "inline-flex items-center px-2 py-1 rounded border",
+                <div className="flex flex-wrap items-center gap-1.5 mt-1">
+                  <span className={cn(
+                    "inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-semibold uppercase tracking-wider",
                     isDirector
-                      ? "bg-corporate-primary/10 border-corporate-primary/20"
+                      ? "bg-corporate-primary/10 text-corporate-primary border border-corporate-primary/20"
                       : isFinance
-                        ? "bg-emerald-500/10 border-emerald-500/20"
-                        : "bg-slate-800 border-slate-700"
+                        ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                        : isOperations
+                          ? "bg-blue-500/10 text-blue-400 border border-blue-500/20"
+                          : "bg-slate-800 text-slate-300 border border-slate-700"
                   )}>
-                    <span className={cn(
-                      "text-[9px] font-semibold uppercase",
-                      isDirector ? "text-corporate-primary" : isFinance ? "text-emerald-500" : isOperations ? "text-blue-400" : isEmployee ? "text-slate-300" : "text-slate-400"
-                    )}>
-                      {isDirector ? "Executive Director" : isFinance ? "Finance Controller" : isOperations ? "Operations Officer" : isEmployee ? "Field Staff" : "Portal User"}
-                    </span>
-                  </div>
+                    {isDirector ? "Director" : isFinance ? "Finance" : isOperations ? "Operations" : isEmployee ? "Field Staff" : "User"}
+                  </span>
                   {activeYear && (
-                    <div className="inline-flex items-center px-2 py-1 rounded border bg-slate-800 border-slate-700 shadow-inner">
-                      <span className="text-[9px] font-semibold uppercase text-slate-400">
-                        FY: {activeYear.code}
-                      </span>
-                    </div>
+                    <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold text-slate-400 bg-slate-800 border border-slate-700">
+                      FY {activeYear.code}
+                    </span>
                   )}
                 </div>
               </div>
@@ -350,7 +345,7 @@ export default function Navbar() {
           </div>
 
           {/* Navigation Links */}
-          <div className="flex-1 overflow-y-auto p-2 space-y-2 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
+          <div className="flex-1 overflow-y-auto p-2 space-y-1 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
             {navItems
               .filter((item) => item.show)
               .map((item) => {
@@ -360,30 +355,30 @@ export default function Navbar() {
                     key={item.name}
                     href={item.href}
                     className={cn(
-                      "flex items-center justify-between p-2 rounded text-[11px] uppercase transition-all group border border-transparent",
+                      "flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-all group border border-transparent font-medium",
                       isActive
-                        ? "bg-slate-800/80 text-white border-slate-700 shadow-xl"
-                        : "text-slate-500 hover:bg-slate-800/40 hover:text-white hover:border-slate-800/50",
+                        ? "bg-slate-800 text-white border-slate-700 shadow-sm"
+                        : "text-slate-400 hover:bg-slate-800/60 hover:text-white",
                     )}
                   >
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2.5 min-w-0">
                       <div
                         className={cn(
-                          "w-8 h-8 rounded flex items-center justify-center transition-all group-hover:scale-110 shadow-lg",
+                          "w-7 h-7 rounded-md flex items-center justify-center transition-colors flex-shrink-0",
                           isActive
                             ? isDirector
-                              ? "bg-corporate-primary text-white shadow-corporate-primary/20"
-                              : "bg-emerald-600 text-white shadow-emerald-600/20"
-                            : "bg-slate-800/80 text-slate-600 group-hover:text-white shadow-black/5",
+                              ? "bg-corporate-primary text-white"
+                              : "bg-emerald-600 text-white"
+                            : "bg-slate-800 text-slate-400 group-hover:text-white",
                         )}
                       >
-                        <item.icon className="w-5 h-5" />
+                        <item.icon className="w-3.5 h-3.5" />
                       </div>
-                      {item.name}
+                      <span className="truncate">{item.name}</span>
                     </div>
                     <ChevronRight
                       className={cn(
-                        "w-5 h-5 opacity-0 group-hover:opacity-100 transition-all group-hover:translate-x-1",
+                        "w-4 h-4 opacity-0 group-hover:opacity-100 transition-all group-hover:translate-x-0.5 flex-shrink-0",
                         isActive && (isDirector ? "text-corporate-primary opacity-100" : "text-emerald-500 opacity-100"),
                       )}
                     />
@@ -393,12 +388,12 @@ export default function Navbar() {
           </div>
 
           {/* Footer Action */}
-          <div className="p-4 border-t border-slate-800 bg-slate-900/50 backdrop-blur-xl">
+          <div className="p-3 border-t border-slate-800 bg-slate-900/80 backdrop-blur-xl">
             <button
               onClick={() => signOut({ callbackUrl: "/auth/login" })}
-              className="w-full h-14 bg-red-600/10 hover:bg-red-600 text-red-500 hover:text-white rounded font-semibold flex items-center justify-center gap-3 transition-all border border-red-500/20 shadow-lg shadow-red-500/5 group"
+              className="w-full h-10 bg-red-600/10 hover:bg-red-600 text-red-400 hover:text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-2 transition-all border border-red-500/20 shadow-sm group"
             >
-              <LogOut className="w-5 h-5 transition-transform group-hover:-translate-x-1" />
+              <LogOut className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" />
               Sign Out Securely
             </button>
           </div>

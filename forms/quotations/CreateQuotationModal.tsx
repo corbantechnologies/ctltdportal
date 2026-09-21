@@ -104,35 +104,35 @@ export default function CreateQuotationModal({
         <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl bg-white rounded shadow-2xl z-[101] overflow-hidden animate-in zoom-in-95 duration-300 border border-slate-200 max-h-[90vh] flex flex-col">
 
           {/* Header */}
-          <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50 flex-shrink-0">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded bg-slate-900 flex items-center justify-center text-white shadow-xl shadow-slate-900/20">
-                <FileText className="w-6 h-6" />
+          <div className="p-3.5 sm:p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50 flex-shrink-0">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-600/20">
+                <FileText className="w-4 h-4" />
               </div>
               <div>
-                 <Dialog.Title className="text-xl font-bold text-slate-900 tracking-tight italic">
+                 <Dialog.Title className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
                   Initialize <span className="text-blue-600">Quotation</span>
                 </Dialog.Title>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-black">Header setup & Entity Assignment</p>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Header setup & Entity Assignment</p>
               </div>
             </div>
-            <Dialog.Close className="w-10 h-10 rounded hover:bg-slate-200 flex items-center justify-center text-black transition-colors">
-              <X className="w-5 h-5" />
+            <Dialog.Close className="w-8 h-8 rounded hover:bg-slate-200 flex items-center justify-center text-slate-500 transition-colors">
+              <X className="w-4 h-4" />
             </Dialog.Close>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-8 space-y-8">
+          <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4">
             {/* Entity Selection Section */}
             {!initialLead && !initialPartner && (
-              <div className="space-y-4">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-black flex items-center gap-2">
-                  <Users className="w-3.5 h-3.5" />
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                  <Users className="w-3 h-3" />
                   Target Recipient
                 </label>
                 <div className="relative group">
-                  <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 group-focus-within:text-blue-600 transition-colors" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
                   <select
-                    className="w-full h-16 pl-16 pr-6 rounded bg-slate-50 border-2 border-transparent focus:border-blue-600 focus:bg-white appearance-none font-bold text-slate-900 transition-all outline-none"
+                    className="w-full h-9 pl-9 pr-3 rounded bg-slate-50 border border-slate-200 focus:border-blue-600 focus:bg-white appearance-none font-semibold text-xs sm:text-sm text-slate-900 transition-all outline-none"
                     onChange={(e) => {
                       const [type, id] = e.target.value.split(":");
                       setSelectedEntity({ type: type as any, id });
@@ -156,62 +156,62 @@ export default function CreateQuotationModal({
 
 
             {/* Date Controls */}
-            <div className="grid grid-cols-2 gap-6">
-              <div className="space-y-4">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-black flex items-center gap-2">
-                  <Calendar className="w-3.5 h-3.5" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                  <Calendar className="w-3 h-3" />
                   Effective Date
                 </label>
                 <input
                   type="date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  className="w-full h-14 px-6 rounded bg-slate-50 border border-transparent focus:border-blue-600 focus:bg-white font-semibold text-sm transition-all text-slate-900"
+                  className="w-full h-9 px-3 rounded bg-slate-50 border border-slate-200 focus:border-blue-600 focus:bg-white font-semibold text-xs sm:text-sm transition-all text-slate-900 outline-none"
                 />
               </div>
-              <div className="space-y-4">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-black flex items-center gap-2">
-                  <Clock className="w-3.5 h-3.5" />
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                  <Clock className="w-3 h-3" />
                   Expiration Cycle
                 </label>
                 <input
                   type="date"
                   value={expiryDate}
                   onChange={(e) => setExpiryDate(e.target.value)}
-                  className="w-full h-14 px-6 rounded bg-slate-50 border border-transparent focus:border-blue-600 focus:bg-white font-semibold text-sm transition-all text-slate-900"
+                  className="w-full h-9 px-3 rounded bg-slate-50 border border-slate-200 focus:border-blue-600 focus:bg-white font-semibold text-xs sm:text-sm transition-all text-slate-900 outline-none"
                 />
               </div>
             </div>
 
             {/* Notes */}
-            <div className="space-y-4">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-black flex items-center gap-2">
-                <Notebook className="w-3.5 h-3.5" />
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                <Notebook className="w-3 h-3" />
                 Strategic Context
               </label>
               <textarea
                 placeholder="Add internal notes or strategic context for this quotation..."
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                className="w-full h-32 p-6 rounded bg-slate-50 border border-transparent focus:border-blue-600 focus:bg-white font-medium text-sm resize-none transition-all text-slate-900"
+                className="w-full h-20 p-3 rounded bg-slate-50 border border-slate-200 focus:border-blue-600 focus:bg-white font-medium text-xs sm:text-sm resize-none transition-all text-slate-900 outline-none"
               />
             </div>
           </div>
 
           {/* Footer */}
-          <div className="p-8 bg-slate-50 border-t border-slate-100 flex items-center justify-between flex-shrink-0">
-            <div className="flex items-center gap-4 text-black">
-              <Building2 className="w-5 h-5" />
-              <p className="text-[10px] font-bold uppercase tracking-widest">Initialization Phase</p>
+          <div className="p-3.5 sm:p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between flex-shrink-0">
+            <div className="flex items-center gap-2 text-slate-500">
+              <Building2 className="w-4 h-4" />
+              <p className="text-[10px] font-semibold uppercase tracking-wider">Initialization Phase</p>
             </div>
             
             <button
               disabled={isPending}
               onClick={handleSubmit}
-              className="flex items-center gap-3 px-10 py-5 bg-blue-600 text-white rounded font-bold text-[10px] uppercase tracking-widest hover:bg-slate-900 transition-all shadow-2xl shadow-blue-600/20 active:scale-95 disabled:opacity-50 group"
+              className="flex items-center gap-2 h-9 px-4 sm:px-5 bg-blue-600 text-white rounded font-semibold text-xs uppercase tracking-wider hover:bg-slate-900 transition-all shadow-md shadow-blue-600/20 active:scale-95 disabled:opacity-50 group"
             >
               {isPending ? "Configuring..." : "Establish Record"}
-              <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
             </button>
           </div>
 

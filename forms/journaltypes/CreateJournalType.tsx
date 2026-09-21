@@ -103,7 +103,7 @@ export default function CreateJournalType({
                 type="text"
                 required
                 placeholder="e.g. Accrual, Fixed Asset, Disbursement"
-                className="w-full h-14 rounded border border-slate-200 bg-slate-50 focus:bg-slate-50 focus:border-emerald-600/30 focus:ring-0 transition-all font-semibold px-6 text-sm text-slate-900 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 focus:border-transparent"
+                className="w-full h-9 sm:h-10 rounded border border-slate-200 bg-slate-50 focus:bg-white focus:border-emerald-600/30 focus:ring-0 transition-all font-semibold px-3 sm:px-4 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 focus:border-transparent"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.name}
@@ -127,7 +127,7 @@ export default function CreateJournalType({
                 name="description"
                 required
                 placeholder="Provide a comprehensive operational definition for this journal type..."
-                className="w-full min-h-[140px] rounded border border-slate-200 bg-slate-50 focus:bg-slate-50 focus:border-emerald-600/30 focus:ring-0 transition-all font-semibold p-6 text-sm text-slate-900 placeholder:text-slate-300 resize-none focus:outline-none focus:ring-2 focus:ring-emerald-600/20 focus:border-transparent"
+                className="w-full min-h-[90px] rounded border border-slate-200 bg-slate-50 focus:bg-white focus:border-emerald-600/30 focus:ring-0 transition-all font-semibold p-3 sm:p-4 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 resize-none focus:outline-none focus:ring-2 focus:ring-emerald-600/20 focus:border-transparent"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.description}

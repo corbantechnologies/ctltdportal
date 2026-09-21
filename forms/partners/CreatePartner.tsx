@@ -129,7 +129,7 @@ export default function CreatePartner({
                 name="name"
                 required
                 placeholder="Full Entity Name"
-                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 w-full h-14 rounded focus:bg-white transition-all font-bold px-5 text-sm"
+                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 w-full h-9 sm:h-10 rounded focus:bg-white transition-all font-semibold px-3 sm:px-4 text-xs sm:text-sm text-slate-900"
                 style={{
                   color: primaryColor,
                 }}
@@ -156,7 +156,7 @@ export default function CreatePartner({
                 name="email"
                 type="email"
                 placeholder="contact@entity.com"
-                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 w-full h-14 rounded focus:bg-white transition-all font-bold px-5 text-sm"
+                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 w-full h-9 sm:h-10 rounded focus:bg-white transition-all font-semibold px-3 sm:px-4 text-xs sm:text-sm text-slate-900"
                 style={{
                   color: primaryColor,
                 }}
@@ -184,7 +184,7 @@ export default function CreatePartner({
                 id="phone"
                 name="phone"
                 placeholder="+254..."
-                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 w-full h-14 rounded focus:bg-white transition-all font-bold px-5 text-sm"
+                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 w-full h-9 sm:h-10 rounded focus:bg-white transition-all font-semibold px-3 sm:px-4 text-xs sm:text-sm text-slate-900"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.phone}
@@ -203,7 +203,7 @@ export default function CreatePartner({
                 name="partner_type"
                 required
                 disabled={isLoadingTypes}
-                className="focus:outline-none focus:ring-2 focus:ring-emerald-600/20 flex h-14 w-full rounded border border-slate-200 bg-slate-50 px-5 py-2 text-sm font-bold transition-all appearance-none cursor-pointer"
+                className="focus:outline-none focus:ring-2 focus:ring-emerald-600/20 flex h-9 sm:h-10 w-full rounded border border-slate-200 bg-slate-50 px-3 sm:px-4 py-1 text-xs sm:text-sm font-semibold transition-all appearance-none cursor-pointer"
                 style={{
                   color: primaryColor,
                 }}
@@ -232,7 +232,7 @@ export default function CreatePartner({
                 name="division"
                 required
                 disabled={isLoadingDivisions}
-                className="focus:outline-none focus:ring-2 focus:ring-emerald-600/20 flex h-14 w-full rounded border border-slate-200 bg-slate-50 px-5 py-2 text-sm font-bold transition-all appearance-none cursor-pointer"
+                className="focus:outline-none focus:ring-2 focus:ring-emerald-600/20 flex h-9 sm:h-10 w-full rounded border border-slate-200 bg-slate-50 px-3 sm:px-4 py-1 text-xs sm:text-sm font-semibold transition-all appearance-none cursor-pointer"
                 style={{
                   color: primaryColor,
                 }}
@@ -265,7 +265,7 @@ export default function CreatePartner({
                 id="tax_pin"
                 name="tax_pin"
                 placeholder="P0XXXXXXXX"
-                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 w-full h-14 rounded focus:bg-white transition-all font-bold px-5 text-sm"
+                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 w-full h-9 sm:h-10 rounded focus:bg-white transition-all font-semibold px-3 sm:px-4 text-xs sm:text-sm text-slate-900"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.tax_pin}
@@ -282,7 +282,7 @@ export default function CreatePartner({
               <select
                 id="currency"
                 name="currency"
-                className="focus:outline-none focus:ring-2 focus:ring-emerald-600/20 flex h-14 w-full rounded border border-slate-200 bg-slate-50 px-5 py-2 text-sm font-bold transition-all appearance-none cursor-pointer"
+                className="focus:outline-none focus:ring-2 focus:ring-emerald-600/20 flex h-9 sm:h-10 w-full rounded border border-slate-200 bg-slate-50 px-3 sm:px-4 py-1 text-xs sm:text-sm font-semibold transition-all appearance-none cursor-pointer"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.currency}
@@ -307,7 +307,7 @@ export default function CreatePartner({
                 type="number"
                 step="0.01"
                 placeholder="0.00"
-                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 w-full h-14 rounded focus:bg-white transition-all font-bold px-5 text-sm"
+                className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 w-full h-9 sm:h-10 rounded focus:bg-white transition-all font-semibold px-3 sm:px-4 text-xs sm:text-sm text-slate-900"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.wht_rate}
@@ -326,7 +326,7 @@ export default function CreatePartner({
               id="payment_terms"
               name="payment_terms"
               placeholder="e.g. Net 30, Pay on Delivery"
-              className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 w-full h-14 rounded focus:bg-white transition-all font-bold px-5 text-sm"
+              className="border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 w-full h-9 sm:h-10 rounded focus:bg-white transition-all font-semibold px-3 sm:px-4 text-xs sm:text-sm text-slate-900"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.payment_terms}
@@ -334,14 +334,14 @@ export default function CreatePartner({
           </div>
 
           <div
-            className="flex items-center gap-3 p-4 rounded border border-black/5"
+            className="flex items-center gap-3 p-3 rounded border border-black/5"
             style={{ backgroundColor: `${primaryColor}0D` }}
           >
             <input
               id="is_active_chk"
               name="is_active"
               type="checkbox"
-              className="w-5 h-5 rounded border-black/5 focus:ring-0 cursor-pointer"
+              className="w-4 h-4 rounded border-black/5 focus:ring-0 cursor-pointer"
               style={{
                 accentColor: primaryColor,
               }}
@@ -351,27 +351,27 @@ export default function CreatePartner({
             />
             <label
               htmlFor="is_active_chk"
-              className="text-sm font-bold text-slate-800 cursor-pointer"
+              className="text-xs sm:text-sm font-semibold text-slate-800 cursor-pointer"
             >
               Set Partner as Active
             </label>
           </div>
 
-          <div className="pt-4">
+          <div className="pt-2">
             <button
               type="submit"
               disabled={formik.isSubmitting}
-              className="w-full h-16 text-white rounded font-bold text-base transition-all shadow-xl active:scale-[0.98] group flex items-center justify-center gap-3"
+              className="w-full h-9 sm:h-10 text-white rounded font-semibold text-xs sm:text-sm transition-all shadow-md active:scale-[0.98] group flex items-center justify-center gap-2"
               style={{
                 backgroundColor: primaryColor,
-                boxShadow: `0 10px 20px -5px ${primaryColor}4D`,
+                boxShadow: `0 4px 12px -2px ${primaryColor}4D`,
               }}
             >
               {formik.isSubmitting ? (
-                <Loader2 className="w-6 h-6 animate-spin" />
+                <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
                 <>
-                  <ShieldCheck className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  <ShieldCheck className="w-4 h-4 group-hover:scale-110 transition-transform" />
                   Finalize Structural Registration
                 </>
               )}
