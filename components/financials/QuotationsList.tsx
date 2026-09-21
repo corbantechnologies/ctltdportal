@@ -205,7 +205,7 @@ function ConvertQuotationToInvoiceButton({ quotation, rolePrefix }: { quotation:
       toast.success("Quotation successfully converted to Invoice");
       router.push(`/${rolePrefix}/invoices/${data.invoice_reference}`);
     } catch (error: any) {
-      toast.error(error.response?.data?.error || "Conversion failed");
+      toast.error(error.response?.data?.detail || error.response?.data?.error || "Conversion failed");
     } finally {
       setIsPending(false);
     }
