@@ -118,6 +118,46 @@ const CATEGORIES: GuideCategory[] = [
     description: "Audit trail protection, non-destructive reversals, and closed-period locking",
   },
   {
+    id: "ar-aging",
+    name: "AR Aging & Customer Statements",
+    icon: TrendingUp,
+    badge: "Receivables & DSO",
+    color: "text-emerald-500",
+    bgColor: "bg-emerald-500/10",
+    borderColor: "border-emerald-500/20",
+    description: "Aging brackets (0-30, 31-60, 61-90, 90+), DSO cash velocity, and 1-click Statement of Account (SOA) generation",
+  },
+  {
+    id: "vendor-bills",
+    name: "Vendor Bills (AP) & Outflows",
+    icon: Receipt,
+    badge: "Payables & Runway",
+    color: "text-rose-500",
+    bgColor: "bg-rose-500/10",
+    borderColor: "border-rose-500/20",
+    description: "Supplier bill booking, double-entry AP expense accrual (DR 6xxx / CR 2010), and 7-day liquidity runway planning",
+  },
+  {
+    id: "payroll-statutory",
+    name: "Kenyan Payroll & Staff Claims",
+    icon: Users,
+    badge: "PAYE & NSSF/SHIF",
+    color: "text-purple-500",
+    bgColor: "bg-purple-500/10",
+    borderColor: "border-purple-500/20",
+    description: "Automated Kenyan statutory engine (PAYE, NSSF Tier 1/2, SHIF 2.75%, Housing Levy 1.5%) and staff expense reimbursements",
+  },
+  {
+    id: "audit-drilldowns",
+    name: "GL Interactive Drill-Downs",
+    icon: Layers,
+    badge: "Traceability",
+    color: "text-cyan-500",
+    bgColor: "bg-cyan-500/10",
+    borderColor: "border-cyan-500/20",
+    description: "Clickable Trial Balance, P&L, and Balance Sheet rows drilling down into chronological audit journal entries",
+  },
+  {
     id: "forex-usd",
     name: "USD & Forex Card Billing",
     icon: DollarSign,
@@ -176,6 +216,7 @@ const CATEGORIES: GuideCategory[] = [
     description: "General Ledger statements, Trial Balance, Balance Sheet, and P&L exports",
   },
 ];
+
 
 interface SimulationScenario {
   title: string;
@@ -466,7 +507,116 @@ const SIMULATION_SCENARIOS: SimulationScenario[] = [
       paymentMethod: "Non-Cash Journal Adjustment",
     },
   },
+  {
+    title: "Vendor Bill (AP) Accrual & Booking",
+    category: "Accounts Payable",
+    description: "Supplier bill received for software licenses / hosting; accrued to General Ledger before payment.",
+    type: "JOURNAL",
+    debit: {
+      account: "Cloud Software & Licenses Expense",
+      code: "6110-EXP",
+      type: "Expense (Debit Recognizes Expense)",
+      note: "Accrues expense into current financial month P&L",
+    },
+    credit: {
+      account: "Trade Accounts Payable",
+      code: "2010-AP",
+      type: "Liability (Credit Establishes Payable)",
+      note: "Establishes formal Accounts Payable liability due to supplier",
+    },
+    portalAction: "Open Vendor Bills Studio > Enter Supplier Invoice Details > Click 'Post to General Ledger'",
+    portalLink: "/finance/vendor-bills",
+    exampleData: {
+      amount: "KES 75,000.00",
+      partner: "Datadog Cloud Solutions",
+      division: "Engineering & Cloud",
+      ledgerBook: "Software Licenses & Subscriptions",
+      paymentMethod: "Credit Terms (Net 30)",
+    },
+  },
+  {
+    title: "Vendor Bill Settlement / AP Disbursement",
+    category: "Payables Settlement",
+    description: "Clearing an approved supplier invoice via corporate bank wire; settles AP liability.",
+    type: "MONEY_OUT",
+    debit: {
+      account: "Trade Accounts Payable",
+      code: "2010-AP",
+      type: "Liability (Debit Clears Liability)",
+      note: "Reduces supplier balance due to zero",
+    },
+    credit: {
+      account: "Main Commercial Bank Account",
+      code: "1010-BNK",
+      type: "Asset (Credit Decreases Bank Balance)",
+      note: "Funds disbursed from corporate bank account",
+    },
+    portalAction: "Open Vendor Bill Detail > Click 'Record Payment' > Choose Bank Account > Confirm Disbursement",
+    portalLink: "/finance/vendor-bills",
+    exampleData: {
+      amount: "KES 75,000.00",
+      partner: "Datadog Cloud Solutions",
+      division: "Engineering & Cloud",
+      ledgerBook: "Operating Bank Account",
+      paymentMethod: "Bank Wire KCB-994821",
+    },
+  },
+  {
+    title: "Monthly Staff Payroll Execution & Kenyan Statutory Posting",
+    category: "Payroll & Statutory",
+    description: "Monthly salary run calculating PAYE, NSSF Tier 1/2, SHIF, Housing Levy, and Net Pay.",
+    type: "JOURNAL",
+    debit: {
+      account: "Salaries & Wages Operating Expense",
+      code: "6010-EXP",
+      type: "Expense (Debit Gross Remuneration)",
+      note: "Full gross employee compensation charged to Income Statement",
+    },
+    credit: {
+      account: "PAYE Tax (2040) + Statutory (2050) + Net Pay (1010)",
+      code: "2040 / 2050 / 1010",
+      type: "Multi-Leg Liabilities & Liquid Cash",
+      note: "Allocates KRA PAYE tax, NSSF/SHIF/Housing levies, and net cash disbursed to staff",
+    },
+    portalAction: "Open Payroll Studio > Add Employee Items > Verify Statutory Deductions > Click 'Post Payroll to GL'",
+    portalLink: "/finance/payroll",
+    exampleData: {
+      amount: "KES 450,000.00 Gross (Net KES 342,000.00)",
+      partner: "Corban Staff Payroll Batch",
+      division: "All Operating Divisions",
+      ledgerBook: "Executive & Engineering Payroll",
+      paymentMethod: "Bank Salary Transfer Batch",
+    },
+  },
+  {
+    title: "Staff Expense Reimbursement Claim Disbursement",
+    category: "Reimbursements",
+    description: "Employee submits field visit travel expense; approved by Director and disbursed via M-Pesa/Bank.",
+    type: "MONEY_OUT",
+    debit: {
+      account: "Field Operations & Travel Expense",
+      code: "6300-EXP",
+      type: "Expense (Debit Increases Expense)",
+      note: "Charges travel and field expense to P&L",
+    },
+    credit: {
+      account: "Corporate M-PESA Cash Book / Bank",
+      code: "1020-MPESA",
+      type: "Asset (Credit Disburses Cash)",
+      note: "Instant reimbursement sent to employee phone/account",
+    },
+    portalAction: "Open Staff Claims Hub > Click 'Approve' > Click 'Disburse & Post to GL'",
+    portalLink: "/finance/staff-claims",
+    exampleData: {
+      amount: "KES 14,500.00",
+      partner: "Field Engineer (Staff Claim)",
+      division: "Infrastructure Deployment",
+      ledgerBook: "Travel & Subsistence",
+      paymentMethod: "M-PESA B2C Disbursement",
+    },
+  },
 ];
+
 
 export default function FinanceGuidesPage() {
   const [searchQuery, setSearchQuery] = useState("");

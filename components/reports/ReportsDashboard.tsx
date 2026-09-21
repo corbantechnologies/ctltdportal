@@ -150,6 +150,24 @@ export default function ReportsDashboard({ rolePrefix = "director" }: { rolePref
                     </div>
                 </div>
                 <div className="flex items-center gap-2 flex-wrap sm:gap-3">
+                    {/* AR Aging shortcut */}
+                    <Link
+                        href={`/${rolePrefix}/reports/ar-aging`}
+                        className="flex items-center gap-2 px-4 py-2.5 rounded border border-slate-200 bg-white text-slate-700 text-[10px] font-bold uppercase tracking-widest hover:bg-slate-50 transition-all"
+                    >
+                        <TrendingUpIcon className="w-3.5 h-3.5" />
+                        AR Aging
+                    </Link>
+
+                    {/* Cash Outflow shortcut */}
+                    <Link
+                        href={`/${rolePrefix}/reports/cash-outflow`}
+                        className="flex items-center gap-2 px-4 py-2.5 rounded border border-slate-200 bg-white text-slate-700 text-[10px] font-bold uppercase tracking-widest hover:bg-slate-50 transition-all"
+                    >
+                        <WalletIcon className="w-3.5 h-3.5" />
+                        Cash Outflow
+                    </Link>
+
                     {/* GL Statement shortcut */}
                     <Link
                         href={`/${rolePrefix}/reports/gl-statement`}
@@ -158,6 +176,7 @@ export default function ReportsDashboard({ rolePrefix = "director" }: { rolePref
                         <BookOpen className="w-3.5 h-3.5" />
                         GL Statement
                     </Link>
+
 
                     {/* Filter toggle */}
                     <button
