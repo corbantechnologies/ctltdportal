@@ -34,8 +34,11 @@ export interface Invoice {
   id: string;
   reference: string;
   code: string;
-  partner: string;
+  partner?: string | null;
   partner_name?: string;
+  client_name?: string;
+  client_email?: string;
+  client_phone?: string;
   created_by: string;
   updated_by?: string;
   posted_by?: string;
@@ -59,12 +62,23 @@ export interface Invoice {
 }
 
 export interface CreateInvoiceData {
-  partner: string;
+  partner?: string | null;
+  client_name?: string | null;
+  client_email?: string | null;
+  client_phone?: string | null;
   date: string;
   due_date: string;
   notes?: string;
   payment_account?: string;
   terms_and_conditions?: string;
+}
+
+export interface CreateInvoiceLineData {
+  invoice: string;
+  product?: string;
+  description?: string;
+  quantity: number;
+  unit_price: number;
 }
 
 export interface RecordReceiptData {
@@ -171,3 +185,23 @@ export const downloadInvoicePDF = async (
   });
   return response.data;
 };
+
+export const createInvoiceLine = async (
+  data: CreateInvoiceLineData,
+  headers: { headers: { Authorization: string } }
+): Promise<InvoiceLineItem> => {
+  const response: AxiosResponse<InvoiceLineItem> = await apiActions.post(
+    `/api/v1/invoicelines/`,
+    data,
+    headers
+  );
+  return response.data;
+};
+
+export const deleteInvoiceLine = async (
+  reference: string,
+  headers: { headers: { Authorization: string } }
+): Promise<void> => {
+  await apiActions.delete(`/api/v1/invoicelines/${reference}/`, headers);
+};
+

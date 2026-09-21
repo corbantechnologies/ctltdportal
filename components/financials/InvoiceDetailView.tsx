@@ -111,7 +111,7 @@ export default function InvoiceDetailView({ rolePrefix }: InvoiceDetailViewProps
             <RecordReceiptModal
               invoiceReference={invoice.reference}
               invoiceCode={invoice.code}
-              partnerName={invoice.partner_name || invoice.partner}
+              partnerName={invoice.partner_name || invoice.partner || undefined}
               balanceDue={balanceDue}
               trigger={
                 <button className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold uppercase tracking-wider transition-all shadow-md shadow-emerald-600/20 flex items-center gap-2">
@@ -219,7 +219,7 @@ export default function InvoiceDetailView({ rolePrefix }: InvoiceDetailViewProps
               </span>
               <div className="flex items-center gap-2 font-bold text-slate-900 text-sm">
                 <Building2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                <span className="truncate">{invoice.partner_name || invoice.partner}</span>
+                <span className="truncate">{invoice.partner_name || invoice.partner || invoice.client_name || "Direct Customer"}</span>
               </div>
             </div>
 

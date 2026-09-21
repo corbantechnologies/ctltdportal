@@ -48,16 +48,15 @@ interface createLead {
 }
 
 interface updateLead {
-    first_name: string;
-    last_name: string;
-    email: string; // optional
-    phone: string; // optional
-    country: string; // optional
-    company_name: string; // optional
-    tax_pin: string; // optional
-    division: string; // division name
-    status: string; // optional
-
+    first_name?: string;
+    last_name?: string;
+    email?: string; // optional
+    phone?: string; // optional
+    country?: string; // optional
+    company_name?: string; // optional
+    tax_pin?: string; // optional
+    division?: string; // division name
+    status?: string; // optional
 }
 
 export const createLead = async (
