@@ -164,19 +164,19 @@ export default function InvoicesList({ rolePrefix }: InvoicesListProps) {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <button
-            onClick={() => router.push(`/${rolePrefix}/sales/new`)}
-            className="px-5 py-3 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold uppercase tracking-wider transition-all border border-slate-200 flex items-center gap-2 active:scale-95 shadow-sm"
+            onClick={() => router.push(`/${rolePrefix}/invoices/new?type=cash`)}
+            className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-xs font-semibold transition-all border border-slate-200 flex items-center gap-1.5 shadow-sm"
           >
-            <Zap className="w-4 h-4 text-emerald-600" />
+            <Zap className="w-3.5 h-3.5 text-emerald-600" />
             Direct Cash Sale
           </button>
           <button
             onClick={() => router.push(`/${rolePrefix}/invoices/new`)}
-            className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all shadow-lg shadow-emerald-600/20 flex items-center gap-2 active:scale-95"
+            className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold transition-all shadow-sm flex items-center gap-1.5"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-3.5 h-3.5" />
             New Tax Invoice
           </button>
         </div>
@@ -225,7 +225,7 @@ export default function InvoicesList({ rolePrefix }: InvoicesListProps) {
       {/* Search & Filter Bar */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
         <div className="relative w-full lg:max-w-md">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input
             type="text"
             placeholder="Search by invoice code, client name, or reference..."
@@ -234,7 +234,7 @@ export default function InvoicesList({ rolePrefix }: InvoicesListProps) {
               setSearchQuery(e.target.value);
               setCurrentPage(1);
             }}
-            className="w-full h-12 pl-11 pr-4 rounded-xl border border-slate-200 bg-white focus:border-slate-900 focus:ring-0 text-xs font-semibold shadow-sm transition-all"
+            className="w-full h-10 pl-9 pr-4 rounded-lg border border-slate-200 bg-white focus:border-slate-400 focus:ring-1 focus:ring-slate-400 text-xs font-medium shadow-none transition-all"
           />
         </div>
 
@@ -252,24 +252,24 @@ export default function InvoicesList({ rolePrefix }: InvoicesListProps) {
       <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50/80 border-b border-slate-100 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-              <tr>
-                <th className="py-4 px-6">Invoice No / Code</th>
-                <th className="py-4 px-6">Billed Customer</th>
-                <th className="py-4 px-6">Issue &amp; Due Date</th>
-                <th className="py-4 px-6">Payment Progress</th>
-                <th className="py-4 px-6 text-right">Total Amount</th>
-                <th className="py-4 px-6 text-right">Ledger Status</th>
-                <th className="py-4 px-6 text-right">Quick Actions</th>
+            <thead>
+              <tr className="bg-slate-50/80 border-b border-slate-200/80 text-[10px] font-semibold text-slate-500 uppercase tracking-wider">
+                <th className="py-3 px-4 text-left">Tax Invoice Code</th>
+                <th className="py-3 px-4 text-left">Customer / Client</th>
+                <th className="py-3 px-4 text-left">Issue &amp; Due Date</th>
+                <th className="py-3 px-4 text-left">Payment Progress</th>
+                <th className="py-3 px-4 text-right">Total Amount</th>
+                <th className="py-3 px-4 text-right">Ledger Status</th>
+                <th className="py-3 px-4 text-right">Quick Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 font-medium">
+            <tbody className="divide-y divide-slate-100 font-medium text-xs">
               {paginatedInvoices.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-16 text-center text-slate-400">
-                    <FileText className="w-10 h-10 mx-auto mb-3 opacity-30 text-emerald-600" />
-                    <p className="text-xs font-bold uppercase tracking-wider">No invoices found</p>
-                    <p className="text-slate-400 text-xs mt-1">Create a new invoice or direct sale to get started</p>
+                  <td colSpan={7} className="py-12 text-center text-slate-400">
+                    <FileText className="w-8 h-8 mx-auto mb-2 opacity-30 text-emerald-600" />
+                    <p className="text-xs font-semibold">No invoices found</p>
+                    <p className="text-slate-400 text-xs mt-0.5">Create a new invoice or direct sale to get started</p>
                   </td>
                 </tr>
               ) : (
@@ -287,10 +287,10 @@ export default function InvoicesList({ rolePrefix }: InvoicesListProps) {
                       className="hover:bg-slate-50/70 transition-colors cursor-pointer group"
                     >
                       {/* Document Code */}
-                      <td className="py-4 px-6">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center font-bold group-hover:bg-slate-900 group-hover:text-white transition-all shadow-inner flex-shrink-0">
-                            <FileText className="w-4 h-4" />
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center font-bold group-hover:bg-slate-900 group-hover:text-white transition-all border border-slate-200 flex-shrink-0">
+                            <FileText className="w-3.5 h-3.5" />
                           </div>
                           <div>
                             <p className="font-mono font-bold text-slate-900 text-xs group-hover:text-emerald-600 transition-colors">

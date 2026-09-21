@@ -20,7 +20,7 @@ interface AccountDistributionChartProps {
   data: any[]; // Expecting COAs with books
 }
 
-const COLORS = ["#D0402B", "#1E293B", "#64748B", "#F97316", "#0F172A"];
+const COLORS = ["#059669", "#0284c7", "#6366f1", "#d97706", "#475569", "#dc2626"];
 
 export default function AccountDistributionChart({
   data,
@@ -33,50 +33,64 @@ export default function AccountDistributionChart({
     .filter((item) => item.value > 0);
 
   return (
-    <div className="col-span-1 shadow shadow-slate-200/50 border border-slate-200 rounded bg-white p-8 relative overflow-hidden group hover:shadow-corporate-primary/5 transition-all duration-500">
-      <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-corporate-primary/5 transition-colors" />
-
-      <div className="mb-8">
-        <h3 className="text-xl font-semibold text-slate-900 tracking-tight">
+    <div className="col-span-1 border border-slate-200 rounded-xl bg-white p-4 sm:p-5 transition-all">
+      <div className="mb-4">
+        <h3 className="text-sm font-bold text-slate-900 tracking-tight">
           Portfolio Distribution
         </h3>
-        <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mt-1">
+        <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wider mt-0.5">
           Ledger Book Allocation
         </p>
       </div>
 
-      <div className="h-[300px] w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <PieChart>
-            <Pie
-              data={chartData}
-              cx="50%"
-              cy="50%"
-              innerRadius="70%"
-              outerRadius="90%"
-              fill="#8884d8"
-              paddingAngle={8}
-              dataKey="value"
-              stroke="none"
-            >
-              {chartData.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
-                  className="hover:opacity-80 transition-opacity"
-                />
-              ))}
-            </Pie>
-            <Tooltip
-              contentStyle={{ borderRadius: '1rem', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)' }}
-            />
-            <Legend
-              verticalAlign="bottom"
-              height={36}
-              formatter={(value) => <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">{value}</span>}
-            />
-          </PieChart>
-        </ResponsiveContainer>
+      <div className="h-[240px] w-full">
+        {chartData.length === 0 ? (
+          <div className="flex h-full items-center justify-center text-xs text-slate-400">
+            No active chart data
+          </div>
+        ) : (
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={chartData}
+                cx="50%"
+                cy="45%"
+                innerRadius="60%"
+                outerRadius="80%"
+                fill="#8884d8"
+                paddingAngle={4}
+                dataKey="value"
+                stroke="none"
+              >
+                {chartData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                    className="hover:opacity-80 transition-opacity"
+                  />
+                ))}
+              </Pie>
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "#ffffff",
+                  borderRadius: "0.5rem",
+                  border: "1px solid #e2e8f0",
+                  boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.05)",
+                  fontSize: "12px",
+                }}
+              />
+              <Legend
+                verticalAlign="bottom"
+                height={32}
+                formatter={(value) => (
+                  <span className="text-[11px] font-medium text-slate-600">
+                    {value}
+                  </span>
+                )}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+        )}
       </div>
     </div>
   );

@@ -78,41 +78,41 @@ export default function ReceiptsList({ rolePrefix }: ReceiptsListProps) {
   if (isLoading) return <LoadingSpinner />;
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-700">
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-        <div className="relative w-full lg:max-w-md group">
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 group-focus-within:text-slate-900 transition-colors" />
+    <div className="space-y-4 animate-in fade-in duration-500">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="relative w-full sm:max-w-md group">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-slate-900 transition-colors" />
           <input
             type="text"
             placeholder="Search receipts by code, customer, invoice, eTIMS..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-14 pl-14 pr-6 rounded-xl border border-slate-200 bg-white focus:border-slate-900 focus:ring-0 transition-all font-semibold text-xs shadow-sm"
+            className="w-full h-10 pl-9 pr-4 rounded-lg border border-slate-200 bg-white focus:border-slate-400 focus:ring-1 focus:ring-slate-400 transition-all font-medium text-xs shadow-none"
           />
         </div>
 
-        <div className="text-xs font-bold text-slate-500">
-          Total Issued Receipts: <span className="text-slate-900 font-mono font-bold">{filteredReceipts.length}</span>
+        <div className="text-xs font-semibold text-slate-500">
+          Total Issued Receipts: <span className="text-slate-900 font-mono font-bold tabular-nums">{filteredReceipts.length}</span>
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-2xl shadow-xl shadow-slate-100/50 overflow-hidden">
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="bg-slate-50/70 border-b border-slate-100">
-                <th className="text-left py-5 px-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Receipt Code</th>
-                <th className="text-left py-5 px-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Payer / Source Invoice</th>
-                <th className="text-left py-5 px-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Settlement Amount</th>
-                <th className="text-left py-5 px-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Channel / Method</th>
-                <th className="text-left py-5 px-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Ledger Status</th>
-                <th className="text-right py-5 px-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Actions</th>
+              <tr className="bg-slate-50/80 border-b border-slate-200/80">
+                <th className="text-left py-3 px-4 text-[10px] font-semibold uppercase tracking-wider text-slate-500">Receipt Code</th>
+                <th className="text-left py-3 px-4 text-[10px] font-semibold uppercase tracking-wider text-slate-500">Payer / Source Invoice</th>
+                <th className="text-left py-3 px-4 text-[10px] font-semibold uppercase tracking-wider text-slate-500">Settlement Amount</th>
+                <th className="text-left py-3 px-4 text-[10px] font-semibold uppercase tracking-wider text-slate-500">Channel / Method</th>
+                <th className="text-left py-3 px-4 text-[10px] font-semibold uppercase tracking-wider text-slate-500">Ledger Status</th>
+                <th className="text-right py-3 px-4 text-[10px] font-semibold uppercase tracking-wider text-slate-500">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 text-xs">
               {paginatedReceipts.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="text-center py-16 text-slate-400 text-xs">
+                  <td colSpan={6} className="text-center py-12 text-slate-400 text-xs">
                     <ReceiptIcon className="w-8 h-8 mx-auto mb-2 text-slate-300" />
                     No payment receipts found matching your criteria.
                   </td>
@@ -126,10 +126,10 @@ export default function ReceiptsList({ rolePrefix }: ReceiptsListProps) {
                       onClick={() => handleRowClick(receipt)}
                       className="group hover:bg-slate-50/70 cursor-pointer transition-colors"
                     >
-                      <td className="py-5 px-6">
-                        <div className="flex items-center gap-3.5">
-                          <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 group-hover:bg-slate-900 group-hover:text-white transition-all shadow-inner border border-emerald-100">
-                            <FileCheck className="w-4 h-4" />
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 group-hover:bg-slate-900 group-hover:text-white transition-all border border-emerald-100">
+                            <FileCheck className="w-3.5 h-3.5" />
                           </div>
                           <div>
                             <p className="font-mono font-bold text-slate-900 text-xs tracking-tight">{receipt.code}</p>
@@ -139,9 +139,9 @@ export default function ReceiptsList({ rolePrefix }: ReceiptsListProps) {
                           </div>
                         </div>
                       </td>
-                      <td className="py-5 px-6">
+                      <td className="py-3 px-4">
                         <div className="space-y-0.5">
-                          <p className="text-xs font-bold text-slate-800 truncate max-w-[200px]">
+                          <p className="text-xs font-semibold text-slate-800 truncate max-w-[200px]">
                             {receipt.partner_name || "Direct Customer"}
                           </p>
                           <div className="flex items-center gap-1.5 text-[10px] font-medium text-slate-400">

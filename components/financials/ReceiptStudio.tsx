@@ -164,35 +164,35 @@ function ReceiptStudioContent({ rolePrefix }: ReceiptStudioProps) {
   const balanceRemainingAfterPayment = Math.max(0, invoiceBalanceDue - (amount || 0));
 
   return (
-    <div className="min-h-screen bg-slate-50/50 p-4 sm:p-6 lg:p-10 space-y-8 animate-in fade-in duration-500 max-w-7xl mx-auto">
+    <div className="min-h-screen bg-slate-50/50 p-4 sm:p-6 space-y-6 animate-in fade-in duration-500 max-w-7xl mx-auto">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 pb-4">
         <div className="space-y-1">
           <button
             onClick={() => router.push(`/${rolePrefix}/receipts`)}
-            className="flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors font-bold text-xs uppercase tracking-wider mb-2"
+            className="flex items-center gap-1.5 text-slate-500 hover:text-slate-900 transition-colors font-semibold text-xs tracking-wide mb-1"
           >
-            <ChevronLeft className="w-4 h-4" />
+            <ChevronLeft className="w-3.5 h-3.5" />
             Back to Receipts Ledger
           </button>
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-emerald-600 flex items-center justify-center text-white shadow-lg shadow-emerald-600/20">
-              <ReceiptIcon className="w-6 h-6" />
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-lg bg-emerald-600 flex items-center justify-center text-white shadow-sm">
+              <ReceiptIcon className="w-5 h-5" />
             </div>
             <div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
                 Payment Receipt <span className="text-emerald-600">Studio</span>
               </h1>
-              <p className="text-xs text-slate-500 font-medium">
-                Record official customer payment inflow &bull; Automated General Ledger Double-Entry Posting
+              <p className="text-xs text-slate-500">
+                Record customer payment inflow &bull; Automated General Ledger Double-Entry Posting
               </p>
             </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="bg-emerald-50 border border-emerald-200 px-4 py-2 rounded-xl text-xs font-bold text-emerald-800 flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-emerald-600" />
+        <div className="flex items-center gap-2">
+          <div className="bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-lg text-xs font-semibold text-emerald-800 flex items-center gap-1.5">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
             <span>Automated GL Posting Active</span>
           </div>
         </div>
@@ -454,10 +454,10 @@ function ReceiptStudioContent({ rolePrefix }: ReceiptStudioProps) {
 
             {/* Inflow Highlight */}
             <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-1">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
                 Receipt Valuation
               </span>
-              <p className="text-3xl font-mono font-extrabold text-emerald-400">
+              <p className="text-2xl font-mono font-bold text-emerald-400 tabular-nums">
                 KES {(amount || 0).toLocaleString("en-KE", { minimumFractionDigits: 2 })}
               </p>
               <p className="text-[11px] text-slate-400">
@@ -466,33 +466,33 @@ function ReceiptStudioContent({ rolePrefix }: ReceiptStudioProps) {
             </div>
 
             {/* Double-Entry Legs */}
-            <div className="space-y-3 text-xs">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 block">
+            <div className="space-y-2.5 text-xs">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 block">
                 Accounting Journal Breakdown
               </span>
 
               {/* Debit Leg */}
-              <div className="bg-slate-800/80 p-3 rounded-xl border border-slate-700 flex justify-between items-center">
+              <div className="bg-slate-800/80 p-3 rounded-lg border border-slate-700 flex justify-between items-center">
                 <div>
                   <span className="font-mono font-bold text-emerald-400 text-xs block">DEBIT (DR)</span>
                   <span className="text-[11px] text-slate-300">
                     {selectedPaymentMethodObj?.name || "Liquid Bank / M-Pesa (COA 1010)"}
                   </span>
                 </div>
-                <span className="font-mono font-bold text-emerald-300">
+                <span className="font-mono font-bold text-emerald-300 tabular-nums">
                   + KES {(amount || 0).toLocaleString("en-KE", { minimumFractionDigits: 2 })}
                 </span>
               </div>
 
               {/* Credit Leg */}
-              <div className="bg-slate-800/80 p-3 rounded-xl border border-slate-700 flex justify-between items-center">
+              <div className="bg-slate-800/80 p-3 rounded-lg border border-slate-700 flex justify-between items-center">
                 <div>
                   <span className="font-mono font-bold text-amber-400 text-xs block">CREDIT (CR)</span>
                   <span className="text-[11px] text-slate-300">
                     Accounts Receivable (COA 1030)
                   </span>
                 </div>
-                <span className="font-mono font-bold text-slate-200">
+                <span className="font-mono font-bold text-slate-200 tabular-nums">
                   - KES {(amount || 0).toLocaleString("en-KE", { minimumFractionDigits: 2 })}
                 </span>
               </div>
@@ -500,21 +500,21 @@ function ReceiptStudioContent({ rolePrefix }: ReceiptStudioProps) {
 
             {/* Balance Remaining After Allocation */}
             {selectedInvoice && (
-              <div className="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80 text-xs space-y-1.5">
+              <div className="p-3.5 rounded-lg bg-slate-950/60 border border-slate-800/80 text-xs space-y-1.5">
                 <div className="flex justify-between items-center text-slate-400">
                   <span>Current Outstanding:</span>
-                  <span className="font-mono text-slate-200">
+                  <span className="font-mono text-slate-200 tabular-nums">
                     KES {invoiceBalanceDue.toLocaleString("en-KE", { minimumFractionDigits: 2 })}
                   </span>
                 </div>
-                <div className="flex justify-between items-center text-emerald-400 font-bold">
+                <div className="flex justify-between items-center text-emerald-400 font-semibold">
                   <span>New Balance After Receipt:</span>
-                  <span className="font-mono">
+                  <span className="font-mono tabular-nums">
                     KES {balanceRemainingAfterPayment.toLocaleString("en-KE", { minimumFractionDigits: 2 })}
                   </span>
                 </div>
                 {balanceRemainingAfterPayment === 0 && amount > 0 && (
-                  <div className="pt-1 text-[10px] font-bold text-emerald-400 flex items-center gap-1">
+                  <div className="pt-1 text-[10px] font-semibold text-emerald-400 flex items-center gap-1">
                     <CheckCircle2 className="w-3.5 h-3.5" />
                     Invoice will transition to 100% PAID
                   </div>
@@ -526,16 +526,16 @@ function ReceiptStudioContent({ rolePrefix }: ReceiptStudioProps) {
             <button
               type="submit"
               disabled={isSubmitting || !amount || amount <= 0 || !selectedInvoiceRef}
-              className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs uppercase tracking-widest rounded-xl transition-all shadow-xl shadow-emerald-600/30 flex items-center justify-center gap-2.5 disabled:opacity-50 disabled:cursor-not-allowed group"
+              className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider rounded-lg transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed group"
             >
               {isSubmitting ? (
                 <>
-                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
                   Recording &amp; Posting to Ledger...
                 </>
               ) : (
                 <>
-                  <Check className="w-4 h-4" />
+                  <Check className="w-3.5 h-3.5" />
                   Confirm &amp; Issue Official Receipt
                 </>
               )}
