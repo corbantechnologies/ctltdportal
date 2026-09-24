@@ -51,6 +51,7 @@ function useDebounce<T>(value: T, delay: number): T {
 
 export default function SimpleTransactionsPage() {
   const [showSingleForm, setShowSingleForm] = useState(false);
+  const [isSingleFormFullscreen, setIsSingleFormFullscreen] = useState(false);
   const [showBulkModal, setShowBulkModal] = useState(false);
   const [bulkInitialTab, setBulkInitialTab] = useState<"grid" | "csv">("grid");
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -705,11 +706,33 @@ export default function SimpleTransactionsPage() {
 
       {/* Single Transaction Modal */}
       {showSingleForm && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="relative w-full sm:max-w-2xl animate-in slide-in-from-bottom-4 sm:zoom-in-95 duration-300">
+        <div
+          className={cn(
+            "fixed inset-0 z-50 flex bg-black/50 backdrop-blur-sm animate-in fade-in duration-200",
+            isSingleFormFullscreen
+              ? "items-stretch justify-stretch p-0"
+              : "items-end sm:items-center justify-center sm:p-4"
+          )}
+        >
+          <div
+            className={cn(
+              "relative transition-all duration-200",
+              isSingleFormFullscreen
+                ? "w-screen h-screen max-w-none"
+                : "w-full sm:max-w-2xl animate-in slide-in-from-bottom-4 sm:zoom-in-95 duration-300"
+            )}
+          >
             <CreateSimpleTransaction
-              onSuccess={() => setShowSingleForm(false)}
-              onClose={() => setShowSingleForm(false)}
+              isFullscreen={isSingleFormFullscreen}
+              onToggleFullscreen={() => setIsSingleFormFullscreen(!isSingleFormFullscreen)}
+              onSuccess={() => {
+                setShowSingleForm(false);
+                setIsSingleFormFullscreen(false);
+              }}
+              onClose={() => {
+                setShowSingleForm(false);
+                setIsSingleFormFullscreen(false);
+              }}
             />
           </div>
         </div>

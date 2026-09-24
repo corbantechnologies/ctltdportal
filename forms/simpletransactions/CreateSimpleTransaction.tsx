@@ -3,7 +3,7 @@
 
 import { useFormik } from "formik";
 import { toast } from "react-hot-toast";
-import { Loader2, Zap, X, ArrowDownLeft, ArrowUpRight, FileUp } from "lucide-react";
+import { Loader2, Zap, X, ArrowDownLeft, ArrowUpRight, FileUp, Maximize2, Minimize2 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
 import { formatBackendError } from "@/lib/error-handler";
@@ -19,11 +19,15 @@ import { apiActions } from "@/tools/axios";
 interface CreateSimpleTransactionProps {
   onSuccess?: () => void;
   onClose?: () => void;
+  isFullscreen?: boolean;
+  onToggleFullscreen?: () => void;
 }
 
 export default function CreateSimpleTransaction({
   onSuccess,
   onClose,
+  isFullscreen = false,
+  onToggleFullscreen,
 }: CreateSimpleTransactionProps) {
   const header = useAxiosAuth();
   const queryClient = useQueryClient();
@@ -100,7 +104,14 @@ export default function CreateSimpleTransaction({
   const isLoading = loadingBooks || loadingDivisions || loadingJournalTypes || loadingPaymentMethods;
 
   return (
-    <div className="mx-auto w-full border border-slate-200 shadow-2xl rounded-xl overflow-hidden bg-white max-h-[90vh] flex flex-col">
+    <div
+      className={cn(
+        "bg-white flex flex-col transition-all duration-200",
+        isFullscreen
+          ? "w-full h-full max-h-none rounded-none border-none shadow-none"
+          : "mx-auto w-full border border-slate-200 shadow-2xl rounded-xl overflow-hidden max-h-[90vh]"
+      )}
+    >
       {/* Header */}
       <div className="px-5 py-3.5 sm:py-4 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white flex-shrink-0">
         <div className="flex items-start justify-between">
@@ -115,20 +126,36 @@ export default function CreateSimpleTransaction({
               </p>
             </div>
           </div>
-          {onClose && (
-            <button
-              type="button"
-              onClick={onClose}
-              className="hover:bg-red-50 hover:text-red-500 rounded-lg text-slate-400 p-1.5 transition-all active:scale-95 flex-shrink-0 ml-2"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          )}
+          <div className="flex items-center gap-1 flex-shrink-0 ml-2">
+            {onToggleFullscreen && (
+              <button
+                type="button"
+                onClick={onToggleFullscreen}
+                className="hover:bg-slate-100 text-slate-400 hover:text-slate-700 rounded-lg p-1.5 transition-all active:scale-95"
+                title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+              >
+                {isFullscreen ? (
+                  <Minimize2 className="w-4 h-4" />
+                ) : (
+                  <Maximize2 className="w-4 h-4" />
+                )}
+              </button>
+            )}
+            {onClose && (
+              <button
+                type="button"
+                onClick={onClose}
+                className="hover:bg-red-50 hover:text-red-500 rounded-lg text-slate-400 p-1.5 transition-all active:scale-95"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
       {/* Scrollable form body */}
-      <div className="flex-1 overflow-y-auto p-4 sm:p-5">
+      <div className={cn("flex-1 overflow-y-auto p-4 sm:p-5", isFullscreen && "sm:p-8 max-w-4xl mx-auto w-full")}>
         <form id="simple-tx-form" onSubmit={formik.handleSubmit} className="space-y-4">
 
           {/* Transaction Type Toggle */}

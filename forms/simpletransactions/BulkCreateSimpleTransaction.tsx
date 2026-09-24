@@ -106,6 +106,7 @@ export default function BulkCreateSimpleTransaction({
   ]);
 
   const [validationErrors, setValidationErrors] = useState<Record<string, string[]>>({});
+  const [isFullWidth, setIsFullWidth] = useState(true);
 
   const isDataLoading =
     loadingBooks || loadingDivisions || loadingJournalTypes || loadingPaymentMethods;
@@ -374,6 +375,25 @@ export default function BulkCreateSimpleTransaction({
           <div className="flex items-center gap-2">
             <button
               type="button"
+              onClick={() => setIsFullWidth(!isFullWidth)}
+              className="text-[11px] font-semibold text-slate-500 hover:text-slate-900 px-2 py-1 rounded hover:bg-slate-100 transition-colors flex items-center gap-1"
+              title={isFullWidth ? "Switch to Centered Boxed View" : "Expand to Full Screen Width"}
+            >
+              {isFullWidth ? (
+                <>
+                  <Minimize2 className="w-3 h-3" />
+                  <span>Boxed View</span>
+                </>
+              ) : (
+                <>
+                  <Maximize2 className="w-3 h-3" />
+                  <span>Full Width</span>
+                </>
+              )}
+            </button>
+            <span className="text-slate-300">|</span>
+            <button
+              type="button"
               onClick={handleExpandAll}
               className="text-[11px] font-semibold text-slate-500 hover:text-slate-900 px-2 py-1 rounded hover:bg-slate-100 transition-colors flex items-center gap-1"
             >
@@ -498,7 +518,12 @@ export default function BulkCreateSimpleTransaction({
       </div>
 
       {/* Accordion Cards Container */}
-      <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 max-w-5xl mx-auto w-full">
+      <div
+        className={cn(
+          "flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-4 w-full transition-all duration-200",
+          !isFullWidth && "max-w-5xl mx-auto"
+        )}
+      >
         {rows.map((row, index) => {
           const isOpen = row.isOpen;
           const isMoneyIn = row.transaction_type === "MONEY_IN";
@@ -678,7 +703,7 @@ export default function BulkCreateSimpleTransaction({
                     <label className="text-xs font-bold uppercase tracking-wider text-slate-600 block">
                       Transaction Type *
                     </label>
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-2 max-w-2xl gap-3">
                       <button
                         type="button"
                         onClick={() => handleUpdateRow(row.id, "transaction_type", "MONEY_OUT")}
