@@ -9,6 +9,8 @@ export interface SimpleTransaction {
   code: string;
   created_by: string;
   ledger_book: string;
+  ledger_book_code?: string | null;
+  ledger_book_name?: string | null;
   payment_method: string;
   division: string;
   journal_type: string;
@@ -80,13 +82,25 @@ export const createSimpleTransaction = async (
 };
 
 export const bulkCreateSimpleTransactions = async (
-  items: CreateSimpleTransaction[],
-  headers: { headers: { Authorization: string } }
+  items: CreateSimpleTransaction[] | FormData,
+  headers: { headers: { Authorization: string; [key: string]: any } }
 ): Promise<BulkCreateResponse> => {
+  const isFormData = typeof FormData !== "undefined" && items instanceof FormData;
+  const config = isFormData
+    ? {
+        headers: {
+          ...headers.headers,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    : headers;
+
+  const payload = isFormData ? items : { transactions: items };
+
   const response: AxiosResponse<BulkCreateResponse> = await apiActions.post(
     `/api/v1/simpletransactions/bulk/`,
-    { transactions: items },
-    headers
+    payload,
+    config
   );
   return response.data;
 };

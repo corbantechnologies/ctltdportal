@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCreateReceipt, useFetchInvoices } from "@/hooks/financials/actions";
+import { useFetchPartners } from "@/hooks/partners/actions";
 import LoadingSpinner from "@/components/portal/LoadingSpinner";
 import { toast } from "react-hot-toast";
 
@@ -33,6 +34,7 @@ export default function CreateReceiptModal({
   const [open, setOpen] = useState(false);
 
   // Form State
+  const [selectedPartner, setSelectedPartner] = useState<string>("");
   const [selectedInvoice, setSelectedInvoice] = useState<string>(initialInvoice?.reference || "");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [amount, setAmount] = useState<number>(initialInvoice?.amount || 0);
@@ -41,16 +43,29 @@ export default function CreateReceiptModal({
 
   // Queries
   const { data: invoices } = useFetchInvoices();
+  const { data: partners } = useFetchPartners();
   const createMutation = useCreateReceipt(rolePrefix);
 
+  const filteredInvoices = invoices?.filter((inv: any) => {
+    if (!selectedPartner) return true;
+    const pTarget = selectedPartner.toLowerCase();
+    const invPartner = (inv.partner_name || inv.partner || inv.client_name || "").toLowerCase();
+    return invPartner.includes(pTarget);
+  }) || [];
+
   const handleSubmit = async () => {
+    if (!selectedInvoice) {
+      toast.error("Please select a target invoice for this receipt");
+      return;
+    }
+
     if (!amount || amount <= 0) {
       toast.error("Please enter a valid payment amount");
       return;
     }
 
     const payload = {
-      invoice: selectedInvoice || null,
+      invoice: selectedInvoice,
       date,
       amount,
       notes,
@@ -137,20 +152,47 @@ export default function CreateReceiptModal({
               </div>
 
               {!initialInvoice && (
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 ml-1">Associated Invoice (Optional)</label>
-                  <div className="relative group">
-                    <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-emerald-600 transition-colors" />
-                    <select
-                      value={selectedInvoice}
-                      onChange={(e) => setSelectedInvoice(e.target.value)}
-                      className="w-full h-9 pl-9 pr-3 rounded bg-slate-50 border border-slate-200 focus:border-emerald-600 focus:bg-white appearance-none font-semibold text-xs sm:text-sm text-slate-900 transition-all outline-none"
-                    >
-                      <option value="">Direct Payment (No Invoice)...</option>
-                      {invoices?.map(inv => (
-                        <option key={inv.reference} value={inv.reference}>{inv.code} ({inv.partner})</option>
-                      ))}
-                    </select>
+                <div className="space-y-3">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 ml-1">
+                      Filter Customer / Partner (Optional)
+                    </label>
+                    <div className="relative group">
+                      <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-emerald-600 transition-colors" />
+                      <select
+                        value={selectedPartner}
+                        onChange={(e) => setSelectedPartner(e.target.value)}
+                        className="w-full h-9 pl-9 pr-3 rounded bg-slate-50 border border-slate-200 focus:border-emerald-600 focus:bg-white appearance-none font-semibold text-xs sm:text-sm text-slate-900 transition-all outline-none"
+                      >
+                        <option value="">-- All Customers / Partners --</option>
+                        {partners?.map((p) => (
+                          <option key={p.name} value={p.name}>
+                            {p.code ? `[${p.code}] ` : ""}{p.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 ml-1">
+                      Associated Invoice *
+                    </label>
+                    <div className="relative group">
+                      <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-emerald-600 transition-colors" />
+                      <select
+                        value={selectedInvoice}
+                        onChange={(e) => setSelectedInvoice(e.target.value)}
+                        className="w-full h-9 pl-9 pr-3 rounded bg-slate-50 border border-slate-200 focus:border-emerald-600 focus:bg-white appearance-none font-semibold text-xs sm:text-sm text-slate-900 transition-all outline-none"
+                      >
+                        <option value="">-- Select Target Invoice --</option>
+                        {filteredInvoices.map((inv: any) => (
+                          <option key={inv.reference} value={inv.reference}>
+                            {inv.code} ({inv.partner_name || inv.partner || inv.client_name || "Direct"})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
                 </div>
               )}

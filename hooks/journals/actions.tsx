@@ -1,8 +1,8 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosAuth from "../authentication/useAxiosAuth";
-import { getJournals, getJournal } from "@/services/journals";
+import { getJournals, getJournal, bulkPostJournals } from "@/services/journals";
 
 export function useFetchJournals() {
   const header = useAxiosAuth();
@@ -21,5 +21,18 @@ export function useFetchJournal(reference: string) {
     queryKey: ["journal", reference],
     queryFn: () => getJournal(reference, header),
     enabled: !!reference && !!header.headers.Authorization,
+  });
+}
+
+export function useBulkPostJournals() {
+  const header = useAxiosAuth();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (references: string[]) => bulkPostJournals(references, header),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["journals"] });
+      queryClient.invalidateQueries({ queryKey: ["journalentries"] });
+    },
   });
 }

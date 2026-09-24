@@ -50,7 +50,7 @@ export function useBulkCreateSimpleTransactions() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (items: CreateSimpleTransaction[]) =>
+    mutationFn: (items: CreateSimpleTransaction[] | FormData) =>
       bulkCreateSimpleTransactions(items, header),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["simpletransactions"] });

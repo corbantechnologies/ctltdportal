@@ -431,7 +431,9 @@ export default function SimpleTransactionsPage() {
                       {/* Book / Method */}
                       <td className="py-2.5 px-3 whitespace-nowrap">
                         <div className="flex flex-col">
-                          <span className="text-xs text-slate-800 font-semibold">{t.ledger_book}</span>
+                          <span className="text-xs text-slate-800 font-semibold">
+                            {t.ledger_book_code ? `[${t.ledger_book_code}] ` : ""}{t.ledger_book}
+                          </span>
                           <span className="text-[10px] text-slate-400 mt-0.5">via {t.payment_method}</span>
                         </div>
                       </td>
@@ -543,7 +545,7 @@ export default function SimpleTransactionsPage() {
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-semibold text-slate-900 truncate">{t.name}</p>
                       <p className="text-[10px] text-slate-400 mt-0.5 uppercase truncate">
-                        {t.ledger_book} · via {t.payment_method}
+                        {t.ledger_book_code ? `[${t.ledger_book_code}] ` : ""}{t.ledger_book} · via {t.payment_method}
                       </p>
                       <p className="text-[9px] text-slate-400 font-mono">{t.code}</p>
                     </div>

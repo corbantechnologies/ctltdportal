@@ -87,7 +87,11 @@ export default function CreateSimpleTransaction({
 
   const isMoneyIn = formik.values.transaction_type === "MONEY_IN";
 
-  const bookOptions = books?.map((b) => ({ value: b.name, label: b.name, secondaryLabel: b.account_type })) || [];
+  const bookOptions = books?.map((b) => ({
+    value: b.name,
+    label: b.code ? `[${b.code}] ${b.name}` : b.name,
+    secondaryLabel: b.account_type,
+  })) || [];
   const divisionOptions = divisions?.map((d) => ({ value: d.name, label: d.name })) || [];
   const journalTypeOptions = journalTypes?.map((j) => ({ value: j.name, label: j.name, secondaryLabel: j.code })) || [];
   const paymentMethodOptions = paymentMethods?.map((p) => ({ value: p.name, label: p.name })) || [];

@@ -7,6 +7,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import { useFetchInvoices, useCreateReceipt } from "@/hooks/financials/actions";
+import { useFetchPartners } from "@/hooks/partners/actions";
 import { getPaymentMethods } from "@/services/paymentmethods";
 import {
   Receipt as ReceiptIcon,
@@ -48,6 +49,7 @@ function ReceiptStudioContent({ rolePrefix }: ReceiptStudioProps) {
 
   // Queries
   const { data: invoices, isLoading: isLoadingInvoices } = useFetchInvoices();
+  const { data: partners, isLoading: isLoadingPartners } = useFetchPartners();
   const { data: paymentMethods = [], isLoading: isLoadingMethods } = useQuery({
     queryKey: ["paymentmethods"],
     queryFn: () => getPaymentMethods(header),
@@ -56,6 +58,7 @@ function ReceiptStudioContent({ rolePrefix }: ReceiptStudioProps) {
 
   // Form State
   const [selectedInvoiceRef, setSelectedInvoiceRef] = useState<string>(urlInvoice);
+  const [selectedPartner, setSelectedPartner] = useState<string>("");
   const [invoiceSearchQuery, setInvoiceSearchQuery] = useState("");
   const [amount, setAmount] = useState<number>(urlAmount ? parseFloat(urlAmount) : 0);
   const [date, setDate] = useState<string>(new Date().toISOString().split("T")[0]);
@@ -111,12 +114,20 @@ function ReceiptStudioContent({ rolePrefix }: ReceiptStudioProps) {
   const filteredInvoices = useMemo(() => {
     if (!invoices) return [];
     return invoices.filter((inv: any) => {
+      // Partner filter
+      if (selectedPartner) {
+        const pTarget = selectedPartner.toLowerCase();
+        const invPartner = (inv.partner_name || inv.partner || inv.client_name || "").toLowerCase();
+        if (!invPartner.includes(pTarget)) return false;
+      }
+
+      if (!invoiceSearchQuery) return true;
       const q = invoiceSearchQuery.toLowerCase();
       const codeMatch = inv.code?.toLowerCase().includes(q);
       const partnerMatch = (inv.partner_name || inv.partner || inv.client_name || "").toLowerCase().includes(q);
       return codeMatch || partnerMatch;
     });
-  }, [invoices, invoiceSearchQuery]);
+  }, [invoices, selectedPartner, invoiceSearchQuery]);
 
   const createReceiptMutation = useCreateReceipt(rolePrefix);
 
@@ -253,12 +264,44 @@ function ReceiptStudioContent({ rolePrefix }: ReceiptStudioProps) {
                 </div>
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-3.5">
+                {/* Customer / Partner Quick Selector */}
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-700 flex items-center justify-between">
+                    <span className="flex items-center gap-1.5">
+                      <Building2 className="w-3.5 h-3.5 text-emerald-600" />
+                      Filter by Customer / Partner (Optional)
+                    </span>
+                    {selectedPartner && (
+                      <button
+                        type="button"
+                        onClick={() => setSelectedPartner("")}
+                        className="text-[11px] text-rose-600 hover:underline font-semibold"
+                      >
+                        Clear filter
+                      </button>
+                    )}
+                  </label>
+                  <select
+                    value={selectedPartner}
+                    onChange={(e) => setSelectedPartner(e.target.value)}
+                    className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white text-xs font-semibold text-slate-800 outline-none transition-all cursor-pointer"
+                  >
+                    <option value="">-- All Customers / Partners --</option>
+                    {partners?.map((p) => (
+                      <option key={p.name} value={p.name}>
+                        {p.code ? `[${p.code}] ` : ""}{p.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Invoice Text Search */}
                 <div className="relative">
                   <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                   <input
                     type="text"
-                    placeholder="Search invoices by code, customer name..."
+                    placeholder="Search invoices by code or customer name..."
                     value={invoiceSearchQuery}
                     onChange={(e) => setInvoiceSearchQuery(e.target.value)}
                     className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-900 focus:bg-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all font-medium"
@@ -266,10 +309,12 @@ function ReceiptStudioContent({ rolePrefix }: ReceiptStudioProps) {
                 </div>
 
                 <div className="max-h-60 overflow-y-auto divide-y divide-slate-100 border border-slate-200 rounded-xl bg-white">
-                  {isLoadingInvoices ? (
+                  {isLoadingInvoices || isLoadingPartners ? (
                     <div className="p-6 text-center text-xs text-slate-400">Loading open invoices...</div>
                   ) : filteredInvoices.length === 0 ? (
-                    <div className="p-6 text-center text-xs text-slate-400">No invoices match your search.</div>
+                    <div className="p-6 text-center text-xs text-slate-400">
+                      No open invoices found {selectedPartner ? `for ${selectedPartner}` : ""}.
+                    </div>
                   ) : (
                     filteredInvoices.map((inv: any) => {
                       const total = typeof inv.total_amount === "number" ? inv.total_amount : (inv.items?.reduce((sum: number, item: any) => sum + (parseFloat(item.total) || (parseFloat(item.quantity) * parseFloat(item.unit_price)) || 0), 0) || 0);

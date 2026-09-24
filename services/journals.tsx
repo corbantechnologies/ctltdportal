@@ -136,3 +136,15 @@ export const reverseJournal = async (
   return response.data;
 };
 
+export const bulkPostJournals = async (
+  references: string[],
+  headers: { headers: { Authorization: string } }
+): Promise<{ message: string; posted_count: number; errors: string[] }> => {
+  const response = await apiActions.post(
+    `/api/v1/journals/bulk-post/`,
+    { references },
+    headers
+  );
+  return response.data;
+};
+
