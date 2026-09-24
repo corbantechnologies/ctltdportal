@@ -3,8 +3,8 @@
 
 import { useFetchJournal } from "@/hooks/journals/actions";
 import { postJournal, reverseJournal } from "@/services/journals";
-import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
 import SingleJournalEntry from "@/forms/journalentries/SingleJournalEntry";
 import UpdateJournal from "@/forms/journals/UpdateJournal";
 import ReverseJournalModal from "@/components/journals/ReverseJournalModal";
@@ -31,6 +31,7 @@ import { cn } from "@/lib/utils";
 export default function JournalsDetailPage() {
   const { reference, journal_reference } = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const header = useAxiosAuth();
   const { data: fiscalYear } = useFetchFinancialYear(reference as string);
   const {
@@ -40,6 +41,12 @@ export default function JournalsDetailPage() {
   } = useFetchJournal(journal_reference as string);
 
   const [entryMode, setEntryMode] = useState<"single" | null>(null);
+
+  useEffect(() => {
+    if (searchParams.get("addEntry") === "true") {
+      setEntryMode("single");
+    }
+  }, [searchParams]);
   const [openUpdateJournal, setOpenUpdateJournal] = useState(false);
   const [openReverseModal, setOpenReverseModal] = useState(false);
   const [isReversing, setIsReversing] = useState(false);

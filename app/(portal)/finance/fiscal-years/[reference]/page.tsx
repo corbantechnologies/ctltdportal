@@ -16,8 +16,10 @@ import {
   Settings2,
   BookPlus,
   ChevronDown,
+  Sparkles,
+  Layers,
 } from "lucide-react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 
 import CreateJournal from "@/forms/journals/CreateJournal";
@@ -29,6 +31,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 export default function FiscalYearDetail() {
   const { reference } = useParams();
+  const router = useRouter();
   const {
     isLoading,
     data: fiscalYear,
@@ -137,6 +140,32 @@ export default function FiscalYearDetail() {
                       </div>
 
                       <DropdownMenu.Item
+                        onSelect={() => router.push(`/finance/fiscal-years/${reference}/journals/studio`)}
+                        className="flex items-center outline-none rounded p-2 focus:bg-[#045138]/5 focus:text-[#045138] cursor-pointer"
+                      >
+                        <div className="w-7 h-7 rounded bg-emerald-50 text-emerald-600 flex items-center justify-center mr-3">
+                          <Sparkles className="w-4 h-4" />
+                        </div>
+                        <div className="flex flex-col text-left flex-1">
+                          <span className="font-semibold text-xs text-emerald-900">Journal Studio</span>
+                          <span className="text-[9px] text-black/50">Full-page double-entry</span>
+                        </div>
+                      </DropdownMenu.Item>
+
+                      <DropdownMenu.Item
+                        onSelect={() => router.push(`/finance/fiscal-years/${reference}/journals/bulk`)}
+                        className="flex items-center outline-none rounded p-2 focus:bg-[#045138]/5 focus:text-[#045138] cursor-pointer"
+                      >
+                        <div className="w-7 h-7 rounded bg-slate-100 text-slate-800 flex items-center justify-center mr-3">
+                          <Layers className="w-4 h-4" />
+                        </div>
+                        <div className="flex flex-col text-left flex-1">
+                          <span className="font-semibold text-xs">Bulk Batches</span>
+                          <span className="text-[9px] text-black/50">Multi-batch &amp; CSV import</span>
+                        </div>
+                      </DropdownMenu.Item>
+
+                      <DropdownMenu.Item
                         onSelect={(e) => {
                           e.preventDefault();
                           setMenuView('journals');
@@ -147,8 +176,8 @@ export default function FiscalYearDetail() {
                           <Plus className="w-4 h-4" />
                         </div>
                         <div className="flex flex-col text-left flex-1">
-                          <span className="font-semibold text-xs">Journal Batch</span>
-                          <span className="text-[9px] text-black/50">Record new entry</span>
+                          <span className="font-semibold text-xs">Quick Batch Init</span>
+                          <span className="text-[9px] text-black/50">Initialize header only</span>
                         </div>
                         <ChevronDown className="w-3 h-3 opacity-50 ml-1 -rotate-90" />
                       </DropdownMenu.Item>
@@ -281,7 +310,7 @@ export default function FiscalYearDetail() {
                 <div className="bg-white rounded shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 animate-in zoom-in-95">
                   <CreateJournal
                     refetch={refetchFiscalYear}
-                    fiscalYear={fiscalYear?.code}
+                    fiscalYear={reference as string}
                     initialJournalType={selectedJournalType}
                     rolePrefix="finance"
                     onSuccess={() => setOpenCreateJournal(false)}

@@ -148,3 +148,69 @@ export const bulkPostJournals = async (
   return response.data;
 };
 
+export interface JournalStudioEntryInput {
+  book: string;
+  division?: string;
+  partner?: string;
+  debit: number;
+  credit: number;
+  notes?: string;
+  payment_method?: string;
+  source_document?: string;
+  document_number?: string;
+}
+
+export interface CreateJournalStudioData {
+  date: string;
+  journal_type: string;
+  description: string;
+  currency?: string;
+  post_now?: boolean;
+  entries?: JournalStudioEntryInput[];
+}
+
+export interface BulkJournalBatchInput {
+  date: string;
+  journal_type: string;
+  description: string;
+  currency?: string;
+  post_now?: boolean;
+  entries: JournalStudioEntryInput[];
+}
+
+export interface BulkJournalCreateResponse {
+  message: string;
+  count: number;
+  batches: Array<{
+    reference: string;
+    code: string;
+    description: string;
+    is_posted: boolean;
+    entries_count: number;
+  }>;
+}
+
+export const createJournalStudio = async (
+  data: CreateJournalStudioData,
+  headers: { headers: { Authorization: string } }
+): Promise<Journal> => {
+  const response: AxiosResponse<Journal> = await apiActions.post(
+    `/api/v1/journals/studio-create/`,
+    data,
+    headers
+  );
+  return response.data;
+};
+
+export const bulkCreateJournalBatches = async (
+  batches: BulkJournalBatchInput[],
+  headers: { headers: { Authorization: string } }
+): Promise<BulkJournalCreateResponse> => {
+  const response: AxiosResponse<BulkJournalCreateResponse> = await apiActions.post(
+    `/api/v1/journals/bulk-create/`,
+    { batches },
+    headers
+  );
+  return response.data;
+};
+

@@ -4,12 +4,14 @@
 import { createJournal } from "@/services/journals";
 import { useFormik } from "formik";
 import { toast } from "react-hot-toast";
-import { Loader2, Book, Plus, X } from "lucide-react";
+import { Loader2, Book, Plus, X, Sparkles, ArrowRight, Layers } from "lucide-react";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import { useFetchJournalTypes } from "@/hooks/journaltypes/actions";
 import { useQueryClient } from "@tanstack/react-query";
 import SearchableSelect from "@/components/portal/SearchableSelect";
 import { formatBackendError } from "@/lib/error-handler";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface CreateJournalProps {
   initialJournalType?: string;
@@ -30,6 +32,7 @@ export default function CreateJournal({
   className,
   refetch,
 }: CreateJournalProps) {
+  const router = useRouter();
   const header = useAxiosAuth();
   const queryClient = useQueryClient();
 
@@ -48,11 +51,15 @@ export default function CreateJournal({
     enableReinitialize: true,
     onSubmit: async (values, { setSubmitting }) => {
       try {
-        await createJournal(values, header);
-        toast.success("Journal batch created successfully");
+        const created = await createJournal(values, header);
+        toast.success("Journal batch initialized! Opening detail page...");
         queryClient.invalidateQueries({ queryKey: ["journals"] });
         refetch();
         if (onSuccess) onSuccess();
+
+        if (fiscalYear && created?.reference) {
+          router.push(`/finance/fiscal-years/${fiscalYear}/journals/${created.reference}?addEntry=true`);
+        }
       } catch (error: any) {
         toast.error(
           formatBackendError(error, "Failed to create journal batch")
@@ -72,7 +79,7 @@ export default function CreateJournal({
   return (
     <div
       className={cn(
-        "mx-auto w-full border border-slate-200 shadow-2xl rounded overflow-hidden bg-white",
+        "mx-auto w-full border border-slate-200 shadow-2xl rounded-xl overflow-hidden bg-white",
         className
       )}
     >
@@ -80,7 +87,7 @@ export default function CreateJournal({
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
             <div
-              className="w-10 h-10 sm:w-12 sm:h-12 rounded flex items-center justify-center text-white shadow-lg flex-shrink-0"
+              className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center text-white shadow-lg flex-shrink-0"
               style={{
                 backgroundColor: primaryColor,
                 boxShadow: `0 8px 16px -4px ${primaryColor}80`,
@@ -101,7 +108,7 @@ export default function CreateJournal({
             <button
               type="button"
               onClick={onClose}
-              className="hover:bg-red-50 hover:text-red-500 rounded text-slate-300 p-2 transition-all active:scale-95 flex-shrink-0"
+              className="hover:bg-red-50 hover:text-red-500 rounded text-slate-400 p-2 transition-all active:scale-95 flex-shrink-0"
             >
               <X className="w-5 h-5" />
             </button>
@@ -109,8 +116,35 @@ export default function CreateJournal({
         </div>
       </div>
 
-      <div className="p-4 sm:p-6 pb-8 overflow-y-auto">
-        <form onSubmit={formik.handleSubmit} className="space-y-5">
+      <div className="p-4 sm:p-6 pb-8 overflow-y-auto space-y-4">
+        {/* Full-Page Studio Banner Option */}
+        <Link
+          href={
+            fiscalYear
+              ? `/finance/fiscal-years/${fiscalYear}/journals/studio`
+              : `/finance/journal-entries/studio`
+          }
+          className="flex items-center justify-between p-3.5 rounded-xl bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 text-emerald-900 hover:border-emerald-300 transition-all group shadow-xs"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center flex-shrink-0">
+              <Sparkles className="w-4 h-4" />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-emerald-950">
+                Prefer Full-Page Journal Studio?
+              </p>
+              <p className="text-[10px] text-emerald-700 font-medium">
+                Enter header &amp; balanced debit/credit lines on one unified screen
+              </p>
+            </div>
+          </div>
+          <span className="text-xs font-bold text-emerald-700 flex items-center gap-1 group-hover:translate-x-0.5 transition-transform flex-shrink-0">
+            Open Studio <ArrowRight className="w-3.5 h-3.5" />
+          </span>
+        </Link>
+
+        <form onSubmit={formik.handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <label

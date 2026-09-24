@@ -22,7 +22,10 @@ import {
   Building2,
   CheckCircle2,
   AlertCircle,
+  Sparkles,
+  Layers,
 } from "lucide-react";
+import Link from "next/link";
 import { formatNumber } from "@/tools/format";
 import JournalEntryDetailModal from "@/components/journals/JournalEntryDetailModal";
 import { JournalEntry } from "@/services/journalentries";
@@ -172,12 +175,28 @@ export default function JournalEntriesPage() {
           </p>
         </div>
 
-        {/* Selected Batch Actions Bar */}
-        {selectedRefs.length > 0 && (
-          <div className="flex items-center gap-2 bg-slate-900 text-white px-3.5 py-2 rounded-xl shadow-lg border border-slate-800 animate-in slide-in-from-top-2 duration-200">
-            <span className="text-xs font-bold font-mono">
-              {selectedRefs.length} selected
-            </span>
+        <div className="flex flex-wrap items-center gap-2">
+          <Link
+            href="/finance/journal-entries/studio"
+            className="h-9 px-3.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-sm transition-all active:scale-95"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Journal Studio</span>
+          </Link>
+          <Link
+            href="/finance/journal-entries/bulk"
+            className="h-9 px-3.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-sm transition-all active:scale-95"
+          >
+            <Layers className="w-3.5 h-3.5" />
+            <span>Bulk Batch Input</span>
+          </Link>
+
+          {/* Selected Batch Actions Bar */}
+          {selectedRefs.length > 0 && (
+            <div className="flex items-center gap-2 bg-slate-900 text-white px-3.5 py-1.5 rounded-xl shadow-lg border border-slate-800 animate-in slide-in-from-top-2 duration-200">
+              <span className="text-xs font-bold font-mono">
+                {selectedRefs.length} selected
+              </span>
             <span className="text-slate-600">|</span>
             <button
               type="button"
@@ -207,6 +226,7 @@ export default function JournalEntriesPage() {
             </button>
           </div>
         )}
+        </div>
       </div>
 
       {/* Filter Section */}
