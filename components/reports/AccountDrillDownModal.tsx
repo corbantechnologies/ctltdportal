@@ -65,9 +65,9 @@ export function AccountDrillDownModal({
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto animate-in fade-in duration-200">
-            <div className="bg-card w-full max-w-5xl rounded-2xl shadow-2xl border border-border/80 flex flex-col max-h-[90vh] overflow-hidden">
+            <div className="bg-white w-full max-w-5xl rounded-2xl shadow-2xl border border-border/80 flex flex-col max-h-[90vh] overflow-hidden">
                 {/* Modal Header */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-muted/30">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-muted/40">
                     <div className="flex items-center gap-3">
                         <div className="p-2.5 rounded-xl bg-corporate-primary/10 text-corporate-primary border border-corporate-primary/20">
                             <BookOpen className="w-5 h-5" />
@@ -117,7 +117,7 @@ export function AccountDrillDownModal({
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-5">
+                <div className="flex-1 overflow-y-auto p-6 space-y-5 bg-white">
                     {isLoading ? (
                         <div className="flex flex-col items-center justify-center py-20 gap-3 text-muted-foreground">
                             <Loader2 className="w-8 h-8 animate-spin text-corporate-primary" />
@@ -259,7 +259,7 @@ export function AccountDrillDownModal({
                 </div>
 
                 {/* Footer */}
-                <div className="flex items-center justify-between px-6 py-3 border-t border-border bg-muted/20 text-xs text-muted-foreground">
+                <div className="flex items-center justify-between px-6 py-3 border-t border-border bg-white text-xs text-muted-foreground">
                     <span className="flex items-center gap-1.5">
                         <Layers className="w-3.5 h-3.5" /> Corban Technologies Double-Entry GL Ledger
                     </span>
