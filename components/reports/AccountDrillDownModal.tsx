@@ -48,7 +48,7 @@ export function AccountDrillDownModal({
 
     if (!isOpen) return null;
 
-    const filteredTransactions = data?.transactions.filter((tx) => {
+    const filteredTransactions = data?.transactions?.filter((tx) => {
         if (!searchQuery) return true;
         const q = searchQuery.toLowerCase();
         return (
