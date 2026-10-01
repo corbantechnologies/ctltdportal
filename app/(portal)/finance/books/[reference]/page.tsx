@@ -56,7 +56,7 @@ export default function BookLedgerStatementPage() {
                     </p>
                     <div className="font-mono text-3xl font-bold text-emerald-600 tracking-tighter">
                         <span className="text-sm font-semibold tracking-normal text-black/30 mr-2">KES</span>
-                        {formatNumber(Number(book.balance || 0))}
+                        {formatNumber(Number(book.balance ?? statement?.closing_balance ?? 0))}
                     </div>
                 </div>
             </div>

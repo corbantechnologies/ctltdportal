@@ -355,4 +355,103 @@ export const getAccountDrillDown = async (
     return response.data;
 };
 
+export interface TaxFilingScheduleItem {
+    id: number;
+    date: string;
+    journal_code: string;
+    document_number: string;
+    partner_name: string;
+    partner_pin: string;
+    description: string;
+    tax_type: "INPUT_VAT" | "OUTPUT_VAT";
+    tax_amount: number;
+    book_name: string;
+    division: string;
+}
+
+export interface TaxFilingReport {
+    period: {
+        start_date: string | null;
+        end_date: string | null;
+        division: string;
+        warning?: string | null;
+    };
+    summary: {
+        gross_sales: number;
+        output_vat: number;
+        gross_purchases: number;
+        input_vat: number;
+        net_vat_payable: number;
+        total_wht_deducted: number;
+        currency: string;
+    };
+    vat_schedule: TaxFilingScheduleItem[];
+    count: number;
+}
+
+export const getTaxFilingReport = async (
+    params: { start_date?: string; end_date?: string; division?: string; year?: string },
+    headers: { headers: { Authorization: string } }
+): Promise<TaxFilingReport> => {
+    const query = new URLSearchParams();
+    if (params.start_date) query.append("start_date", params.start_date);
+    if (params.end_date) query.append("end_date", params.end_date);
+    if (params.division) query.append("division", params.division);
+    if (params.year) query.append("year", params.year);
+
+    const response: AxiosResponse<TaxFilingReport> = await apiActions.get(
+        `/api/v1/reports/tax-filing/?${query.toString()}`,
+        headers
+    );
+    return response.data;
+};
+
+export interface YearEndGLScheduleItem {
+    code: string;
+    name: string;
+    account_type: string;
+    category: string;
+    normal_balance: string;
+    debit: number;
+    credit: number;
+    closing_balance: number;
+}
+
+export interface YearEndReport {
+    financial_year: {
+        code: string;
+        reference: string;
+        start_date: string;
+        end_date: string;
+        is_active: boolean;
+    };
+    division: string;
+    pnl: PnL;
+    balance_sheet: BalanceSheet;
+    trial_balance: TrialBalance;
+    gl_schedule: YearEndGLScheduleItem[];
+    schedule_totals: {
+        total_debits: number;
+        total_credits: number;
+        variance: number;
+    };
+}
+
+export const getYearEndReport = async (
+    params: { financial_year?: string; year?: string; division?: string },
+    headers: { headers: { Authorization: string } }
+): Promise<YearEndReport> => {
+    const query = new URLSearchParams();
+    if (params.financial_year) query.append("financial_year", params.financial_year);
+    if (params.year) query.append("year", params.year);
+    if (params.division) query.append("division", params.division);
+
+    const response: AxiosResponse<YearEndReport> = await apiActions.get(
+        `/api/v1/reports/year-end/?${query.toString()}`,
+        headers
+    );
+    return response.data;
+};
+
+
 

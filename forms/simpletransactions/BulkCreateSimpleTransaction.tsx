@@ -37,6 +37,7 @@ import { useFetchJournalTypes } from "@/hooks/journaltypes/actions";
 import { useFetchPaymentMethods } from "@/hooks/paymentmethods/actions";
 import { useFetchPartners } from "@/hooks/partners/actions";
 import { useBulkCreateSimpleTransactions } from "@/hooks/simpletransactions/actions";
+import QuickAddPartnerModal from "@/components/partners/QuickAddPartnerModal";
 
 export interface BulkRowItem {
   id: string;
@@ -86,6 +87,8 @@ export default function BulkCreateSimpleTransaction({
   const { data: journalTypes, isLoading: loadingJournalTypes } = useFetchJournalTypes();
   const { data: paymentMethods, isLoading: loadingPaymentMethods } = useFetchPaymentMethods();
   const { data: partners } = useFetchPartners();
+  const [quickAddPartnerOpen, setQuickAddPartnerOpen] = useState(false);
+  const [activeRowForQuickAdd, setActiveRowForQuickAdd] = useState<string | null>(null);
 
   const bulkCreateMutation = useBulkCreateSimpleTransactions();
 
@@ -892,7 +895,16 @@ export default function BulkCreateSimpleTransaction({
                     <div className="space-y-1">
                       <label className="text-xs font-semibold text-slate-700 flex items-center justify-between">
                         <span>Partner / Customer</span>
-                        <span className="text-[10px] text-slate-400 font-normal">Optional</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setActiveRowForQuickAdd(row.id);
+                            setQuickAddPartnerOpen(true);
+                          }}
+                          className="text-[10px] font-bold text-emerald-600 hover:text-emerald-700 hover:underline cursor-pointer"
+                        >
+                          + Quick Add
+                        </button>
                       </label>
                       <select
                         value={row.partner}
@@ -1060,6 +1072,20 @@ export default function BulkCreateSimpleTransaction({
           </button>
         </div>
       </div>
+
+      <QuickAddPartnerModal
+        isOpen={quickAddPartnerOpen}
+        onClose={() => {
+          setQuickAddPartnerOpen(false);
+          setActiveRowForQuickAdd(null);
+        }}
+        onPartnerCreated={(p) => {
+          if (activeRowForQuickAdd) {
+            handleUpdateRow(activeRowForQuickAdd, "partner", p.name);
+          }
+        }}
+        defaultType="Supplier"
+      />
     </div>
   );
 }

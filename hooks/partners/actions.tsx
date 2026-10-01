@@ -1,8 +1,6 @@
-"use client";
-
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosAuth from "../authentication/useAxiosAuth";
-import { getPartners, getPartner } from "@/services/partners";
+import { getPartners, getPartner, createPartner } from "@/services/partners";
 
 export function useFetchPartners() {
   const header = useAxiosAuth();
@@ -23,4 +21,17 @@ export function useFetchPartner(reference: string) {
     enabled: !!reference && !!header.headers.Authorization && header.headers.Authorization !== "Token undefined",
   });
 }
+
+export function useCreatePartner() {
+  const header = useAxiosAuth();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: any) => createPartner(data, header),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["partners"] });
+    },
+  });
+}
+
 

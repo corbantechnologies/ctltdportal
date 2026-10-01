@@ -16,10 +16,13 @@ import {
   History,
   Filter,
   X,
+  Download,
 } from "lucide-react";
 import Link from "next/link";
 import { useState, useMemo } from "react";
 import { Journal } from "@/services/journals";
+import { exportJournalsToCSV } from "@/tools/csvExport";
+import { toast } from "react-hot-toast";
 import LoadingSpinner from "@/components/portal/LoadingSpinner";
 
 interface FiscalYearJournalsProps {
@@ -84,6 +87,18 @@ export default function FiscalYearJournals({
   );
 
   if (isLoadingTypes) return <LoadingSpinner />;
+
+  const handleExportCSV = () => {
+    if (!filteredJournals || filteredJournals.length === 0) {
+      toast.error("No journal batches found to export.");
+      return;
+    }
+    exportJournalsToCSV(
+      filteredJournals,
+      `journal_batches_${fiscalYearReference}_${new Date().toISOString().split("T")[0]}.csv`
+    );
+    toast.success(`Exported ${filteredJournals.length} journal batches to CSV.`);
+  };
 
   const clearFilters = () => {
     setSearchQuery("");
@@ -209,6 +224,17 @@ export default function FiscalYearJournals({
                 <List className="w-3.5 h-3.5" />
               </button>
             </div>
+
+            {/* Export CSV button */}
+            <button
+              type="button"
+              onClick={handleExportCSV}
+              className="flex items-center gap-1.5 h-9 px-3 rounded bg-white border border-gray-200 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-all shadow-sm active:scale-95"
+              title="Export filtered batches to CSV for audit"
+            >
+              <Download className="w-3.5 h-3.5 text-gray-500" />
+              <span>Export CSV</span>
+            </button>
 
             {/* Clear Filters (Conditional) */}
             {(searchQuery ||

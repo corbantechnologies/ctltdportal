@@ -29,6 +29,7 @@ import Link from "next/link";
 import { formatNumber } from "@/tools/format";
 import JournalEntryDetailModal from "@/components/journals/JournalEntryDetailModal";
 import { JournalEntry } from "@/services/journalentries";
+import { exportJournalEntriesToCSV } from "@/tools/csvExport";
 import { toast } from "react-hot-toast";
 import { cn } from "@/lib/utils";
 
@@ -152,6 +153,23 @@ export default function JournalEntriesPage() {
     }
   };
 
+  const handleExportCSV = () => {
+    const toExport = selectedRefs.length > 0
+      ? entries.filter((e) => selectedRefs.includes(e.reference))
+      : entries;
+
+    if (toExport.length === 0) {
+      toast.error("No journal entries available to export.");
+      return;
+    }
+
+    exportJournalEntriesToCSV(
+      toExport,
+      `gl_journal_entries_${new Date().toISOString().split("T")[0]}.csv`
+    );
+    toast.success(`Exported ${toExport.length} journal entry records to CSV.`);
+  };
+
   if (isLoadingDivisions || isLoadingYears) return <LoadingSpinner />;
 
   const isAllSelected = entries.length > 0 && selectedRefs.length === entries.length;
@@ -176,6 +194,15 @@ export default function JournalEntriesPage() {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={handleExportCSV}
+            className="h-9 px-3.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-lg font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-sm transition-all active:scale-95"
+            title="Export filtered/selected entries to CSV for audit"
+          >
+            <Download className="w-3.5 h-3.5 text-slate-500" />
+            <span>Export CSV</span>
+          </button>
           <Link
             href="/finance/journal-entries/studio"
             className="h-9 px-3.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-sm transition-all active:scale-95"

@@ -21,6 +21,8 @@ import {
     SlidersHorizontal,
     X,
     BookOpen,
+    FileText,
+    ShieldCheck,
 } from "lucide-react";
 import { PnLReport } from "./PnL";
 import { RevenueReport } from "./Revenue";
@@ -166,6 +168,24 @@ export default function ReportsDashboard({ rolePrefix = "director" }: { rolePref
                     >
                         <WalletIcon className="w-3.5 h-3.5" />
                         Cash Outflow
+                    </Link>
+
+                    {/* Tax Filing shortcut */}
+                    <Link
+                        href={`/${rolePrefix}/reports/tax-filing`}
+                        className="flex items-center gap-2 px-4 py-2.5 rounded border border-slate-200 bg-white text-slate-700 text-[10px] font-bold uppercase tracking-widest hover:bg-slate-50 transition-all shadow-sm"
+                    >
+                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                        Tax Filing
+                    </Link>
+
+                    {/* Year-End Closing shortcut */}
+                    <Link
+                        href={`/${rolePrefix}/reports/year-end`}
+                        className="flex items-center gap-2 px-4 py-2.5 rounded border border-slate-200 bg-white text-slate-700 text-[10px] font-bold uppercase tracking-widest hover:bg-slate-50 transition-all shadow-sm"
+                    >
+                        <FileText className="w-3.5 h-3.5 text-blue-600" />
+                        Year-End Pack
                     </Link>
 
                     {/* GL Statement shortcut */}

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState } from "react";
@@ -16,6 +17,9 @@ import {
     Layers,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+import { downloadCSV } from "@/tools/csvExport";
+import { toast } from "react-hot-toast";
 
 interface AccountDrillDownModalProps {
     isOpen: boolean;
@@ -48,19 +52,41 @@ export function AccountDrillDownModal({
 
     if (!isOpen) return null;
 
-    const filteredTransactions = data?.transactions?.filter((tx) => {
+    const rawTransactions: any[] = (data as any)?.transactions || (data as any)?.entries || [];
+
+    const filteredTransactions = rawTransactions.filter((tx: any) => {
         if (!searchQuery) return true;
         const q = searchQuery.toLowerCase();
         return (
-            tx.journal_code.toLowerCase().includes(q) ||
-            tx.description.toLowerCase().includes(q) ||
+            (tx.journal_code && tx.journal_code.toLowerCase().includes(q)) ||
+            (tx.description && tx.description.toLowerCase().includes(q)) ||
             (tx.partner && tx.partner.toLowerCase().includes(q)) ||
-            tx.date.includes(q)
+            (tx.date && tx.date.includes(q))
         );
-    }) || [];
+    });
 
     const handlePrint = () => {
         window.print();
+    };
+
+    const handleExportCSV = () => {
+        if (filteredTransactions.length === 0) {
+            toast.error("No transactions to export.");
+            return;
+        }
+        const headers = ["Date", "Journal Ref", "Description", "Partner", "Debit (KES)", "Credit (KES)", "Balance (KES)"];
+        const rows = filteredTransactions.map((t: any) => [
+            t.date,
+            t.journal_code,
+            `"${(t.description || "").replace(/"/g, '""')}"`,
+            `"${(t.partner || "").replace(/"/g, '""')}"`,
+            t.debit,
+            t.credit,
+            t.balance,
+        ]);
+        const csv = [headers.join(","), ...rows.map((r: any) => r.join(","))].join("\r\n");
+        downloadCSV(csv, `${data?.book_code || bookCode || "ledger"}_statement.csv`);
+        toast.success("Downloaded account statement CSV");
     };
 
     return (
@@ -100,6 +126,14 @@ export function AccountDrillDownModal({
                     </div>
 
                     <div className="flex items-center gap-2">
+                        <button
+                            onClick={handleExportCSV}
+                            className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg transition-colors flex items-center gap-1.5 text-xs font-semibold"
+                            title="Export CSV"
+                        >
+                            <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
+                            <span className="hidden sm:inline">Export CSV</span>
+                        </button>
                         <button
                             onClick={handlePrint}
                             className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg transition-colors"
@@ -213,7 +247,7 @@ export function AccountDrillDownModal({
                                                 </td>
                                             </tr>
                                         ) : (
-                                            filteredTransactions.map((tx) => (
+                                            filteredTransactions.map((tx: any) => (
                                                 <tr
                                                     key={tx.id}
                                                     className="hover:bg-muted/30 transition-colors"

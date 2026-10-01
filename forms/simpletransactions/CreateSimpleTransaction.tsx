@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import { useState } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-hot-toast";
 import { Loader2, Zap, X, ArrowDownLeft, ArrowUpRight, FileUp, Maximize2, Minimize2 } from "lucide-react";
@@ -12,9 +13,11 @@ import { useFetchBooks } from "@/hooks/books/actions";
 import { useFetchDivisions } from "@/hooks/divisions/actions";
 import { useFetchJournalTypes } from "@/hooks/journaltypes/actions";
 import SearchableSelect from "@/components/portal/SearchableSelect";
+import QuickAddPartnerModal from "@/components/partners/QuickAddPartnerModal";
 import { useFetchPaymentMethods } from "@/hooks/paymentmethods/actions";
 import { useFetchPartners } from "@/hooks/partners/actions";
 import { apiActions } from "@/tools/axios";
+import { UserPlus } from "lucide-react";
 
 interface CreateSimpleTransactionProps {
   onSuccess?: () => void;
@@ -37,6 +40,7 @@ export default function CreateSimpleTransaction({
   const { data: journalTypes, isLoading: loadingJournalTypes } = useFetchJournalTypes();
   const { data: paymentMethods, isLoading: loadingPaymentMethods } = useFetchPaymentMethods();
   const { data: partners } = useFetchPartners();
+  const [quickAddPartnerOpen, setQuickAddPartnerOpen] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -287,14 +291,26 @@ export default function CreateSimpleTransaction({
           </div>
 
           {/* Partner (optional) */}
-          <SearchableSelect
-            label="Partner / Vendor (Optional)"
-            options={partnerOptions}
-            value={formik.values.partner}
-            onChange={(val) => formik.setFieldValue("partner", val)}
-            placeholder="Select Partner..."
-            disabled={false}
-          />
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Partner / Vendor</span>
+              <button
+                type="button"
+                onClick={() => setQuickAddPartnerOpen(true)}
+                className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 hover:text-emerald-700 flex items-center gap-1 cursor-pointer transition-colors"
+              >
+                <UserPlus className="w-3 h-3" />
+                <span>Quick Add Partner</span>
+              </button>
+            </div>
+            <SearchableSelect
+              options={partnerOptions}
+              value={formik.values.partner}
+              onChange={(val) => formik.setFieldValue("partner", val)}
+              placeholder="Select Partner or Walk-in..."
+              disabled={false}
+            />
+          </div>
 
           {/* Documentation */}
           <div className="pt-3 border-t border-slate-100 space-y-3">
@@ -404,6 +420,13 @@ export default function CreateSimpleTransaction({
           )}
         </button>
       </div>
+
+      <QuickAddPartnerModal
+        isOpen={quickAddPartnerOpen}
+        onClose={() => setQuickAddPartnerOpen(false)}
+        onPartnerCreated={(p) => formik.setFieldValue("partner", p.name)}
+        defaultType={isMoneyIn ? "Customer" : "Supplier"}
+      />
     </div>
   );
 }

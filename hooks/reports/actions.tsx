@@ -98,3 +98,31 @@ export function useFetchAccountDrillDown(params: {
     });
 }
 
+export function useFetchTaxFilingReport(params: {
+    start_date?: string;
+    end_date?: string;
+    division?: string;
+    year?: string;
+} = {}) {
+    const header = useAxiosAuth();
+    return useQuery({
+        queryKey: ["tax-filing", params],
+        queryFn: () => import("@/services/reports").then(m => m.getTaxFilingReport(params, header)),
+        enabled: !!header.headers.Authorization,
+    });
+}
+
+export function useFetchYearEndReport(params: {
+    financial_year?: string;
+    year?: string;
+    division?: string;
+} = {}) {
+    const header = useAxiosAuth();
+    return useQuery({
+        queryKey: ["year-end", params],
+        queryFn: () => import("@/services/reports").then(m => m.getYearEndReport(params, header)),
+        enabled: !!header.headers.Authorization,
+    });
+}
+
+

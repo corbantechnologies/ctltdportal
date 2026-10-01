@@ -35,6 +35,7 @@ import { useFetchJournalTypes } from "@/hooks/journaltypes/actions";
 import { useFetchPartners } from "@/hooks/partners/actions";
 import { useCreateJournalStudio } from "@/hooks/journals/actions";
 import SearchableSelect from "@/components/portal/SearchableSelect";
+import QuickAddPartnerModal from "@/components/partners/QuickAddPartnerModal";
 
 export interface JournalLineItem {
   id: string;
@@ -65,6 +66,8 @@ export default function JournalBatchStudio({
   const { data: divisions, isLoading: loadingDivisions } = useFetchDivisions();
   const { data: journalTypes, isLoading: loadingJournalTypes } = useFetchJournalTypes();
   const { data: partners } = useFetchPartners();
+  const [quickAddPartnerOpen, setQuickAddPartnerOpen] = useState(false);
+  const [activeLineForQuickAdd, setActiveLineForQuickAdd] = useState<string | null>(null);
 
   const createStudioMutation = useCreateJournalStudio();
 
@@ -551,8 +554,22 @@ export default function JournalBatchStudio({
 
                   {/* Partner (Optional) - 2 cols */}
                   <div className="sm:col-span-2 space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider block">
+                        Partner
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setActiveLineForQuickAdd(line.id);
+                          setQuickAddPartnerOpen(true);
+                        }}
+                        className="text-[9px] font-bold text-emerald-600 hover:text-emerald-700 hover:underline cursor-pointer"
+                      >
+                        + Add
+                      </button>
+                    </div>
                     <SearchableSelect
-                      label="Partner (Opt)"
                       options={partnerOptions}
                       value={line.partner}
                       onChange={(val) => handleUpdateLine(line.id, "partner", val)}
@@ -691,6 +708,20 @@ export default function JournalBatchStudio({
           </div>
         </div>
       </div>
+
+      <QuickAddPartnerModal
+        isOpen={quickAddPartnerOpen}
+        onClose={() => {
+          setQuickAddPartnerOpen(false);
+          setActiveLineForQuickAdd(null);
+        }}
+        onPartnerCreated={(p) => {
+          if (activeLineForQuickAdd) {
+            handleUpdateLine(activeLineForQuickAdd, "partner", p.name);
+          }
+        }}
+        defaultType="Customer"
+      />
     </div>
   );
 }
