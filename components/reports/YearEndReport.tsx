@@ -27,10 +27,13 @@ interface YearEndReportProps {
   rolePrefix?: string;
 }
 
+import { useFiscalYear } from "@/contexts/FiscalYearContext";
+
 export default function YearEndReportComponent({
   rolePrefix = "finance",
 }: YearEndReportProps) {
-  const { data: years } = useFetchFinancialYears();
+  const { selectedYear, selectedYearCode, years: ctxYears, switchFiscalYear } = useFiscalYear();
+  const { data: years = ctxYears } = useFetchFinancialYears();
   const { data: divisions } = useFetchDivisions();
 
   const [selectedYearRef, setSelectedYearRef] = useState<string>("");
@@ -38,12 +41,13 @@ export default function YearEndReportComponent({
   const [activeTab, setActiveTab] = useState<"gl" | "pnl" | "bs" | "tb">("gl");
   const [glSearch, setGlSearch] = useState("");
 
-  // Default to active year or first year
+  // Default to global fiscal year or explicitly selected year
   const activeYear = useMemo(() => {
-    if (!years || years.length === 0) return null;
+    if (!years || years.length === 0) return selectedYear || null;
     if (selectedYearRef) return years.find((y) => y.reference === selectedYearRef) || years[0];
-    return years.find((y) => y.is_active) || years[0];
-  }, [years, selectedYearRef]);
+    if (selectedYear) return selectedYear;
+    return years.find((y) => y.is_current) || years.find((y) => y.is_active) || years[0];
+  }, [years, selectedYearRef, selectedYear]);
 
   const queryParams: Record<string, string> = {};
   if (activeYear) queryParams.financial_year = activeYear.reference;

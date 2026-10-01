@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
+import { useFiscalYear } from "@/contexts/FiscalYearContext";
 import {
     getPNL,
     getBalanceSheet,
@@ -23,6 +24,7 @@ import {
     BookOpen,
     FileText,
     ShieldCheck,
+    Calendar,
 } from "lucide-react";
 import { PnLReport } from "./PnL";
 import { RevenueReport } from "./Revenue";
@@ -64,8 +66,9 @@ interface Filters {
     division?: string;
 }
 
-function buildParams(f: Filters) {
+function buildParams(f: Filters, year?: string) {
     const p: Record<string, string> = {};
+    if (year) p.year = year;
     if (f.start_date) p.start_date = f.start_date;
     if (f.end_date) p.end_date = f.end_date;
     if (f.division && f.division !== "ALL") p.division_code = f.division;
@@ -80,12 +83,13 @@ function appendParams(base: string, params: Record<string, string>) {
 // ---------- Main dashboard ----------
 export default function ReportsDashboard({ rolePrefix = "director" }: { rolePrefix?: string }) {
     const header = useAxiosAuth();
+    const { selectedYearCode, years, switchFiscalYear } = useFiscalYear();
 
     const [filters, setFilters] = useState<Filters>({});
     const [filtersOpen, setFiltersOpen] = useState(false);
     const [draftFilters, setDraftFilters] = useState<Filters>({});
 
-    const params = buildParams(filters);
+    const params = useMemo(() => buildParams(filters, selectedYearCode), [filters, selectedYearCode]);
 
     // Divisions for filter dropdown
     const { data: divisions } = useQuery({
@@ -143,11 +147,18 @@ export default function ReportsDashboard({ rolePrefix = "director" }: { rolePref
                         <CalendarRange className="w-6 h-6" />
                     </div>
                     <div>
-                        <h3 className="font-bold text-slate-900 tracking-tight">Audit &amp; Period Reports</h3>
+                        <div className="flex items-center gap-2">
+                            <h3 className="font-bold text-slate-900 tracking-tight">Audit &amp; Period Reports</h3>
+                            {selectedYearCode && (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                                    FY {selectedYearCode}
+                                </span>
+                            )}
+                        </div>
                         <p className="text-slate-400 text-[11px] font-medium uppercase tracking-widest mt-0.5">
                             {hasFilters
                                 ? `Filtered: ${filters.start_date || "—"} → ${filters.end_date || "—"}${filters.division && filters.division !== "ALL" ? ` · ${filters.division}` : ""}`
-                                : "Current Financial Year — All Divisions"}
+                                : `Operating Cycle: FY ${selectedYearCode || "Active"} — All Divisions`}
                         </p>
                     </div>
                 </div>

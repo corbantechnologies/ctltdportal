@@ -7,7 +7,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import { useFetchAccount } from "@/hooks/accounts/actions";
-import { useFetchFinancialYears } from "@/hooks/financialyears/actions";
+import { useFiscalYear } from "@/contexts/FiscalYearContext";
+import { useSidebar } from "@/contexts/SidebarContext";
 import {
   LogOut,
   LayoutDashboard,
@@ -32,6 +33,8 @@ import {
   Building2,
   PieChart,
   HelpCircle,
+  Sparkles,
+  ShieldCheck,
 } from "lucide-react";
 
 import { useState, useEffect, useMemo } from "react";
@@ -55,7 +58,18 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const { data: account, isLoading } = useFetchAccount();
-  const [menuOpen, setMenuOpen] = useState(false);
+
+  const {
+    years,
+    selectedYear,
+    selectedYearCode,
+    isCurrentOperatingYear,
+    switchFiscalYear,
+    openYearSelectorModal,
+  } = useFiscalYear();
+
+  const { isSidebarOpen, toggleSidebar, closeOnMobile } = useSidebar();
+
   const [searchQuery, setSearchQuery] = useState("");
   const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({});
 
@@ -73,18 +87,6 @@ export default function Navbar() {
         : isEmployee
           ? "employee"
           : "portal";
-
-  const { data: years } = useFetchFinancialYears();
-  const activeYears = useMemo(
-    () => years?.filter((y: { is_active: boolean; reference: string; code: string; start_date?: string; end_date?: string }) => y.is_active) || [],
-    [years]
-  );
-  const activeYear = activeYears[0] || years?.[0];
-
-  // Close menu on navigation
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [pathname]);
 
   // Define categorized navigation structure
   const categories: NavCategory[] = useMemo(() => [
@@ -105,7 +107,7 @@ export default function Navbar() {
           href: `/${rolePrefix}/books`,
           icon: BookOpen,
           show: Boolean(isFinance),
-          description: "Sub-ledgers & multi-book journals",
+          description: "Sub-ledgers, Cash & Bank books in list format",
         },
         {
           name: "Ledger & Journal Entries",
@@ -128,25 +130,6 @@ export default function Navbar() {
           show: Boolean(isDirector || isFinance || isOperations),
           description: "Fiscal periods and period closing",
         },
-        ...(activeYears.length > 0
-          ? activeYears.map((ay: any) => ({
-              name: `Fiscal Year (${ay.code})`,
-              href: `/${rolePrefix}/fiscal-years/${ay.reference}`,
-              icon: Landmark,
-              show: Boolean(isDirector || isFinance || isOperations),
-              description: `Active fiscal cycle (${ay.start_date || ""} to ${ay.end_date || ""})`,
-            }))
-          : activeYear
-          ? [
-              {
-                name: `Current Year (${activeYear.code || "Active"})`,
-                href: `/${rolePrefix}/fiscal-years/${activeYear.reference}`,
-                icon: Landmark,
-                show: Boolean(isDirector || isFinance || isOperations),
-                description: "Active fiscal year performance",
-              },
-            ]
-          : []),
       ],
     },
     {
@@ -263,7 +246,7 @@ export default function Navbar() {
     },
     {
       id: "reports",
-      name: "Reports & Intelligence",
+      name: "Reports & Statutory",
       icon: PieChart,
       items: [
         {
@@ -281,6 +264,20 @@ export default function Navbar() {
           description: "Account transaction ledger statements",
         },
         {
+          name: "Tax Filing Returns (VAT/WHT)",
+          href: `/${rolePrefix}/reports/tax-filing`,
+          icon: ShieldCheck,
+          show: Boolean(isDirector || isFinance),
+          description: "VAT return schedules & tax filing audit",
+        },
+        {
+          name: "Year-End Accounting Pack",
+          href: `/${rolePrefix}/reports/year-end`,
+          icon: Landmark,
+          show: Boolean(isDirector || isFinance),
+          description: "Annual statements & balance audit pack",
+        },
+        {
           name: "AR Aging Matrix",
           href: `/${rolePrefix}/reports/ar-aging`,
           icon: TrendingUp,
@@ -296,7 +293,7 @@ export default function Navbar() {
         },
       ],
     },
-  ], [rolePrefix, isDirector, isFinance, isOperations, isEmployee, activeYear]);
+  ], [rolePrefix, isDirector, isFinance, isOperations, isEmployee]);
 
   // Dashboard Item
   const dashboardItem: NavItem = {
@@ -360,42 +357,85 @@ export default function Navbar() {
   return (
     <>
       {/* Top Navbar */}
-      <nav className="sticky top-0 w-full z-40 bg-slate-900 border-b border-slate-800 py-2.5 pr-2 shadow-2xl">
-        <div className="mx-auto px-4 flex justify-between items-center">
-          {/* Logo */}
-          <Link
-            href="/"
-            className="flex items-center gap-2 group transition-transform hover:scale-105 active:scale-95"
-          >
-            <Image
-              src="/logo.png"
-              alt="Corban Technologies Logo"
-              width={140}
-              height={38}
-              className="h-8 w-auto object-contain brightness-0 invert"
-            />
-          </Link>
+      <nav className="sticky top-0 w-full z-40 bg-slate-900 border-b border-slate-800 py-2.5 px-3 sm:px-6 shadow-xl">
+        <div className="flex justify-between items-center gap-3">
+          {/* Left: Sidebar Toggle & Brand */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <button
+              onClick={toggleSidebar}
+              aria-label={isSidebarOpen ? "Collapse sidebar" : "Open sidebar"}
+              className="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-all border border-slate-800 hover:border-slate-700 shadow-sm active:scale-95 flex items-center justify-center"
+              title={isSidebarOpen ? "Collapse Navigation" : "Expand Navigation"}
+            >
+              <Menu className="w-5 h-5" />
+            </button>
 
-          {/* Controls & Nav Trigger */}
-          <div className="flex items-center gap-4 sm:gap-6">
-            <div className="hidden sm:flex flex-col items-end">
-              <span className="text-sm font-medium text-white leading-none">
+            <Link
+              href="/"
+              className="flex items-center gap-2 group transition-transform hover:scale-105 active:scale-95"
+            >
+              <Image
+                src="/logo.png"
+                alt="Corban Technologies Logo"
+                width={130}
+                height={32}
+                className="h-7 w-auto object-contain brightness-0 invert"
+                priority
+              />
+            </Link>
+          </div>
+
+          {/* Right: Persistent Fiscal Year Context & User Controls */}
+          <div className="flex items-center gap-2 sm:gap-4">
+            {/* Contextual Fiscal Year Switcher Pill */}
+            <button
+              type="button"
+              onClick={openYearSelectorModal}
+              className="flex items-center gap-2 px-2.5 sm:px-3 py-1.5 rounded-lg bg-slate-800/90 hover:bg-slate-750 border border-slate-700/80 hover:border-emerald-500/50 transition-all text-left shadow-sm group active:scale-95"
+              title="Click to switch global accounting fiscal year"
+            >
+              <div className="w-6 h-6 rounded-md bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/20 group-hover:scale-105 transition-transform shrink-0">
+                <Calendar className="w-3.5 h-3.5" />
+              </div>
+              <div className="flex flex-col text-left">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+                    Fiscal Year
+                  </span>
+                  {isCurrentOperatingYear ? (
+                    <span className="px-1 py-0.2 rounded text-[8px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                      Current
+                    </span>
+                  ) : (
+                    <span className="px-1 py-0.2 rounded text-[8px] font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                      Archived
+                    </span>
+                  )}
+                </div>
+                <span className="text-xs font-mono font-bold text-white group-hover:text-emerald-300 transition-colors flex items-center gap-1">
+                  {selectedYearCode ? `FY ${selectedYearCode}` : "Select Year"}
+                  <ChevronDown className="w-3 h-3 text-slate-400 group-hover:text-emerald-300" />
+                </span>
+              </div>
+            </button>
+
+            {/* User Profile Badge */}
+            <div className="hidden md:flex flex-col items-end">
+              <span className="text-xs font-semibold text-white leading-tight">
                 {isLoading
                   ? "Loading..."
                   : `${account?.first_name || ""} ${account?.last_name || ""}`}
               </span>
               <span
                 className={cn(
-                  "text-[10px] uppercase mt-1.5 px-2.5 py-0.5 rounded font-semibold border shadow-sm tracking-wider",
+                  "text-[9px] uppercase mt-1 px-2 py-0.5 rounded font-bold border shadow-sm tracking-wider",
                   isDirector
-                    ? "text-corporate-primary bg-corporate-primary/5 border-corporate-primary/20 shadow-corporate-primary/5"
+                    ? "text-corporate-primary bg-corporate-primary/10 border-corporate-primary/20"
                     : isFinance
-                      ? "text-emerald-500 bg-emerald-500/5 border-emerald-500/20 shadow-emerald-500/5"
+                      ? "text-emerald-400 bg-emerald-500/10 border-emerald-500/20"
                       : isOperations
-                        ? "text-blue-500 bg-blue-500/5 border-blue-500/20 shadow-blue-500/5"
-                        : isEmployee
-                          ? "text-slate-300 bg-slate-800 border-slate-700"
-                          : "text-slate-400 bg-slate-800 border-slate-700"
+                        ? "text-blue-400 bg-blue-500/10 border-blue-500/20"
+                        : "text-slate-300 bg-slate-800 border-slate-700"
                 )}
               >
                 {isDirector
@@ -409,34 +449,26 @@ export default function Navbar() {
                         : "Portal User"}
               </span>
             </div>
-
-            <button
-              onClick={() => setMenuOpen(true)}
-              aria-label="Open Navigation Menu"
-              className="p-2 min-h-[40px] min-w-[40px] flex items-center justify-center rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-all border border-slate-800 hover:border-slate-700 shadow-lg group active:scale-95"
-            >
-              <Menu className="w-5 h-5 group-hover:scale-110 transition-transform" />
-            </button>
           </div>
         </div>
       </nav>
 
-      {/* Menu Backdrop */}
+      {/* Menu Backdrop (Mobile only: screens < lg) */}
       <div
         className={cn(
-          "fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-[60] transition-opacity duration-300",
-          menuOpen
+          "fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-[45] transition-opacity duration-300 lg:hidden",
+          isSidebarOpen
             ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none",
+            : "opacity-0 pointer-events-none"
         )}
-        onClick={() => setMenuOpen(false)}
+        onClick={toggleSidebar}
       />
 
-      {/* Side Menu Drawer */}
+      {/* Side Menu Drawer / Docked Sidebar */}
       <aside
         className={cn(
-          "fixed right-0 top-0 h-full w-[310px] sm:w-[360px] max-w-[90vw] bg-slate-900 z-[70] shadow-2xl transform transition-transform duration-300 ease-out border-l border-slate-800 flex flex-col",
-          menuOpen ? "translate-x-0" : "translate-x-full",
+          "fixed left-0 top-0 bottom-0 h-full w-[310px] sm:w-80 bg-slate-900 z-50 shadow-2xl transition-transform duration-300 ease-in-out border-r border-slate-800 flex flex-col",
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         {/* Drawer Header */}
@@ -451,8 +483,8 @@ export default function Navbar() {
             />
           </div>
           <button
-            onClick={() => setMenuOpen(false)}
-            aria-label="Close menu"
+            onClick={toggleSidebar}
+            aria-label="Close sidebar"
             className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition-colors border border-transparent hover:border-slate-700 min-h-[34px] min-w-[34px] flex items-center justify-center"
           >
             <X className="w-4 h-4" />
@@ -504,26 +536,23 @@ export default function Navbar() {
                           ? "Field Staff"
                           : "User"}
                 </span>
+
+                {/* Quick Fiscal Year Switcher in Drawer */}
                 {years && years.length > 0 && (
                   <div className="relative inline-flex items-center">
                     <select
-                      value={
-                        years.find((y: any) => pathname.includes(y.reference))?.reference ||
-                        activeYear?.reference ||
-                        ""
-                      }
-                      onChange={(e) => {
-                        const targetRef = e.target.value;
-                        if (targetRef) {
-                          router.push(`/${rolePrefix}/fiscal-years/${targetRef}`);
-                        }
-                      }}
-                      className="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700/80 rounded px-1.5 py-0.5 text-[9px] font-mono font-semibold outline-none cursor-pointer transition-colors appearance-none pr-4 max-w-[140px] truncate"
+                      value={selectedYearCode || ""}
+                      onChange={(e) => switchFiscalYear(e.target.value)}
+                      className="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700/80 rounded px-1.5 py-0.5 text-[9px] font-mono font-semibold outline-none cursor-pointer transition-colors appearance-none pr-4 max-w-[130px] truncate"
                       title="Switch active fiscal cycle"
                     >
-                      {years.map((y: any) => (
-                        <option key={y.reference} value={y.reference} className="bg-slate-900 text-slate-200">
-                          {y.code} {y.is_active ? "● Active" : "○ Closed"}
+                      {years.map((y) => (
+                        <option
+                          key={y.reference}
+                          value={y.code}
+                          className="bg-slate-900 text-slate-200"
+                        >
+                          {y.code} {y.is_current ? "★ Current" : y.is_active ? "● Active" : "○ Closed"}
                         </option>
                       ))}
                     </select>
@@ -564,6 +593,7 @@ export default function Navbar() {
             dashboardItem.name.toLowerCase().includes(searchQuery.toLowerCase())) && (
             <Link
               href={dashboardItem.href}
+              onClick={closeOnMobile}
               className={cn(
                 "flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold transition-all group border shadow-sm",
                 isDashboardActive
@@ -663,6 +693,7 @@ export default function Navbar() {
                         <Link
                           key={item.href + item.name}
                           href={item.href}
+                          onClick={closeOnMobile}
                           className={cn(
                             "flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs font-medium transition-all group border border-transparent",
                             isActive
@@ -679,8 +710,8 @@ export default function Navbar() {
                               className={cn(
                                 "w-3.5 h-3.5 flex-shrink-0 transition-colors",
                                 isActive
-                                  ? "text-white"
-                                  : "text-slate-500 group-hover:text-slate-300"
+                              ? "text-white"
+                              : "text-slate-500 group-hover:text-slate-300"
                               )}
                             />
                             <div className="min-w-0">

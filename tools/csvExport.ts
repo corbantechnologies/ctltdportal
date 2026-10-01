@@ -276,6 +276,45 @@ export function exportTaxFilingToCSV(
 }
 
 /**
+ * Exports All Transactions for statutory and tax audit to CSV
+ */
+export function exportAllTransactionsTaxToCSV(
+  transactions: any[],
+  filename = `all_statutory_transactions_${new Date().toISOString().split("T")[0]}.csv`
+) {
+  const headers = [
+    "Date",
+    "Journal Code",
+    "Document / Invoice #",
+    "Partner Name",
+    "Tax PIN",
+    "Book Code",
+    "Ledger Book",
+    "Debit (KES)",
+    "Credit (KES)",
+    "Division",
+    "Description",
+  ];
+
+  const rows = (transactions || []).map((t: any) => [
+    escapeCSVValue(t.date),
+    escapeCSVValue(t.journal_code),
+    escapeCSVValue(t.document_number),
+    escapeCSVValue(t.partner_name),
+    escapeCSVValue(t.partner_pin),
+    escapeCSVValue(t.book_code),
+    escapeCSVValue(t.book_name),
+    escapeCSVValue(t.debit),
+    escapeCSVValue(t.credit),
+    escapeCSVValue(t.division),
+    escapeCSVValue(t.description),
+  ]);
+
+  const csvContent = [headers.join(","), ...rows.map((r: any) => r.join(","))].join("\r\n");
+  downloadCSV(csvContent, filename);
+}
+
+/**
  * Exports Year-End Audit Pack to CSV
  */
 export function exportYearEndPackToCSV(

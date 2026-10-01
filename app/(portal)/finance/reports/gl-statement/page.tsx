@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { useFetchBooks } from "@/hooks/books/actions";
 import { useFetchDivisions } from "@/hooks/divisions/actions";
 import { useFetchGLStatement } from "@/hooks/reports/actions";
+import { useFiscalYear } from "@/contexts/FiscalYearContext";
 import {
     BookOpen,
     Search,
@@ -13,15 +15,21 @@ import {
     SlidersHorizontal,
     X,
     ArrowLeft,
+    Calendar,
+    Sparkles,
 } from "lucide-react";
 import Link from "next/link";
 import { formatNumber } from "@/tools/format";
+import { Suspense } from "react";
+import LoadingSpinner from "@/components/portal/LoadingSpinner";
 
 const ITEMS_PER_PAGE = 30;
 
-export default function GLStatementPage() {
+function GLStatementContent() {
+    const searchParams = useSearchParams();
     const { data: books, isLoading: isLoadingBooks } = useFetchBooks();
     const { data: divisions } = useFetchDivisions();
+    const { selectedYearCode, years, switchFiscalYear } = useFiscalYear();
 
     const [selectedBook, setSelectedBook] = useState("");
     const [division, setDivision] = useState("ALL");
@@ -30,10 +38,23 @@ export default function GLStatementPage() {
     const [searchQuery, setSearchQuery] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
 
-    // Only fire query when a book is selected
+    // If book_reference is passed via query params, auto-select it
+    useEffect(() => {
+        const bookRefFromUrl = searchParams.get("book_reference");
+        if (bookRefFromUrl) {
+            setSelectedBook(bookRefFromUrl);
+        }
+    }, [searchParams]);
+
+    // Pass selected fiscal year to the query
     const { data: glData, isLoading: isLoadingGL, isFetching } = useFetchGLStatement(
         selectedBook,
-        { start_date: startDate || undefined, end_date: endDate || undefined, division: division !== "ALL" ? division : undefined }
+        {
+            start_date: startDate || undefined,
+            end_date: endDate || undefined,
+            division: division !== "ALL" ? division : undefined,
+            year: selectedYearCode || undefined,
+        }
     );
 
     const filtered = useMemo(() => {
@@ -134,6 +155,30 @@ export default function GLStatementPage() {
             {/* Filter Bar */}
             <div className="bg-white border border-gray-200 rounded shadow-sm p-4 space-y-3">
                 <div className="flex flex-wrap gap-3">
+                    {/* Fiscal Year Selector */}
+                    <div className="w-48">
+                        <label className="block text-[10px] font-semibold uppercase tracking-widest text-black/40 mb-1">
+                            Fiscal Year Context
+                        </label>
+                        <div className="relative">
+                            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+                            <select
+                                value={selectedYearCode}
+                                onChange={(e) => {
+                                    switchFiscalYear(e.target.value);
+                                    setCurrentPage(1);
+                                }}
+                                className="w-full h-10 pl-9 pr-3 rounded border border-gray-200 bg-emerald-50/50 text-sm font-semibold text-emerald-950 outline-none focus:ring-2 focus:ring-[#045138]/20 focus:border-[#045138] transition-all cursor-pointer"
+                            >
+                                {years.map((y) => (
+                                    <option key={y.reference} value={y.code}>
+                                        FY {y.code} {y.is_current ? "★ Current" : y.is_active ? "● Active" : "○ Closed"}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+
                     {/* Book Selector */}
                     <div className="flex-1 min-w-[200px]">
                         <label className="block text-[10px] font-semibold uppercase tracking-widest text-black/40 mb-1">
@@ -360,5 +405,13 @@ export default function GLStatementPage() {
                 </div>
             )}
         </div>
+    );
+}
+
+export default function GLStatementPage() {
+    return (
+        <Suspense fallback={<LoadingSpinner />}>
+            <GLStatementContent />
+        </Suspense>
     );
 }

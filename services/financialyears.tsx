@@ -6,15 +6,17 @@ import { apiActions } from "@/tools/axios";
 import { AxiosResponse } from "axios";
 import { PaginatedResponse } from "./general";
 
-interface FinancialYear {
+export interface FinancialYear {
+  id?: string;
   code: string;
   estimated_profit: number;
   start_date: string;
   end_date: string;
   is_active: boolean;
+  is_current?: boolean;
   reference: string;
-  journals: Journal[];
-  months: FinancialMonth[];
+  journals?: Journal[];
+  months?: FinancialMonth[];
 }
 
 export const getFinancialYears = async (headers: {
