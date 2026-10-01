@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import { useFetchAccount } from "@/hooks/accounts/actions";
@@ -53,6 +53,7 @@ interface NavCategory {
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { data: account, isLoading } = useFetchAccount();
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -74,9 +75,11 @@ export default function Navbar() {
           : "portal";
 
   const { data: years } = useFetchFinancialYears();
-  const activeYear = years?.find(
-    (y: { is_active: boolean; reference: string }) => y.is_active,
+  const activeYears = useMemo(
+    () => years?.filter((y: { is_active: boolean; reference: string; code: string; start_date?: string; end_date?: string }) => y.is_active) || [],
+    [years]
   );
+  const activeYear = activeYears[0] || years?.[0];
 
   // Close menu on navigation
   useEffect(() => {
@@ -125,7 +128,15 @@ export default function Navbar() {
           show: Boolean(isDirector || isFinance || isOperations),
           description: "Fiscal periods and period closing",
         },
-        ...(activeYear
+        ...(activeYears.length > 0
+          ? activeYears.map((ay: any) => ({
+              name: `Fiscal Year (${ay.code})`,
+              href: `/${rolePrefix}/fiscal-years/${ay.reference}`,
+              icon: Landmark,
+              show: Boolean(isDirector || isFinance || isOperations),
+              description: `Active fiscal cycle (${ay.start_date || ""} to ${ay.end_date || ""})`,
+            }))
+          : activeYear
           ? [
               {
                 name: `Current Year (${activeYear.code || "Active"})`,
@@ -493,10 +504,31 @@ export default function Navbar() {
                           ? "Field Staff"
                           : "User"}
                 </span>
-                {activeYear && (
-                  <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold text-slate-400 bg-slate-800 border border-slate-700">
-                    FY {activeYear.code}
-                  </span>
+                {years && years.length > 0 && (
+                  <div className="relative inline-flex items-center">
+                    <select
+                      value={
+                        years.find((y: any) => pathname.includes(y.reference))?.reference ||
+                        activeYear?.reference ||
+                        ""
+                      }
+                      onChange={(e) => {
+                        const targetRef = e.target.value;
+                        if (targetRef) {
+                          router.push(`/${rolePrefix}/fiscal-years/${targetRef}`);
+                        }
+                      }}
+                      className="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700/80 rounded px-1.5 py-0.5 text-[9px] font-mono font-semibold outline-none cursor-pointer transition-colors appearance-none pr-4 max-w-[140px] truncate"
+                      title="Switch active fiscal cycle"
+                    >
+                      {years.map((y: any) => (
+                        <option key={y.reference} value={y.reference} className="bg-slate-900 text-slate-200">
+                          {y.code} {y.is_active ? "● Active" : "○ Closed"}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="w-2.5 h-2.5 text-slate-400 absolute right-1 pointer-events-none" />
+                  </div>
                 )}
               </div>
             </div>

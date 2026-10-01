@@ -10,16 +10,16 @@ interface CreateFiscalYearProps {
   onSuccess?: () => void;
   onClose?: () => void;
   className?: string;
+  primaryColor?: string;
 }
 
 export default function CreateFiscalYear({
   onSuccess,
   onClose,
   className,
+  primaryColor = "#D0402B",
 }: CreateFiscalYearProps) {
   const createMutation = useCreateFinancialYear();
-
-  const primaryColor = "#D0402B"; // Director's Theme Color
 
   const formik = useFormik({
     initialValues: {
