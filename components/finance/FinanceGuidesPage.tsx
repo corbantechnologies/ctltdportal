@@ -952,7 +952,7 @@ export default function FinanceGuidesPage() {
                   </div>
                   <h4 className="text-xs font-bold text-slate-900 uppercase">1-Click Instant Settlement</h4>
                   <p className="text-xs text-slate-600 leading-relaxed">
-                    Toggle <strong>&quot;Settle & Mark as Paid Immediately&quot;</strong> to auto-post the General Ledger journal batch (Bank Debit $\rightarrow$ Revenue Credit), issue an official payment receipt, and mark status as <code>PAID</code>.
+                    Toggle <strong>&quot;Settle & Mark as Paid Immediately&quot;</strong> to auto-post the General Ledger journal batch (Bank Debit → Revenue Credit), issue an official payment receipt, and mark status as <code>PAID</code>.
                   </p>
                 </div>
               </div>
@@ -1084,7 +1084,7 @@ export default function FinanceGuidesPage() {
                   </span>
                 </div>
                 <p className="text-xs md:text-sm text-slate-500">
-                  Lifecycle from Commercial Quotation $\rightarrow$ Tax Invoice $\rightarrow$ GL Posting $\rightarrow$ Payment Receipt Allocation $\rightarrow$ Settlement Meters.
+                  Lifecycle from Commercial Quotation → Tax Invoice → GL Posting → Payment Receipt Allocation → Settlement Meters.
                 </p>
               </div>
             </div>
@@ -1148,7 +1148,7 @@ export default function FinanceGuidesPage() {
                   </div>
                   <h5 className="text-xs font-bold text-slate-900 uppercase">Receipt Allocation</h5>
                   <p className="text-xs text-slate-600">
-                    Record payment receipts to debit Bank and clear AR. Live progress meters transition from 0% $\rightarrow$ 100% PAID.
+                    Record payment receipts to debit Bank and clear AR. Live progress meters transition from 0% → 100% PAID.
                   </p>
                 </div>
               </div>
@@ -1178,7 +1178,7 @@ export default function FinanceGuidesPage() {
                   </span>
                 </div>
                 <p className="text-xs md:text-sm text-slate-500">
-                  Managing leads across stages (New $\rightarrow$ Contacted $\rightarrow$ Qualified $\rightarrow$ Proposal Sent $\rightarrow$ Won), pipeline valuation, and proposal conversion.
+                  Managing leads across stages (New → Contacted → Qualified → Proposal Sent → Won), pipeline valuation, and proposal conversion.
                 </p>
               </div>
             </div>

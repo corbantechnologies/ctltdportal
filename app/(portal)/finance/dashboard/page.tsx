@@ -265,7 +265,7 @@ export default function FinanceDashboard() {
         </div>
       </div>
 
-      <Tabs.Root defaultValue="overview" className="space-y-6">
+      <Tabs.Root defaultValue="reports" className="space-y-6">
         <Tabs.List className="inline-flex p-1 rounded-lg bg-slate-100 border border-slate-200 text-xs font-medium text-slate-600">
           <Tabs.Trigger
             value="overview"
