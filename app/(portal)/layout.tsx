@@ -14,7 +14,7 @@ function PortalContent({ children }: { children: React.ReactNode }) {
       <div
         className={cn(
           "flex-1 flex flex-col transition-[padding] duration-300 ease-in-out",
-          isSidebarOpen ? "lg:pl-80" : "lg:pl-20"
+          isSidebarOpen ? "lg:pl-80" : "lg:pl-14"
         )}
       >
         <main className="w-full px-3 sm:px-6 lg:px-8 py-4 sm:py-6 flex-1">

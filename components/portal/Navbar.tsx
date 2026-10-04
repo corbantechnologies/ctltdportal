@@ -361,17 +361,18 @@ export default function Navbar() {
       <nav
         className={cn(
           "sticky top-0 w-full z-40 bg-slate-900 border-b border-slate-800 py-2.5 px-3 sm:px-6 shadow-xl transition-[padding] duration-300 ease-in-out",
-          isSidebarOpen ? "lg:pl-80" : "lg:pl-20"
+          isSidebarOpen ? "lg:pl-80" : "lg:pl-14"
         )}
       >
         <div className="flex justify-between items-center gap-3">
           {/* Left: Sidebar Toggle & Brand */}
           <div className="flex items-center gap-2 sm:gap-3">
+            {/* Hamburger button visible only on mobile (desktop is controlled by the docked sidebar) */}
             <button
               onClick={toggleSidebar}
               aria-label={isSidebarOpen ? "Collapse sidebar" : "Open sidebar"}
-              className="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-all border border-slate-800 hover:border-slate-700 shadow-sm active:scale-95 flex items-center justify-center"
-              title={isSidebarOpen ? "Collapse Navigation to Mini Strip" : "Expand Full Navigation"}
+              className="lg:hidden p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-all border border-slate-800 hover:border-slate-700 shadow-sm active:scale-95 flex items-center justify-center"
+              title={isSidebarOpen ? "Collapse Navigation" : "Expand Navigation"}
             >
               <Menu className="w-5 h-5" />
             </button>
@@ -481,8 +482,8 @@ export default function Navbar() {
           isSidebarOpen
             ? "translate-x-0 w-[310px] sm:w-80"
             : "-translate-x-full lg:translate-x-0",
-          // Desktop: docked rail (w-20) or full drawer (w-80)
-          isSidebarOpen ? "lg:w-80" : "lg:w-20"
+          // Desktop: docked slim rail (w-14) or full drawer (w-80)
+          isSidebarOpen ? "lg:w-80" : "lg:w-14"
         )}
       >
         {/* ==================================================== */}
@@ -682,10 +683,10 @@ export default function Navbar() {
                           hasActiveChild
                             ? isDirector
                               ? "text-corporate-primary"
-                              : isFinance
-                                ? "text-emerald-400"
-                                : "text-blue-400"
-                            : "text-slate-400 group-hover:text-slate-200"
+                            : isFinance
+                              ? "text-emerald-400"
+                              : "text-blue-400"
+                          : "text-slate-400 group-hover:text-slate-200"
                         )}
                       />
                       <span className="truncate tracking-tight">{category.name}</span>
@@ -797,33 +798,33 @@ export default function Navbar() {
         </div>
 
         {/* ==================================================== */}
-        {/* 2. MINI ICON STRIP (Desktop Only when isSidebarOpen is false) */}
+        {/* 2. REFINED SLIM MINI ICON STRIP (Desktop Only when isSidebarOpen is false) */}
         {/* ==================================================== */}
         <div
           className={cn(
-            "flex-1 flex flex-col h-full items-center justify-between py-3 overflow-visible select-none",
+            "flex-1 flex flex-col h-full items-center justify-between py-2.5 overflow-visible select-none",
             isSidebarOpen ? "hidden" : "hidden lg:flex"
           )}
         >
           {/* Top: Toggle Button & User Initial Badge */}
-          <div className="w-full flex flex-col items-center gap-3">
+          <div className="w-full flex flex-col items-center gap-2 px-1">
             <button
               onClick={toggleSidebar}
               aria-label="Expand sidebar"
-              className="w-10 h-10 rounded-xl bg-slate-800/80 hover:bg-slate-750 text-slate-300 hover:text-white flex items-center justify-center transition-all border border-slate-700/60 shadow-sm active:scale-95 group"
+              className="w-8 h-8 rounded-lg bg-slate-800/80 hover:bg-slate-750 text-slate-300 hover:text-white flex items-center justify-center transition-all border border-slate-700/60 shadow-sm active:scale-95 group"
               title="Expand full navigation"
             >
-              <Menu className="w-5 h-5 transition-transform group-hover:scale-110" />
+              <Menu className="w-4 h-4 transition-transform group-hover:scale-110" />
             </button>
 
             {/* Compact User Avatar with Floating Tooltip */}
             <div
-              className="relative group pt-1"
+              className="relative group pt-0.5"
               title={`${account?.first_name || ""} ${account?.last_name || ""}`}
             >
               <div
                 className={cn(
-                  "w-10 h-10 rounded-xl flex items-center justify-center text-white text-xs font-bold border shadow-md transition-transform group-hover:scale-105 cursor-pointer",
+                  "w-8 h-8 rounded-lg flex items-center justify-center text-white text-[10px] font-bold border shadow-sm transition-transform group-hover:scale-105 cursor-pointer",
                   isDirector
                     ? "bg-corporate-primary border-corporate-primary/40 shadow-corporate-primary/20"
                     : isFinance
@@ -838,7 +839,7 @@ export default function Navbar() {
               </div>
 
               {/* User Hover Popover */}
-              <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-3 py-1.5 bg-slate-950/95 backdrop-blur-md text-white rounded-lg border border-slate-800 shadow-2xl whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 z-[70]">
+              <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2.5 px-3 py-1.5 bg-slate-950/95 backdrop-blur-md text-white rounded-lg border border-slate-800 shadow-2xl whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 z-[70]">
                 <p className="text-xs font-bold leading-tight">
                   {account?.first_name} {account?.last_name}
                 </p>
@@ -849,28 +850,28 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Middle: Icon Buttons Stack */}
-          <div className="w-full flex-1 flex flex-col items-center justify-center gap-3 py-4">
+          {/* Middle: Sleek Icon Buttons Stack */}
+          <div className="w-full flex-1 flex flex-col items-center justify-center gap-2 py-2 px-1">
             {/* Dashboard Icon */}
             <div className="relative group">
               <Link
                 href={dashboardItem.href}
                 className={cn(
-                  "w-11 h-11 rounded-xl flex items-center justify-center transition-all border shadow-sm group-hover:scale-105",
+                  "w-8 h-8 rounded-lg flex items-center justify-center transition-all border shadow-sm group-hover:scale-105",
                   isDashboardActive
                     ? isDirector
-                      ? "bg-corporate-primary text-white border-corporate-primary/40 shadow-corporate-primary/20 ring-2 ring-corporate-primary/30"
+                      ? "bg-corporate-primary text-white border-corporate-primary/40 shadow-corporate-primary/20 ring-1 ring-corporate-primary/30"
                       : isFinance
-                        ? "bg-emerald-600 text-white border-emerald-500/40 shadow-emerald-600/20 ring-2 ring-emerald-500/30"
-                        : "bg-blue-600 text-white border-blue-500/40 shadow-blue-600/20 ring-2 ring-blue-500/30"
+                        ? "bg-emerald-600 text-white border-emerald-500/40 shadow-emerald-600/20 ring-1 ring-emerald-500/30"
+                        : "bg-blue-600 text-white border-blue-500/40 shadow-blue-600/20 ring-1 ring-blue-500/30"
                     : "bg-slate-950/40 border-slate-800/80 text-slate-400 hover:bg-slate-800 hover:text-white hover:border-slate-700"
                 )}
                 aria-label="Main Dashboard"
               >
-                <LayoutDashboard className="w-5 h-5" />
+                <LayoutDashboard className="w-4 h-4" />
               </Link>
               {/* Flyout Tooltip */}
-              <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-3 py-1.5 bg-slate-950/95 backdrop-blur-md text-white text-xs font-semibold rounded-lg border border-slate-800 shadow-xl whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 z-[70]">
+              <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2.5 px-2.5 py-1 bg-slate-950/95 backdrop-blur-md text-white text-xs font-semibold rounded-lg border border-slate-800 shadow-xl whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 z-[70]">
                 Main Dashboard
               </div>
             </div>
@@ -891,32 +892,32 @@ export default function Navbar() {
                       }
                     }}
                     className={cn(
-                      "w-11 h-11 rounded-xl flex items-center justify-center transition-all border shadow-sm group-hover:scale-105 relative",
+                      "w-8 h-8 rounded-lg flex items-center justify-center transition-all border shadow-sm group-hover:scale-105 relative",
                       hasActiveChild
                         ? isDirector
-                          ? "bg-corporate-primary text-white border-corporate-primary/40 shadow-corporate-primary/20 ring-2 ring-corporate-primary/30"
+                          ? "bg-corporate-primary text-white border-corporate-primary/40 shadow-corporate-primary/20 ring-1 ring-corporate-primary/30"
                           : isFinance
-                            ? "bg-emerald-600 text-white border-emerald-500/40 shadow-emerald-600/20 ring-2 ring-emerald-500/30"
-                            : "bg-blue-600 text-white border-blue-500/40 shadow-blue-600/20 ring-2 ring-blue-500/30"
+                            ? "bg-emerald-600 text-white border-emerald-500/40 shadow-emerald-600/20 ring-1 ring-emerald-500/30"
+                            : "bg-blue-600 text-white border-blue-500/40 shadow-blue-600/20 ring-1 ring-blue-500/30"
                         : "bg-slate-950/40 border-slate-800/80 text-slate-400 hover:bg-slate-800 hover:text-white hover:border-slate-700"
                     )}
                     aria-label={category.name}
                   >
-                    <CategoryIcon className="w-5 h-5" />
+                    <CategoryIcon className="w-4 h-4" />
                     {hasActiveChild && (
-                      <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-white animate-pulse" />
+                      <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
                     )}
                   </button>
 
                   {/* High-Performance Hover Flyout Menu */}
-                  <div className="absolute left-full top-0 ml-3 w-64 bg-slate-900/98 backdrop-blur-xl border border-slate-700/80 rounded-xl shadow-2xl p-2.5 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-150 z-[70]">
-                    <div className="flex items-center gap-2 px-2 py-1.5 border-b border-slate-800 mb-1.5">
-                      <CategoryIcon className="w-4 h-4 text-emerald-400" />
+                  <div className="absolute left-full top-0 ml-2.5 w-60 bg-slate-900/98 backdrop-blur-xl border border-slate-700/80 rounded-xl shadow-2xl p-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-150 z-[70]">
+                    <div className="flex items-center gap-2 px-2 py-1 border-b border-slate-800 mb-1">
+                      <CategoryIcon className="w-3.5 h-3.5 text-emerald-400" />
                       <span className="text-xs font-bold text-white tracking-tight">
                         {category.name}
                       </span>
                     </div>
-                    <div className="space-y-1">
+                    <div className="space-y-0.5">
                       {category.items.map((item) => {
                         const isActive = pathname === item.href;
                         const ItemIcon = item.icon;
@@ -925,17 +926,17 @@ export default function Navbar() {
                             key={item.href + item.name}
                             href={item.href}
                             className={cn(
-                              "flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all group/item",
+                              "flex items-center justify-between px-2 py-1 rounded-md text-xs font-medium transition-all group/item",
                               isActive
                                 ? "bg-emerald-600 text-white font-semibold shadow-sm"
                                 : "text-slate-300 hover:bg-slate-800 hover:text-white"
                             )}
                           >
                             <div className="flex items-center gap-2 min-w-0">
-                              <ItemIcon className="w-3.5 h-3.5 text-slate-400 group-hover/item:text-white shrink-0" />
+                              <ItemIcon className="w-3 h-3 text-slate-400 group-hover/item:text-white shrink-0" />
                               <span className="truncate">{item.name}</span>
                             </div>
-                            <ChevronRight className="w-3.5 h-3.5 opacity-60 group-hover/item:opacity-100 shrink-0" />
+                            <ChevronRight className="w-3 h-3 opacity-60 group-hover/item:opacity-100 shrink-0" />
                           </Link>
                         );
                       })}
@@ -947,15 +948,15 @@ export default function Navbar() {
           </div>
 
           {/* Bottom: Sign Out Icon Button */}
-          <div className="w-full flex flex-col items-center pt-3 border-t border-slate-800 relative group">
+          <div className="w-full flex flex-col items-center pt-2 border-t border-slate-800 relative group px-1">
             <button
               onClick={() => signOut({ callbackUrl: "/auth/login" })}
-              className="w-10 h-10 rounded-xl bg-red-600/10 hover:bg-red-600 text-red-400 hover:text-white flex items-center justify-center transition-all border border-red-500/20 shadow-sm group-hover:scale-105 active:scale-95"
+              className="w-8 h-8 rounded-lg bg-red-600/10 hover:bg-red-600 text-red-400 hover:text-white flex items-center justify-center transition-all border border-red-500/20 shadow-sm group-hover:scale-105 active:scale-95"
               title="Sign Out Securely"
             >
-              <LogOut className="w-4 h-4" />
+              <LogOut className="w-3.5 h-3.5" />
             </button>
-            <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-3 py-1.5 bg-red-950 text-red-200 text-xs font-semibold rounded-lg border border-red-800 shadow-xl whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 z-[70]">
+            <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2.5 px-2.5 py-1 bg-red-950 text-red-200 text-xs font-semibold rounded-lg border border-red-800 shadow-xl whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 z-[70]">
               Sign Out Securely
             </div>
           </div>
