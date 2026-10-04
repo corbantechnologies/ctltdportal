@@ -4,49 +4,22 @@ import { useFetchFinancialYear } from "@/hooks/financialyears/actions";
 import FiscalYearJournals from "@/components/financialyears/FiscalYearJournals";
 import FinancialMonthsList from "@/components/financialmonths/FinancialMonthsList";
 import LoadingSpinner from "@/components/portal/LoadingSpinner";
+import ReportsDashboard from "@/components/reports/ReportsDashboard";
+import SimpleTransactionsPage from "@/components/simpletransactions/SimpleTransactionsPage";
 import { useFiscalYear } from "@/contexts/FiscalYearContext";
-import { updateFinancialYear } from "@/services/financialyears";
 import { CalendarRange, Calendar, Activity, ChevronDown, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { useState } from "react";
-import { toast } from "react-hot-toast";
 
 export default function FiscalYearDetail() {
   const { reference } = useParams();
   const router = useRouter();
-  const { data: session } = useSession();
   const { isLoading, data: fiscalYear, refetch: refetchFiscalYear } = useFetchFinancialYear(
     reference as string,
   );
-  const { years, switchFiscalYear, refreshYears } = useFiscalYear();
-  const [activeTab, setActiveTab] = useState<'journals' | 'months'>('journals');
-  const [isPromoting, setIsPromoting] = useState(false);
-
-  const handlePromoteToCurrent = async () => {
-    if (!fiscalYear) return;
-    if (!session?.user || !(session.user as any)?.token) {
-      toast.error("Authentication required");
-      return;
-    }
-    try {
-      setIsPromoting(true);
-      await updateFinancialYear(
-        fiscalYear.reference,
-        { is_current: true },
-        { headers: { Authorization: `Token ${(session.user as any).token}` } }
-      );
-      toast.success(`FY ${fiscalYear.code} is now set as the primary operating year.`);
-      await refreshYears();
-      switchFiscalYear(fiscalYear.code);
-      refetchFiscalYear();
-    } catch (err: any) {
-      toast.error(err?.response?.data?.detail || "Failed to promote fiscal year.");
-    } finally {
-      setIsPromoting(false);
-    }
-  };
+  const { years, switchFiscalYear } = useFiscalYear();
+  const [activeTab, setActiveTab] = useState<'journals' | 'months' | 'reports' | 'transactions'>('journals');
 
   if (isLoading) return <LoadingSpinner />;
   if (!fiscalYear)
@@ -128,22 +101,11 @@ export default function FiscalYearDetail() {
                     </span>
                   </div>
                 ) : fiscalYear.is_active ? (
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1.5 text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
-                      <div className="w-1.5 h-1.5 rounded bg-blue-500 animate-pulse" />
-                      <span className="text-[9px] font-semibold uppercase tracking-wider">
-                        Open / Active
-                      </span>
-                    </div>
-                    <button
-                      onClick={handlePromoteToCurrent}
-                      disabled={isPromoting}
-                      className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-[#D0402B] hover:bg-black text-white transition-colors flex items-center gap-1 shadow-sm disabled:opacity-50 cursor-pointer"
-                      title="Promote this to be the primary current operating year for the whole company"
-                    >
-                      <Sparkles className="w-2.5 h-2.5" />
-                      {isPromoting ? "Promoting..." : "Set as Current Year"}
-                    </button>
+                  <div className="flex items-center gap-1.5 text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                    <div className="w-1.5 h-1.5 rounded bg-blue-500 animate-pulse" />
+                    <span className="text-[9px] font-semibold uppercase tracking-wider">
+                      Open / Active
+                    </span>
                   </div>
                 ) : (
                   <div className="flex items-center gap-1.5 text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
@@ -249,23 +211,35 @@ export default function FiscalYearDetail() {
       {/* Main Layout Grid */}
       <div className="space-y-4 pt-1">
         {/* Tab Switcher */}
-        <div className="flex border-b border-gray-100">
+        <div className="flex border-b border-gray-100 overflow-x-auto scrollbar-none">
            <button
              onClick={() => setActiveTab('journals')}
-             className={`px-6 py-2.5 text-[10px] uppercase font-bold tracking-widest transition-all border-b-2 cursor-pointer ${activeTab === 'journals' ? 'border-[#D0402B] text-[#D0402B]' : 'border-transparent text-black/30 hover:text-black'}`}
+             className={`px-6 py-2.5 text-[10px] uppercase font-bold tracking-widest transition-all border-b-2 whitespace-nowrap cursor-pointer ${activeTab === 'journals' ? 'border-[#D0402B] text-[#D0402B]' : 'border-transparent text-black/30 hover:text-black'}`}
            >
              Journals
            </button>
            <button
              onClick={() => setActiveTab('months')}
-             className={`px-6 py-2.5 text-[10px] uppercase font-bold tracking-widest transition-all border-b-2 cursor-pointer ${activeTab === 'months' ? 'border-[#D0402B] text-[#D0402B]' : 'border-transparent text-black/30 hover:text-black'}`}
+             className={`px-6 py-2.5 text-[10px] uppercase font-bold tracking-widest transition-all border-b-2 whitespace-nowrap cursor-pointer ${activeTab === 'months' ? 'border-[#D0402B] text-[#D0402B]' : 'border-transparent text-black/30 hover:text-black'}`}
            >
-             Financial Periods &amp; Months
+             Months
+           </button>
+           <button
+             onClick={() => setActiveTab('reports')}
+             className={`px-6 py-2.5 text-[10px] uppercase font-bold tracking-widest transition-all border-b-2 whitespace-nowrap cursor-pointer ${activeTab === 'reports' ? 'border-[#D0402B] text-[#D0402B]' : 'border-transparent text-black/30 hover:text-black'}`}
+           >
+             Reports
+           </button>
+           <button
+             onClick={() => setActiveTab('transactions')}
+             className={`px-6 py-2.5 text-[10px] uppercase font-bold tracking-widest transition-all border-b-2 whitespace-nowrap cursor-pointer ${activeTab === 'transactions' ? 'border-[#D0402B] text-[#D0402B]' : 'border-transparent text-black/30 hover:text-black'}`}
+           >
+             Transactions
            </button>
         </div>
 
         {activeTab === 'journals' ? (
-          <div className="space-y-4">
+          <div className="space-y-4 animate-in fade-in duration-200">
             <div className="flex items-center gap-4">
               <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-black">
                 Period Journal Entries
@@ -279,8 +253,8 @@ export default function FiscalYearDetail() {
               fiscalYearReference={reference as string}
             />
           </div>
-        ) : (
-          <div className="space-y-4 animate-in fade-in duration-300">
+        ) : activeTab === 'months' ? (
+          <div className="space-y-4 animate-in fade-in duration-200">
             <div className="flex items-center gap-4">
               <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-black">
                 Financial Periods
@@ -293,6 +267,14 @@ export default function FiscalYearDetail() {
               rolePrefix="director"
               fiscalYearReference={reference as string}
             />
+          </div>
+        ) : activeTab === 'reports' ? (
+          <div className="space-y-4 animate-in fade-in duration-200">
+            <ReportsDashboard rolePrefix="director" fixedYearCode={fiscalYear.code} />
+          </div>
+        ) : (
+          <div className="space-y-4 animate-in fade-in duration-200">
+            <SimpleTransactionsPage hideHeader />
           </div>
         )}
       </div>

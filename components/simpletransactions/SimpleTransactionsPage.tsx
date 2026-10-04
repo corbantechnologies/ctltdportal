@@ -49,7 +49,7 @@ function useDebounce<T>(value: T, delay: number): T {
   return debouncedValue;
 }
 
-export default function SimpleTransactionsPage() {
+export default function SimpleTransactionsPage({ hideHeader = false }: { hideHeader?: boolean }) {
   const [showSingleForm, setShowSingleForm] = useState(false);
   const [isSingleFormFullscreen, setIsSingleFormFullscreen] = useState(false);
   const [showBulkModal, setShowBulkModal] = useState(false);
@@ -209,48 +209,93 @@ export default function SimpleTransactionsPage() {
   return (
     <div className="space-y-5 pb-32">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-3">
-        <div>
-          <h1 className="text-base sm:text-lg text-slate-900 tracking-tight font-bold">
-            Quick <span className="text-slate-600 font-normal">Transactions</span>
-          </h1>
-          <p className="text-slate-400 mt-0.5 text-xs max-w-lg">
-            Log single or bulk transactions. A double-entry Journal is auto-generated for each record.
-          </p>
+      {!hideHeader ? (
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-3">
+          <div>
+            <h1 className="text-base sm:text-lg text-slate-900 tracking-tight font-bold">
+              Quick <span className="text-slate-600 font-normal">Transactions</span>
+            </h1>
+            <p className="text-slate-400 mt-0.5 text-xs max-w-lg">
+              Log single or bulk transactions. A double-entry Journal is auto-generated for each record.
+            </p>
+          </div>
+
+          {/* Header Action Buttons */}
+          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+            <button
+              onClick={handleExportAll}
+              disabled={transactions.length === 0}
+              className="flex items-center gap-1.5 bg-white border border-slate-200 text-slate-700 px-3 h-9 rounded-lg font-semibold text-xs hover:bg-slate-50 transition-all shadow-sm active:scale-95 disabled:opacity-50 cursor-pointer"
+              title="Export current page to CSV"
+            >
+              <Download className="w-3.5 h-3.5 text-slate-500" />
+              <span className="hidden sm:inline">Export CSV</span>
+            </button>
+
+            <button
+              onClick={() => {
+                setBulkInitialTab("grid");
+                setShowBulkModal(true);
+              }}
+              className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 px-3.5 h-9 rounded-lg font-semibold text-xs transition-all shadow-sm active:scale-95 cursor-pointer"
+            >
+              <Layers className="w-3.5 h-3.5 text-slate-600" />
+              <span>Bulk / Import</span>
+            </button>
+
+            <button
+              onClick={() => setShowSingleForm(true)}
+              className="flex items-center gap-1.5 bg-slate-900 text-white px-3.5 h-9 rounded-lg font-semibold text-xs hover:bg-slate-800 transition-all shadow-sm active:scale-95 flex-1 sm:flex-initial justify-center cursor-pointer"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>Log Transaction</span>
+            </button>
+          </div>
         </div>
+      ) : (
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <div className="flex items-center gap-2">
+            <h2 className="text-base font-semibold text-black tracking-tight">
+              Period Transactions
+            </h2>
+            <div className="hidden sm:block h-3.5 w-px bg-slate-200" />
+            <p className="text-xs text-slate-500 hidden sm:block">
+              Single &amp; batch ledger entries with auto-generated double-entry journals
+            </p>
+          </div>
 
-        {/* Header Action Buttons */}
-        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-          <button
-            onClick={handleExportAll}
-            disabled={transactions.length === 0}
-            className="flex items-center gap-1.5 bg-white border border-slate-200 text-slate-700 px-3 h-9 rounded-lg font-semibold text-xs hover:bg-slate-50 transition-all shadow-sm active:scale-95 disabled:opacity-50"
-            title="Export current page to CSV"
-          >
-            <Download className="w-3.5 h-3.5 text-slate-500" />
-            <span className="hidden sm:inline">Export CSV</span>
-          </button>
+          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+            <button
+              onClick={handleExportAll}
+              disabled={transactions.length === 0}
+              className="flex items-center gap-1.5 bg-white border border-slate-200 text-slate-700 px-3 h-9 rounded-lg font-semibold text-xs hover:bg-slate-50 transition-all shadow-sm active:scale-95 disabled:opacity-50 cursor-pointer"
+              title="Export current page to CSV"
+            >
+              <Download className="w-3.5 h-3.5 text-slate-500" />
+              <span className="hidden sm:inline">Export CSV</span>
+            </button>
 
-          <button
-            onClick={() => {
-              setBulkInitialTab("grid");
-              setShowBulkModal(true);
-            }}
-            className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 px-3.5 h-9 rounded-lg font-semibold text-xs transition-all shadow-sm active:scale-95"
-          >
-            <Layers className="w-3.5 h-3.5 text-slate-600" />
-            <span>Bulk / Import</span>
-          </button>
+            <button
+              onClick={() => {
+                setBulkInitialTab("grid");
+                setShowBulkModal(true);
+              }}
+              className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 px-3.5 h-9 rounded-lg font-semibold text-xs transition-all shadow-sm active:scale-95 cursor-pointer"
+            >
+              <Layers className="w-3.5 h-3.5 text-slate-600" />
+              <span>Bulk / Import</span>
+            </button>
 
-          <button
-            onClick={() => setShowSingleForm(true)}
-            className="flex items-center gap-1.5 bg-slate-900 text-white px-3.5 h-9 rounded-lg font-semibold text-xs hover:bg-slate-800 transition-all shadow-sm active:scale-95 flex-1 sm:flex-initial justify-center"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            <span>Log Transaction</span>
-          </button>
+            <button
+              onClick={() => setShowSingleForm(true)}
+              className="flex items-center gap-1.5 bg-slate-900 text-white px-3.5 h-9 rounded-lg font-semibold text-xs hover:bg-slate-800 transition-all shadow-sm active:scale-95 flex-1 sm:flex-initial justify-center cursor-pointer"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>Log Transaction</span>
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Summary Cards */}
       <div className="grid grid-cols-3 gap-2 sm:gap-3">

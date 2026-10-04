@@ -80,8 +80,13 @@ function appendParams(base: string, params: Record<string, string>) {
     return q ? `${base}?${q}` : base;
 }
 
-// ---------- Main dashboard ----------
-export default function ReportsDashboard({ rolePrefix = "director" }: { rolePrefix?: string }) {
+export default function ReportsDashboard({
+    rolePrefix = "director",
+    fixedYearCode,
+}: {
+    rolePrefix?: string;
+    fixedYearCode?: string;
+}) {
     const header = useAxiosAuth();
     const { selectedYearCode, years, switchFiscalYear } = useFiscalYear();
 
@@ -89,7 +94,8 @@ export default function ReportsDashboard({ rolePrefix = "director" }: { rolePref
     const [filtersOpen, setFiltersOpen] = useState(false);
     const [draftFilters, setDraftFilters] = useState<Filters>({});
 
-    const params = useMemo(() => buildParams(filters, selectedYearCode), [filters, selectedYearCode]);
+    const activeYearCode = fixedYearCode || selectedYearCode;
+    const params = useMemo(() => buildParams(filters, activeYearCode), [filters, activeYearCode]);
 
     // Divisions for filter dropdown
     const { data: divisions } = useQuery({
@@ -149,16 +155,16 @@ export default function ReportsDashboard({ rolePrefix = "director" }: { rolePref
                     <div>
                         <div className="flex items-center gap-2">
                             <h3 className="font-bold text-slate-900 tracking-tight">Audit &amp; Period Reports</h3>
-                            {selectedYearCode && (
+                            {activeYearCode && (
                                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                                    FY {selectedYearCode}
+                                    FY {activeYearCode}
                                 </span>
                             )}
                         </div>
                         <p className="text-slate-400 text-[11px] font-medium uppercase tracking-widest mt-0.5">
                             {hasFilters
                                 ? `Filtered: ${filters.start_date || "—"} → ${filters.end_date || "—"}${filters.division && filters.division !== "ALL" ? ` · ${filters.division}` : ""}`
-                                : `Operating Cycle: FY ${selectedYearCode || "Active"} — All Divisions`}
+                                : `Operating Cycle: FY ${activeYearCode || "Active"} — All Divisions`}
                         </p>
                     </div>
                 </div>
