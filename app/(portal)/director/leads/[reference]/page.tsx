@@ -47,7 +47,7 @@ export default function DirectorLeadDetailPage() {
   };
 
   return (
-    <div className="space-y-10 pb-20 max-w-7xl mx-auto animate-in fade-in duration-700">
+    <div className="space-y-10 pb-20 w-full animate-in fade-in duration-700">
       {/* Breadcrumbs */}
       <nav>
         <ol className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-black/40">

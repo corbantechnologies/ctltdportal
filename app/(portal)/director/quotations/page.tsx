@@ -6,7 +6,7 @@ import CreateQuotationModal from "@/forms/quotations/CreateQuotationModal";
 
 export default function DirectorQuotationsPage() {
   return (
-    <div className="space-y-12 pb-24 max-w-7xl mx-auto animate-in fade-in duration-1000">
+    <div className="space-y-12 pb-24 w-full animate-in fade-in duration-1000">
       {/* Executive Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
         <div className="flex items-center gap-6">
