@@ -125,11 +125,11 @@ export default function Navbar() {
           description: "P&L, Balance Sheet & Trial Balance",
         },
         {
-          name: "All Fiscal Years",
+          name: "Fiscal Periods & Closing",
           href: `/${rolePrefix}/fiscal-years`,
           icon: Calendar,
           show: Boolean(isDirector || isFinance || isOperations),
-          description: "Fiscal periods and period closing",
+          description: "Period closing, calendar months & year management",
         },
       ],
     },
@@ -412,12 +412,16 @@ export default function Navbar() {
                   <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
                     Fiscal Year
                   </span>
-                  {isCurrentOperatingYear ? (
-                    <span className="px-1 py-0.2 rounded text-[8px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                  {selectedYear?.is_current ? (
+                    <span className="px-1.5 py-0.2 rounded text-[8px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                       Current
                     </span>
+                  ) : selectedYear?.is_active ? (
+                    <span className="px-1.5 py-0.2 rounded text-[8px] font-bold uppercase tracking-wider bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                      Active
+                    </span>
                   ) : (
-                    <span className="px-1 py-0.2 rounded text-[8px] font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                    <span className="px-1.5 py-0.2 rounded text-[8px] font-bold uppercase tracking-wider bg-slate-700/80 text-slate-300 border border-slate-600">
                       Archived
                     </span>
                   )}

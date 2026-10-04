@@ -32,6 +32,7 @@ interface FiscalYearContextType {
   isCurrentOperatingYear: boolean;
   isLoading: boolean;
   switchFiscalYear: (yearCodeOrRef: string) => void;
+  refreshYears: () => Promise<void>;
   openYearSelectorModal: () => void;
   closeYearSelectorModal: () => void;
   isYearSelectorModalOpen: boolean;
@@ -51,9 +52,16 @@ export function FiscalYearProvider({ children }: { children: React.ReactNode }) 
 
   const years: FinancialYear[] = useMemo(() => {
     if (!rawYears || !Array.isArray(rawYears)) return [];
-    return [...rawYears].sort((a, b) =>
-      a.start_date.localeCompare(b.start_date)
-    );
+    return [...rawYears].sort((a, b) => {
+      // 1. Current operating year always first
+      if (a.is_current && !b.is_current) return -1;
+      if (!a.is_current && b.is_current) return 1;
+      // 2. Active open years before closed years
+      if (a.is_active && !b.is_active) return -1;
+      if (!a.is_active && b.is_active) return 1;
+      // 3. Most recent start_date first
+      return b.start_date.localeCompare(a.start_date);
+    });
   }, [rawYears]);
 
   const [selectedYearCode, setSelectedYearCode] = useState<string>("");
@@ -142,6 +150,10 @@ export function FiscalYearProvider({ children }: { children: React.ReactNode }) 
     [years, queryClient]
   );
 
+  const refreshYears = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey: ["financial-years"] });
+  }, [queryClient]);
+
   const openYearSelectorModal = () => setIsModalOpen(true);
   const closeYearSelectorModal = () => {
     if (typeof window !== "undefined") {
@@ -159,6 +171,7 @@ export function FiscalYearProvider({ children }: { children: React.ReactNode }) 
         isCurrentOperatingYear,
         isLoading,
         switchFiscalYear,
+        refreshYears,
         openYearSelectorModal,
         closeYearSelectorModal,
         isYearSelectorModalOpen: isModalOpen,
@@ -257,15 +270,19 @@ function FiscalYearModal({
                         <span className="font-bold text-slate-900 text-sm">
                           FY {y.code}
                         </span>
-                        {isCurrent && (
+                        {isCurrent ? (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-300">
                             <Sparkles className="w-2.5 h-2.5" />
                             Current Year
                           </span>
-                        )}
-                        {!y.is_active && (
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-500">
-                            Archived
+                        ) : y.is_active ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-100 text-blue-800 border border-blue-200">
+                            <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />
+                            Open / Active
+                          </span>
+                        ) : (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-500 border border-slate-200">
+                            Archived / Closed
                           </span>
                         )}
                       </div>

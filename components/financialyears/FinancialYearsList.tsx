@@ -146,8 +146,12 @@ export default function FinancialYearsList({
                     >
                       <CalendarRange className="w-5 h-5" />
                     </div>
-                    {year.is_active ? (
-                      <span className="bg-green-500/10 text-green-600 border-none font-semibold text-[9px] uppercase tracking-wider px-2 py-0.5 rounded inline-block">
+                    {year.is_current ? (
+                      <span className="bg-emerald-500/10 text-emerald-700 border border-emerald-500/30 font-semibold text-[9px] uppercase tracking-wider px-2 py-0.5 rounded inline-flex items-center gap-1">
+                        ★ Current
+                      </span>
+                    ) : year.is_active ? (
+                      <span className="bg-blue-500/10 text-blue-600 border border-blue-500/20 font-semibold text-[9px] uppercase tracking-wider px-2 py-0.5 rounded inline-block">
                         Active
                       </span>
                     ) : (
@@ -242,9 +246,16 @@ export default function FinancialYearsList({
                     </td>
                     <td className="py-2.5 px-4 border-b border-black/5 text-sm font-medium">{year.estimated_profit}</td>
                     <td className="py-2.5 px-4 border-b border-black/5">
-                      {year.is_active ? (
-                        <div className="flex items-center gap-1.5 text-green-600">
-                          <div className="w-1.5 h-1.5 rounded bg-green-500 animate-pulse" />
+                      {year.is_current ? (
+                        <div className="flex items-center gap-1.5 text-emerald-700">
+                          <div className="w-1.5 h-1.5 rounded bg-emerald-500 animate-pulse" />
+                          <span className="text-[10px] font-bold uppercase tracking-wider">
+                            ★ Current
+                          </span>
+                        </div>
+                      ) : year.is_active ? (
+                        <div className="flex items-center gap-1.5 text-blue-600">
+                          <div className="w-1.5 h-1.5 rounded bg-blue-500 animate-pulse" />
                           <span className="text-[10px] font-semibold uppercase tracking-wider">
                             Active
                           </span>

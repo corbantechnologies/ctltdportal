@@ -51,3 +51,16 @@ export const createFinancialYear = async (
   );
   return response.data;
 };
+
+export const updateFinancialYear = async (
+  reference: string,
+  values: any,
+  headers?: any
+): Promise<FinancialYear> => {
+  const response: AxiosResponse<FinancialYear> = await apiActions.patch(
+    `/api/v1/financialyears/${reference}/`,
+    values,
+    headers
+  );
+  return response.data;
+};

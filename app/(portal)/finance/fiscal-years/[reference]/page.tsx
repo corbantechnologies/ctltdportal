@@ -28,10 +28,18 @@ import CreatePartnerType from "@/forms/partnertypes/CreatePartnerType";
 import CreateJournalType from "@/forms/journaltypes/CreateJournalType";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useFiscalYear } from "@/contexts/FiscalYearContext";
+import { useSession } from "next-auth/react";
+import { updateFinancialYear } from "@/services/financialyears";
+import { toast } from "react-hot-toast";
+import Link from "next/link";
 
 export default function FiscalYearDetail() {
   const { reference } = useParams();
   const router = useRouter();
+  const { data: session } = useSession();
+  const { years, switchFiscalYear } = useFiscalYear();
+  const [isPromoting, setIsPromoting] = useState(false);
   const {
     isLoading,
     data: fiscalYear,
@@ -51,6 +59,32 @@ export default function FiscalYearDetail() {
   >();
   const [activeTab, setActiveTab] = useState<'journals' | 'months'>('journals');
   const queryClient = useQueryClient();
+
+  const handlePromoteToCurrent = async () => {
+    if (!fiscalYear) return;
+    if (!session?.user || !(session.user as any)?.token) {
+      toast.error("Authentication required");
+      return;
+    }
+    setIsPromoting(true);
+    try {
+      await updateFinancialYear(
+        fiscalYear.reference,
+        { is_current: true },
+        { headers: { Authorization: `Token ${(session.user as any).token}` } }
+      );
+      toast.success(`FY ${fiscalYear.code} is now the Primary Current Year!`);
+      queryClient.invalidateQueries({ queryKey: ["financial-years"] });
+      queryClient.invalidateQueries({ queryKey: ["financial-year", reference] });
+      switchFiscalYear(fiscalYear.code);
+      refetchFiscalYear();
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to set operating year");
+    } finally {
+      setIsPromoting(false);
+    }
+  };
 
   if (isLoading || isLoadingTypes) return <LoadingSpinner />;
   if (!fiscalYear)
@@ -73,11 +107,11 @@ export default function FiscalYearDetail() {
           <nav>
             <ol className="flex items-center gap-2 text-sm text-black/60">
               <li>
-                <a href="/finance/dashboard" className="hover:text-black hover:underline">Dashboard</a>
+                <Link href="/finance/dashboard" className="hover:text-black hover:underline">Dashboard</Link>
               </li>
               <li><span className="text-black/30">/</span></li>
               <li>
-                <a href="/finance/fiscal-years" className="hover:text-black hover:underline">Years</a>
+                <Link href="/finance/fiscal-years" className="hover:text-black hover:underline">Fiscal Periods &amp; Closing</Link>
               </li>
               <li><span className="text-black/30">/</span></li>
               <li>
@@ -91,25 +125,72 @@ export default function FiscalYearDetail() {
               <CalendarRange className="w-4 h-4" />
             </div>
             <div>
-              <h1 className="text-lg font-semibold text-black tracking-tight leading-none">
-                {fiscalYear.code}
-              </h1>
-              <div className="flex items-center gap-2 mt-1">
+              <div className="flex items-center gap-2">
+                <h1 className="text-lg font-semibold text-black tracking-tight leading-none">
+                  {fiscalYear.code}
+                </h1>
+                {/* Inline Fast Year Switcher */}
+                {years && years.length > 0 && (
+                  <div className="relative inline-flex items-center">
+                    <select
+                      value={fiscalYear.code}
+                      onChange={(e) => {
+                        const target = years.find((y) => y.code === e.target.value);
+                        if (target) {
+                          switchFiscalYear(target.code);
+                          router.push(`/finance/fiscal-years/${target.reference}`);
+                        }
+                      }}
+                      className="bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 rounded px-2 py-0.5 text-xs font-semibold outline-none cursor-pointer transition-colors pr-6 appearance-none"
+                      title="Switch to another fiscal year"
+                    >
+                      {years.map((y) => (
+                        <option key={y.reference} value={y.code}>
+                          FY {y.code} {y.is_current ? "★ Current" : y.is_active ? "● Open" : "○ Closed"}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="w-3 h-3 text-slate-500 absolute right-1.5 pointer-events-none" />
+                  </div>
+                )}
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2 mt-1.5">
                 <span className="text-[10px] font-semibold uppercase tracking-widest text-black/40">
-                  {fiscalYear.estimated_profit}
+                  Target Profit: {fiscalYear.estimated_profit}
                 </span>
-                {fiscalYear.is_active ? (
-                  <div className="flex items-center gap-1.5 text-green-600 bg-green-50 px-2 py-0.5 rounded border border-green-100">
-                    <div className="w-1.5 h-1.5 rounded bg-green-500 animate-pulse" />
-                    <span className="text-[9px] font-semibold uppercase tracking-widest">
-                      Active
+
+                {/* 3-Tier Status Indicator */}
+                {fiscalYear.is_current ? (
+                  <div className="flex items-center gap-1.5 text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                    <Sparkles className="w-2.5 h-2.5 text-emerald-600" />
+                    <span className="text-[9px] font-bold uppercase tracking-wider">
+                      Current Operating Year
                     </span>
                   </div>
+                ) : fiscalYear.is_active ? (
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5 text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                      <div className="w-1.5 h-1.5 rounded bg-blue-500 animate-pulse" />
+                      <span className="text-[9px] font-semibold uppercase tracking-wider">
+                        Open / Active
+                      </span>
+                    </div>
+                    <button
+                      onClick={handlePromoteToCurrent}
+                      disabled={isPromoting}
+                      className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-600 hover:bg-emerald-700 text-white transition-colors flex items-center gap-1 shadow-sm disabled:opacity-50"
+                      title="Promote this to be the primary current operating year for the whole company"
+                    >
+                      <Sparkles className="w-2.5 h-2.5" />
+                      {isPromoting ? "Promoting..." : "Set as Current Year"}
+                    </button>
+                  </div>
                 ) : (
-                  <div className="flex items-center gap-1.5 text-gray-400 bg-gray-50 px-2 py-0.5 rounded border border-gray-100">
-                    <div className="w-1.5 h-1.5 rounded bg-gray-300" />
-                    <span className="text-[9px] font-semibold uppercase tracking-widest">
-                      Closed
+                  <div className="flex items-center gap-1.5 text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                    <div className="w-1.5 h-1.5 rounded bg-slate-400" />
+                    <span className="text-[9px] font-semibold uppercase tracking-wider">
+                      Closed / Archived
                     </span>
                   </div>
                 )}
@@ -118,7 +199,16 @@ export default function FiscalYearDetail() {
           </div>
         </div>
 
-        {/* Quick Actions Dropdown */}
+        {/* Right side controls: All Years Directory + Add New */}
+        <div className="flex items-center gap-2">
+          <Link
+            href="/finance/fiscal-years"
+            className="flex items-center justify-center h-9 px-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-[10px] uppercase font-bold tracking-wider transition-all border border-slate-200 gap-1.5"
+            title="Browse all historical and configured fiscal years"
+          >
+            <CalendarRange className="w-3.5 h-3.5 text-slate-500" />
+            <span>All Years Directory</span>
+          </Link>
         {fiscalYear.is_active && (
           <div className="flex items-center gap-2">
             <DropdownMenu.Root onOpenChange={(open) => { if (!open) setTimeout(() => setMenuView('main'), 200); }}>
@@ -323,6 +413,7 @@ export default function FiscalYearDetail() {
           </div>
         )}
       </div>
+    </div>
 
       {/* Compact Stats Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
