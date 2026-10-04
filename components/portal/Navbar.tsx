@@ -909,8 +909,9 @@ export default function Navbar() {
                     )}
                   </button>
 
-                  {/* High-Performance Hover Flyout Menu */}
-                  <div className="absolute left-full top-0 ml-2.5 w-60 bg-slate-900/98 backdrop-blur-xl border border-slate-700/80 rounded-xl shadow-2xl p-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-150 z-[70]">
+                  {/* High-Performance Hover Flyout Menu with Seamless Hover Bridge */}
+                  <div className="absolute left-full -top-1.5 pl-2.5 w-64 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto before:absolute before:-left-3 before:top-0 before:bottom-0 before:w-4 before:content-[''] transition-opacity duration-150 z-[70]">
+                    <div className="bg-slate-900/98 backdrop-blur-xl border border-slate-700/80 rounded-xl shadow-2xl p-2">
                     <div className="flex items-center gap-2 px-2 py-1 border-b border-slate-800 mb-1">
                       <CategoryIcon className="w-3.5 h-3.5 text-emerald-400" />
                       <span className="text-xs font-bold text-white tracking-tight">
@@ -943,6 +944,7 @@ export default function Navbar() {
                     </div>
                   </div>
                 </div>
+              </div>
               );
             })}
           </div>
