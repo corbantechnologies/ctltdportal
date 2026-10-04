@@ -1,6 +1,6 @@
 "use client";
 
-import { apiActions } from "@/tools/axios";
+import { apiActions, apiMultipartActions } from "@/tools/axios";
 import { AxiosResponse } from "axios";
 import { PaginatedResponse } from "./general";
 
@@ -71,12 +71,33 @@ export interface BulkJournalRetryResponse {
 
 export const createSimpleTransaction = async (
   data: CreateSimpleTransaction | FormData,
-  headers: { headers: { Authorization: string } }
+  headers: { headers: { Authorization: string; [key: string]: any } }
 ): Promise<SimpleTransaction> => {
+  const isFormData = typeof FormData !== "undefined" && data instanceof FormData;
+  const authHeader = headers?.headers?.Authorization || "";
+
+  if (isFormData) {
+    const response: AxiosResponse<SimpleTransaction> = await apiMultipartActions.post(
+      `/api/v1/simpletransactions/`,
+      data,
+      {
+        headers: {
+          Authorization: authHeader,
+        },
+      }
+    );
+    return response.data;
+  }
+
   const response: AxiosResponse<SimpleTransaction> = await apiActions.post(
     `/api/v1/simpletransactions/`,
     data,
-    headers
+    {
+      headers: {
+        Authorization: authHeader,
+        "Content-Type": "application/json",
+      },
+    }
   );
   return response.data;
 };
@@ -86,21 +107,31 @@ export const bulkCreateSimpleTransactions = async (
   headers: { headers: { Authorization: string; [key: string]: any } }
 ): Promise<BulkCreateResponse> => {
   const isFormData = typeof FormData !== "undefined" && items instanceof FormData;
-  const config = isFormData
-    ? {
+  const authHeader = headers?.headers?.Authorization || "";
+
+  if (isFormData) {
+    const response: AxiosResponse<BulkCreateResponse> = await apiMultipartActions.post(
+      `/api/v1/simpletransactions/bulk/`,
+      items,
+      {
         headers: {
-          ...headers.headers,
-          "Content-Type": "multipart/form-data",
+          Authorization: authHeader,
         },
       }
-    : headers;
+    );
+    return response.data;
+  }
 
-  const payload = isFormData ? items : { transactions: items };
-
+  const payload = { transactions: items };
   const response: AxiosResponse<BulkCreateResponse> = await apiActions.post(
     `/api/v1/simpletransactions/bulk/`,
     payload,
-    config
+    {
+      headers: {
+        Authorization: authHeader,
+        "Content-Type": "application/json",
+      },
+    }
   );
   return response.data;
 };
