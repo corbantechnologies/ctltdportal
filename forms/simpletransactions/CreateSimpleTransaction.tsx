@@ -16,7 +16,7 @@ import SearchableSelect from "@/components/portal/SearchableSelect";
 import QuickAddPartnerModal from "@/components/partners/QuickAddPartnerModal";
 import { useFetchPaymentMethods } from "@/hooks/paymentmethods/actions";
 import { useFetchPartners } from "@/hooks/partners/actions";
-import { apiActions } from "@/tools/axios";
+import { apiActions, apiMultipartActions } from "@/tools/axios";
 import { UserPlus } from "lucide-react";
 
 interface CreateSimpleTransactionProps {
@@ -74,10 +74,9 @@ export default function CreateSimpleTransaction({
         if (values.document_number) formData.append("document_number", values.document_number);
         if (values.document_file) formData.append("document_file", values.document_file);
 
-        await apiActions.post(`/api/v1/simpletransactions/`, formData, {
+        await apiMultipartActions.post(`/api/v1/simpletransactions/`, formData, {
           headers: {
             Authorization: header.headers.Authorization,
-            "Content-Type": "multipart/form-data",
           },
         });
 

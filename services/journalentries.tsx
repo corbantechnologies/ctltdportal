@@ -1,6 +1,6 @@
 "use client";
 
-import { apiActions } from "@/tools/axios";
+import { apiActions, apiMultipartActions } from "@/tools/axios";
 import { AxiosResponse } from "axios";
 import { PaginatedResponse } from "./general";
 
@@ -55,7 +55,9 @@ export const createJournalEntry = async (
   payload: createJournalEntry | FormData | createJournalEntry[],
   headers: { headers: { Authorization: string } }
 ): Promise<JournalEntry | JournalEntry[]> => {
-  const response: AxiosResponse<JournalEntry | JournalEntry[]> = await apiActions.post(
+  const isFormData = typeof FormData !== "undefined" && payload instanceof FormData;
+  const client = isFormData ? apiMultipartActions : apiActions;
+  const response: AxiosResponse<JournalEntry | JournalEntry[]> = await client.post(
     `/api/v1/journalentries/`,
     payload,
     headers

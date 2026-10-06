@@ -22,7 +22,6 @@ function useAxiosAuth() {
         tokens && tokens !== "undefined" && tokens.trim() !== ""
           ? "Token " + tokens.trim()
           : "",
-      "Content-Type": "multipart/form-data",
     },
   };
 
