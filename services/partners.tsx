@@ -14,6 +14,21 @@ export interface PartnerType {
   reference: string;
 }
 
+export interface PartnerTransaction {
+  reference: string;
+  code: string;
+  name: string;
+  transaction_type: "MONEY_IN" | "MONEY_OUT";
+  amount: string;
+  date: string;
+  ledger_book: string | null;
+  payment_method: string | null;
+  journal_code: string | null;
+  journal_reference: string | null;
+  financial_year_reference: string | null;
+  is_reversed: boolean;
+}
+
 export interface Partner {
   code: string;
   name: string;
@@ -30,6 +45,7 @@ export interface Partner {
   partner_type: string;
   division: string;
   journal_entries: JournalEntry[];
+  simple_transactions?: PartnerTransaction[];
   quotations: Quotation[];
 }
 

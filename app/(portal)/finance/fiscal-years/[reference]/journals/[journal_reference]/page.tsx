@@ -4,6 +4,7 @@
 import { useFetchJournal } from "@/hooks/journals/actions";
 import { postJournal, reverseJournal } from "@/services/journals";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { useState, useEffect } from "react";
 import SingleJournalEntry from "@/forms/journalentries/SingleJournalEntry";
 import UpdateJournal from "@/forms/journals/UpdateJournal";
@@ -407,7 +408,21 @@ export default function JournalsDetailPage() {
                       <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">{entry.code}</div>
                     </td>
                     <td className="py-4 px-6">
-                      <div className="text-sm font-bold text-slate-800">{entry.partner || "—"}</div>
+                      {entry.partner ? (
+                        <Link
+                          href={
+                            entry.partner_reference
+                              ? `/finance/partners/${entry.partner_reference}`
+                              : `/finance/partners`
+                          }
+                          onClick={(e) => e.stopPropagation()}
+                          className="text-sm font-bold text-blue-600 hover:text-blue-800 hover:underline"
+                        >
+                          {entry.partner}
+                        </Link>
+                      ) : (
+                        <span className="text-sm font-semibold text-slate-400">—</span>
+                      )}
                       <div className="text-xs font-semibold text-slate-400 mt-0.5">{entry.division}</div>
                     </td>
                     <td className="py-4 px-6 text-right font-mono text-sm font-bold text-emerald-600">

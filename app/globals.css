@@ -29,6 +29,50 @@
     --color-border: #E5E5E5;
 
     --font-sans: "Google Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+    /* ---------------------------------------------------------------
+       Modern accounting design system
+       Hard limits applied platform-wide through the theme tokens:
+         - text never larger than text-lg
+         - font weight never heavier than semibold (600)
+         - corners never rounder than `rounded` (0.25rem)
+         - soft, low-contrast shadows
+       --------------------------------------------------------------- */
+    --text-xl: 1.125rem;
+    --text-xl--line-height: 1.5rem;
+    --text-2xl: 1.125rem;
+    --text-2xl--line-height: 1.5rem;
+    --text-3xl: 1.125rem;
+    --text-3xl--line-height: 1.5rem;
+    --text-4xl: 1.125rem;
+    --text-4xl--line-height: 1.5rem;
+    --text-5xl: 1.125rem;
+    --text-5xl--line-height: 1.5rem;
+    --text-6xl: 1.125rem;
+    --text-6xl--line-height: 1.5rem;
+    --text-7xl: 1.125rem;
+    --text-7xl--line-height: 1.5rem;
+    --text-8xl: 1.125rem;
+    --text-8xl--line-height: 1.5rem;
+    --text-9xl: 1.125rem;
+    --text-9xl--line-height: 1.5rem;
+
+    --font-weight-bold: 600;
+    --font-weight-extrabold: 600;
+    --font-weight-black: 600;
+
+    --radius-sm: 0.25rem;
+    --radius-md: 0.25rem;
+    --radius-lg: 0.25rem;
+    --radius-xl: 0.25rem;
+    --radius-2xl: 0.25rem;
+    --radius-3xl: 0.25rem;
+    --radius-4xl: 0.25rem;
+
+    --shadow-md: 0 1px 3px 0 rgb(15 23 42 / 0.06);
+    --shadow-lg: 0 2px 6px -1px rgb(15 23 42 / 0.06);
+    --shadow-xl: 0 4px 10px -2px rgb(15 23 42 / 0.07);
+    --shadow-2xl: 0 6px 14px -3px rgb(15 23 42 / 0.08);
 }
 
 :root {
@@ -82,3 +126,161 @@
     background-color: theme('colors.corporate-primary');
     color: #fff;
 }
+
+/* =====================================================================
+   Reusable accounting UI primitives (compact by default)
+   ===================================================================== */
+@layer components {
+    .ui-card {
+        @apply bg-white border border-slate-200 rounded;
+    }
+
+    .ui-card-header {
+        @apply flex flex-wrap items-center justify-between gap-2 px-3 py-2 border-b border-slate-200;
+    }
+
+    .ui-card-title {
+        @apply flex items-center gap-1.5 text-sm font-semibold text-slate-900;
+    }
+
+    .ui-label {
+        @apply text-[11px] font-medium text-slate-500;
+    }
+
+    .ui-btn {
+        @apply inline-flex items-center justify-center gap-1.5 h-7 px-2.5 rounded border border-slate-200 bg-white text-xs font-medium text-slate-700 whitespace-nowrap transition-colors hover:bg-slate-50 hover:border-slate-300 disabled:opacity-50 disabled:pointer-events-none;
+    }
+
+    .ui-btn-primary {
+        @apply bg-slate-900 border-slate-900 text-white hover:bg-slate-700 hover:border-slate-700;
+    }
+
+    .ui-input {
+        @apply h-7 w-full px-2 rounded border border-slate-200 bg-white text-xs text-slate-900 placeholder:text-slate-400 outline-none transition-colors focus:border-slate-400 focus:ring-2 focus:ring-slate-100;
+    }
+
+    .ui-badge {
+        @apply inline-flex items-center gap-1 px-1.5 py-0.5 rounded border text-[10px] font-semibold uppercase tracking-wide whitespace-nowrap;
+    }
+
+    .ui-link {
+        @apply text-blue-700 hover:text-blue-900 hover:underline underline-offset-2 transition-colors;
+    }
+
+    .ui-table {
+        @apply w-full text-xs border-collapse;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .ui-table thead th {
+        @apply px-3 py-1.5 text-left text-[10px] font-semibold uppercase tracking-wide text-slate-500 bg-slate-50 border-b border-slate-200 whitespace-nowrap;
+    }
+
+    .ui-table tbody td {
+        @apply px-3 py-1.5 border-b border-slate-100 text-slate-700 align-middle;
+    }
+
+    .ui-table tbody tr {
+        @apply transition-colors hover:bg-slate-50/70;
+    }
+
+    .ui-table tfoot td {
+        @apply px-3 py-1.5 bg-slate-50 border-t border-slate-200 font-semibold text-slate-900;
+    }
+
+    .ui-num {
+        @apply text-right font-mono tabular-nums;
+    }
+}
+
+/* =====================================================================
+   Platform-wide density pass
+   Un-layered on purpose: it must win over the Tailwind utility classes that
+   the existing pages already use (h-12 buttons, py-4 cells, p-8 cards ...)
+   so every page is made compact without editing each file.
+   ===================================================================== */
+
+/* Small controls */
+:is(button, a, input, select):is(.h-9, .h-10, .h-11, .h-12, .h-14, .h-16) {
+    height: 2rem;
+    min-height: 0;
+}
+
+:is(button, a):is(.py-2\.5, .py-3, .py-3\.5, .py-4, .py-5):not(.h-full) {
+    padding-block: 0.375rem;
+}
+
+:is(button, a):is(.px-6, .px-7, .px-8, .px-10, .px-12) {
+    padding-inline: 1rem;
+}
+
+:is(input, select, textarea):is(.py-2\.5, .py-3, .py-3\.5, .py-4, .py-5) {
+    padding-block: 0.375rem;
+}
+
+:is(input, select, textarea):is(.px-4, .px-5, .px-6) {
+    padding-inline: 0.625rem;
+}
+
+/* Small table cells */
+:is(td, th):is(.py-2\.5, .py-3, .py-3\.5, .py-4, .py-5, .py-6) {
+    padding-block: 0.375rem;
+}
+
+:is(td, th):is(.px-5, .px-6, .px-8) {
+    padding-inline: 0.75rem;
+}
+
+table {
+    font-variant-numeric: tabular-nums;
+}
+
+/* Small cards */
+:is(div, section, article, form, header, aside):is(.p-6, .p-7, .p-8, .p-10, .p-12) {
+    padding: 1rem;
+}
+
+:is(div, section, article, form, header, aside):is(.px-8, .px-10) {
+    padding-inline: 1rem;
+}
+
+:is(div, section, article, form, header, aside):is(.py-8, .py-10, .py-12) {
+    padding-block: 1rem;
+}
+
+:is(.grid, .flex):is(.gap-6, .gap-8, .gap-10) {
+    gap: 1rem;
+}
+
+.space-y-8 > :not(:last-child),
+.space-y-10 > :not(:last-child) {
+    margin-block-start: 0;
+    margin-block-end: 1.25rem;
+}
+
+.space-y-6 > :not(:last-child) {
+    margin-block-start: 0;
+    margin-block-end: 1rem;
+}
+
+/* Pills / badges: never rounder than `rounded`. Avatars, dots and spinners
+   (which carry explicit w-/size- classes) stay circular. */
+.rounded-full[class*="px-"] {
+    border-radius: 0.25rem;
+}
+
+/* Easy-on-the-eye focus ring and scrollbars */
+:focus-visible {
+    outline: 2px solid hsl(var(--ring) / 0.45);
+    outline-offset: 1px;
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+/* Headings never exceed text-lg and stay readable */
+h1, h2 {
+    letter-spacing: -0.01em;
+}

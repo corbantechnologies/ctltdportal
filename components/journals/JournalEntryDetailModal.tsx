@@ -13,7 +13,9 @@ import {
   DollarSign,
   Globe,
   File,
+  ExternalLink,
 } from "lucide-react";
+import Link from "next/link";
 import { JournalEntry } from "@/services/journalentries";
 import { useEffect } from "react";
 
@@ -210,12 +212,28 @@ export default function JournalEntryDetailModal({
                 value={entry.book}
                 className="col-span-1"
               />
-              <DetailItem
-                icon={Briefcase}
-                label="Partner"
-                value={entry.partner}
-                className="col-span-1"
-              />
+              <div className="flex flex-col gap-1.5 col-span-1">
+                <span className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
+                  <Briefcase className="w-3 h-3" />
+                  Partner
+                </span>
+                {entry.partner ? (
+                  <Link
+                    href={
+                      entry.partner_reference
+                        ? `/finance/partners/${entry.partner_reference}`
+                        : `/finance/partners`
+                    }
+                    onClick={onClose}
+                    className="text-sm font-semibold text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1"
+                  >
+                    {entry.partner}
+                    <ExternalLink className="w-3 h-3 text-blue-400" />
+                  </Link>
+                ) : (
+                  <span className="text-sm font-medium text-gray-400">—</span>
+                )}
+              </div>
               <DetailItem
                 icon={Building2}
                 label="Division"

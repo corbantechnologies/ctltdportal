@@ -59,6 +59,12 @@ export default function SimpleTransactionsPage({ hideHeader = false }: { hideHea
   const limit = "20";
   const debouncedSearch = useDebounce(searchQuery, 400);
 
+  // Deep-link support: /simple-transactions?search=CT-TX-... pre-fills the search box.
+  useEffect(() => {
+    const initial = new URLSearchParams(window.location.search).get("search");
+    if (initial) setSearchQuery(initial);
+  }, []);
+
   const activeFilters: Record<string, string> = useMemo(() => {
     const filters: Record<string, string> = { page: page.toString(), limit };
     if (debouncedSearch.trim()) filters["search"] = debouncedSearch.trim();

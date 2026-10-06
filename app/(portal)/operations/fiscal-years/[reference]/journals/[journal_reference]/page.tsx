@@ -3,6 +3,7 @@
 
 import { useFetchJournal } from "@/hooks/journals/actions";
 import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import { useState } from "react";
 import LoadingSpinner from "@/components/portal/LoadingSpinner";
 import {
@@ -184,7 +185,21 @@ export default function OperationsJournalsDetailPage() {
                     <div className="text-[9px] font-bold text-black/30 uppercase tracking-widest mt-0.5">{entry.code}</div>
                   </td>
                   <td className="py-4 px-6">
-                    <div className="font-bold text-black">{entry.partner || "—"}</div>
+                    {entry.partner ? (
+                      <Link
+                        href={
+                          entry.partner_reference
+                            ? `/operations/partners/${entry.partner_reference}`
+                            : `/operations/partners`
+                        }
+                        onClick={(e) => e.stopPropagation()}
+                        className="font-bold text-blue-600 hover:text-blue-800 hover:underline"
+                      >
+                        {entry.partner}
+                      </Link>
+                    ) : (
+                      <span className="font-bold text-black/40">—</span>
+                    )}
                     <div className="text-[9px] font-bold text-black/30 uppercase tracking-widest mt-0.5">{entry.division}</div>
                   </td>
                   <td className="py-4 px-6 text-right font-mono font-bold text-black/60">
