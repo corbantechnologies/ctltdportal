@@ -16,6 +16,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { JournalEntry } from "@/services/journalentries";
 import { useEffect } from "react";
 
@@ -30,6 +31,13 @@ export default function JournalEntryDetailModal({
   open,
   onClose,
 }: JournalEntryDetailModalProps) {
+  const pathname = usePathname();
+  const rolePrefix = pathname?.startsWith("/director")
+    ? "director"
+    : pathname?.startsWith("/operations")
+    ? "operations"
+    : "finance";
+
   // Prevent background scrolling when modal is open
   useEffect(() => {
     if (open) {
@@ -221,8 +229,8 @@ export default function JournalEntryDetailModal({
                   <Link
                     href={
                       entry.partner_reference
-                        ? `/finance/partners/${entry.partner_reference}`
-                        : `/finance/partners`
+                        ? `/${rolePrefix}/partners/${entry.partner_reference}`
+                        : `/${rolePrefix}/partners`
                     }
                     onClick={onClose}
                     className="text-sm font-semibold text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1"

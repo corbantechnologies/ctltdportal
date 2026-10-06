@@ -15,7 +15,10 @@ export interface SimpleTransaction {
   division: string;
   journal_type: string;
   partner: string | null;
+  partner_reference?: string | null;
   journal: string | null;
+  journal_reference?: string | null;
+  financial_year_reference?: string | null;
   name: string;
   transaction_type: "MONEY_IN" | "MONEY_OUT";
   amount: string;

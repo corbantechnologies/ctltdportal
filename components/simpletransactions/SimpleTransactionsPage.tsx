@@ -1,4 +1,8 @@
+"use client";
+
 import { useState, useEffect, useMemo } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { toast } from "react-hot-toast";
 import {
   useFetchSimpleTransactions,
@@ -47,6 +51,13 @@ function useDebounce<T>(value: T, delay: number): T {
 }
 
 export default function SimpleTransactionsPage({ hideHeader = false }: { hideHeader?: boolean }) {
+  const pathname = usePathname();
+  const rolePrefix = pathname?.startsWith("/director")
+    ? "director"
+    : pathname?.startsWith("/operations")
+    ? "operations"
+    : "finance";
+
   const [showSingleForm, setShowSingleForm] = useState(false);
   const [isSingleFormFullscreen, setIsSingleFormFullscreen] = useState(false);
   const [showBulkModal, setShowBulkModal] = useState(false);
@@ -471,12 +482,22 @@ export default function SimpleTransactionsPage({ hideHeader = false }: { hideHea
                         </div>
                       </td>
 
-                      {/* Description */}
+                      {/* Description & Partner */}
                       <td className="py-2.5 px-3">
                         <div className="flex flex-col max-w-xs">
                           <span className="text-xs text-slate-900 font-semibold truncate">{t.name}</span>
                           {t.partner && (
-                            <span className="text-[11px] text-slate-500 truncate">{t.partner}</span>
+                            t.partner_reference ? (
+                              <Link
+                                href={`/${rolePrefix}/partners/${t.partner_reference}`}
+                                onClick={(e) => e.stopPropagation()}
+                                className="text-[11px] font-medium text-blue-600 hover:text-blue-800 hover:underline truncate"
+                              >
+                                {t.partner}
+                              </Link>
+                            ) : (
+                              <span className="text-[11px] text-slate-500 truncate">{t.partner}</span>
+                            )
                           )}
                           <span className="text-[9px] text-slate-400 mt-0.5 uppercase font-medium">
                             {t.division}
@@ -516,10 +537,22 @@ export default function SimpleTransactionsPage({ hideHeader = false }: { hideHea
                       {/* Journal Ref */}
                       <td className="py-2.5 px-3 text-center whitespace-nowrap">
                         {t.journal ? (
-                          <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded uppercase font-mono">
-                            <CheckCircle className="w-2.5 h-2.5" />
-                            {t.journal}
-                          </span>
+                          t.journal_reference && t.financial_year_reference ? (
+                            <Link
+                              href={`/${rolePrefix}/fiscal-years/${t.financial_year_reference}/journals/${t.journal_reference}`}
+                              onClick={(e) => e.stopPropagation()}
+                              className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-2 py-0.5 rounded uppercase font-mono transition-colors"
+                              title="View Journal Batch"
+                            >
+                              <CheckCircle className="w-2.5 h-2.5" />
+                              {t.journal}
+                            </Link>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded uppercase font-mono">
+                              <CheckCircle className="w-2.5 h-2.5" />
+                              {t.journal}
+                            </span>
+                          )
                         ) : (
                           <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded uppercase">
                             <AlertCircle className="w-2.5 h-2.5" />
@@ -600,10 +633,40 @@ export default function SimpleTransactionsPage({ hideHeader = false }: { hideHea
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-semibold text-slate-900 truncate">{t.name}</p>
+                      {t.partner && (
+                        t.partner_reference ? (
+                          <Link
+                            href={`/${rolePrefix}/partners/${t.partner_reference}`}
+                            onClick={(e) => e.stopPropagation()}
+                            className="text-[10px] font-medium text-blue-600 hover:text-blue-800 hover:underline truncate block"
+                          >
+                            {t.partner}
+                          </Link>
+                        ) : (
+                          <span className="text-[10px] text-slate-500 truncate block">{t.partner}</span>
+                        )
+                      )}
                       <p className="text-[10px] text-slate-400 mt-0.5 uppercase truncate">
                         {t.ledger_book_code ? `[${t.ledger_book_code}] ` : ""}{t.ledger_book} · via {t.payment_method}
                       </p>
-                      <p className="text-[9px] text-slate-400 font-mono">{t.code}</p>
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                        <span className="text-[9px] text-slate-400 font-mono">{t.code}</span>
+                        {t.journal && (
+                          t.journal_reference && t.financial_year_reference ? (
+                            <Link
+                              href={`/${rolePrefix}/fiscal-years/${t.financial_year_reference}/journals/${t.journal_reference}`}
+                              onClick={(e) => e.stopPropagation()}
+                              className="text-[9px] font-mono text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-1 rounded uppercase font-semibold"
+                            >
+                              {t.journal}
+                            </Link>
+                          ) : (
+                            <span className="text-[9px] font-mono text-emerald-700 bg-emerald-50 px-1 rounded uppercase">
+                              {t.journal}
+                            </span>
+                          )
+                        )}
+                      </div>
                     </div>
                   </div>
                   <div className="text-right flex-shrink-0 flex flex-col items-end">

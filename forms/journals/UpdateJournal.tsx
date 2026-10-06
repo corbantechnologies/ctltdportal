@@ -71,65 +71,55 @@ export default function UpdateJournal({
   return (
     <div
       className={cn(
-        "mx-auto border border-slate-200 shadow-2xl rounded-2xl overflow-hidden bg-white/95 backdrop-blur-xl",
+        "mx-auto border border-slate-200 rounded overflow-hidden bg-white flex flex-col",
         className
       )}
     >
-      <div className="bg-slate-50/50 p-4 sm:p-6 border-b border-slate-100/50">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-black flex items-center justify-center text-white shadow-lg shadow-black/20 ring-2 ring-black/5 flex-shrink-0">
-            <Edit3 className="w-5 h-5 sm:w-6 sm:h-6" />
+      <div className="bg-white px-4 py-3 border-b border-slate-200 flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+          <div className="w-7 h-7 rounded bg-slate-900 flex items-center justify-center text-white flex-shrink-0">
+            <Edit3 className="w-3.5 h-3.5" />
           </div>
           <div>
-            <h2 className="text-base sm:text-xl font-bold text-slate-900 tracking-tight">
-              Update Journal Batch
+            <h2 className="text-sm font-semibold text-slate-900 tracking-tight">
+              Edit Journal Batch Details
             </h2>
-            <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.2em] mt-0.5 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              Refine Transaction Batch
+            <p className="text-slate-500 font-mono text-[10px] uppercase">
+              Ref: {journal.reference}
             </p>
           </div>
-          {onClose && (
-            <div className="ml-auto">
-              <button
-                type="button"
-                onClick={onClose}
-                className="hover:bg-red-50 hover:text-red-500 rounded-xl text-slate-400 p-2 transition-colors group active:scale-95"
-              >
-                <X className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
-              </button>
-            </div>
-          )}
         </div>
+        {onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            className="p-1 hover:bg-slate-100 rounded text-slate-400 hover:text-slate-700 transition-colors"
+            title="Close"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        )}
       </div>
 
-      <div className="p-4 sm:p-6 overflow-y-auto">
-        {/* Static info - ALWAYS STACKED */}
-        <div className="space-y-4 mb-8">
-          <div className="p-5 bg-slate-50/50 rounded-2xl border border-slate-100 flex flex-col gap-1.5 shadow-sm group hover:border-slate-200 transition-colors">
-            <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400 ml-0.5">
-              Batch Reference
-            </p>
-            <p className="font-bold text-slate-800 break-all text-sm leading-relaxed">
-              {journal.reference}
-            </p>
+      <div className="p-4 space-y-3.5 overflow-y-auto">
+        {/* Static batch info */}
+        <div className="grid grid-cols-2 gap-2 p-2.5 bg-slate-50 rounded border border-slate-200 text-xs">
+          <div>
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 block">Category</span>
+            <span className="font-semibold text-slate-800">{journal.journal_type}</span>
           </div>
-          <div className="p-5 bg-slate-50/50 rounded-2xl border border-slate-100 flex flex-col gap-1.5 shadow-sm group hover:border-slate-200 transition-colors">
-            <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400 ml-0.5">
-              Journal Category
-            </p>
-            <p className="font-bold text-slate-800 text-sm">
-              {journal.journal_type}
-            </p>
+          <div>
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 block">Reference</span>
+            <span className="font-mono text-slate-800 truncate block">{journal.reference}</span>
           </div>
         </div>
 
         {/* Editable fields */}
-        <form onSubmit={formik.handleSubmit} className="space-y-4">
-          <div className="space-y-1.5">
+        <form id="update-journal-form" onSubmit={formik.handleSubmit} className="space-y-3">
+          <div className="space-y-1">
             <label
               htmlFor="date"
-              className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 ml-1"
+              className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 ml-0.5"
             >
               Transaction Date
             </label>
@@ -137,24 +127,25 @@ export default function UpdateJournal({
               id="date"
               name="date"
               type="date"
-              className="border border-slate-200 bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 w-full h-9 sm:h-10 rounded focus:bg-white focus:border-emerald-600 transition-all font-semibold px-3 sm:px-4 text-xs sm:text-sm text-slate-900"
+              className="border border-slate-300 bg-white focus:outline-none focus:border-slate-800 w-full h-8 rounded px-2.5 text-xs font-medium text-slate-900 transition-colors"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.date}
             />
           </div>
 
-          <div className="space-y-1.5">
+          <div className="space-y-1">
             <label
               htmlFor="description"
-              className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 ml-1"
+              className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 ml-0.5"
             >
-              Batch Description
+              Batch Narrative / Description
             </label>
             <textarea
               id="description"
               name="description"
-              className="border border-slate-200 bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-emerald-600/20 w-full min-h-[90px] rounded focus:bg-white focus:border-emerald-600 transition-all font-semibold p-3 sm:p-4 text-xs sm:text-sm text-slate-900 resize-none leading-relaxed"
+              rows={2}
+              className="border border-slate-300 bg-white focus:outline-none focus:border-slate-800 w-full rounded p-2 text-xs font-medium text-slate-900 resize-none transition-colors"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.description}
@@ -162,48 +153,51 @@ export default function UpdateJournal({
             />
           </div>
 
-          <div className="space-y-1.5">
-            <label className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 ml-1">
-              Base Currency
+          <div className="space-y-1">
+            <label className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 ml-0.5">
+              Currency
             </label>
-            <div className="relative">
-              <select
-                name="currency"
-                className="focus:outline-none focus:ring-2 focus:ring-emerald-600/20 flex h-9 sm:h-10 w-full rounded border border-slate-200 bg-slate-50/50 px-3 sm:px-4 text-xs sm:text-sm font-semibold focus:bg-white focus:border-emerald-600 transition-all appearance-none text-slate-900 cursor-pointer"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.currency}
-              >
-                <option value="KES">KES (Kenyan Shilling)</option>
-                <option value="USD">USD (US Dollar)</option>
-                <option value="EUR">EUR (Euro)</option>
-                <option value="GBP">GBP (British Pound)</option>
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 sm:px-4 text-slate-400">
-                <svg className="h-4 w-4 fill-current" viewBox="0 0 20 20">
-                  <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          <div className="pt-2">
-            <button
-              type="submit"
-              disabled={formik.isSubmitting}
-              className="w-full h-9 sm:h-10 bg-emerald-600 hover:bg-slate-900 text-white rounded font-semibold text-xs sm:text-sm tracking-wider transition-all shadow-md active:scale-[0.98] group flex items-center justify-center gap-2 disabled:opacity-50"
+            <select
+              name="currency"
+              className="border border-slate-300 bg-white focus:outline-none focus:border-slate-800 w-full h-8 rounded px-2 text-xs font-medium text-slate-900 transition-colors"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.currency}
             >
-              {formik.isSubmitting ? (
-                <Loader2 className="w-4 h-4 animate-spin text-white/80" />
-              ) : (
-                <>
-                  <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                  <span>Update Batch Details</span>
-                </>
-              )}
-            </button>
+              <option value="KES">KES (Kenyan Shilling)</option>
+              <option value="USD">USD (US Dollar)</option>
+              <option value="EUR">EUR (Euro)</option>
+              <option value="GBP">GBP (British Pound)</option>
+            </select>
           </div>
         </form>
+      </div>
+
+      <div className="px-4 py-2.5 border-t border-slate-200 bg-slate-50 flex items-center justify-end gap-2">
+        {onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            className="h-8 px-3 rounded border border-slate-300 bg-white hover:bg-slate-50 text-xs font-medium text-slate-700 transition-colors"
+          >
+            Cancel
+          </button>
+        )}
+        <button
+          type="submit"
+          form="update-journal-form"
+          disabled={formik.isSubmitting}
+          className="h-8 px-4 bg-slate-900 hover:bg-black text-white rounded text-xs font-semibold tracking-wide transition-colors flex items-center gap-1.5 disabled:opacity-50"
+        >
+          {formik.isSubmitting ? (
+            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+          ) : (
+            <>
+              <Save className="w-3.5 h-3.5" />
+              <span>Save Changes</span>
+            </>
+          )}
+        </button>
       </div>
     </div>
   );
