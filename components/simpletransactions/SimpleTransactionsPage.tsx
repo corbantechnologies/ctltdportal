@@ -15,6 +15,7 @@ import BulkTransactionsModal from "@/forms/simpletransactions/BulkTransactionsMo
 import ReverseJournalModal from "@/components/journals/ReverseJournalModal";
 import useAxiosAuth from "@/hooks/authentication/useAxiosAuth";
 import { useQueryClient } from "@tanstack/react-query";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import {
   Search,
   X,
@@ -34,6 +35,8 @@ import {
   MinusSquare,
   AlertTriangle,
   RotateCcw,
+  ChevronDown,
+  Upload,
 } from "lucide-react";
 import { formatNumber } from "@/tools/format";
 import { exportTransactionsToCSV } from "@/tools/csvExport";
@@ -237,36 +240,64 @@ export default function SimpleTransactionsPage({ hideHeader = false }: { hideHea
             </p>
           </div>
 
-          {/* Header Action Buttons */}
-          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-            <button
-              onClick={handleExportAll}
-              disabled={transactions.length === 0}
-              className="flex items-center gap-1.5 bg-white border border-slate-200 text-slate-700 px-3 h-9 rounded-lg font-semibold text-xs hover:bg-slate-50 transition-all shadow-sm active:scale-95 disabled:opacity-50 cursor-pointer"
-              title="Export current page to CSV"
-            >
-              <Download className="w-3.5 h-3.5 text-slate-500" />
-              <span className="hidden sm:inline">Export CSV</span>
-            </button>
-
-            <button
-              onClick={() => {
-                setBulkInitialTab("grid");
-                setShowBulkModal(true);
-              }}
-              className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 px-3.5 h-9 rounded-lg font-semibold text-xs transition-all shadow-sm active:scale-95 cursor-pointer"
-            >
-              <Layers className="w-3.5 h-3.5 text-slate-600" />
-              <span>Bulk / Import</span>
-            </button>
-
+          {/* Header Action Popover */}
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
             <button
               onClick={() => setShowSingleForm(true)}
-              className="flex items-center gap-1.5 bg-slate-900 text-white px-3.5 h-9 rounded-lg font-semibold text-xs hover:bg-slate-800 transition-all shadow-sm active:scale-95 flex-1 sm:flex-initial justify-center cursor-pointer"
+              className="h-8 px-3 bg-slate-900 hover:bg-slate-800 text-white rounded font-semibold text-xs flex items-center gap-1.5 shadow-sm transition-all active:scale-95 cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Log Transaction</span>
             </button>
+
+            <DropdownMenu.Root>
+              <DropdownMenu.Trigger asChild>
+                <button
+                  type="button"
+                  className="h-8 px-2.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded font-semibold text-xs flex items-center gap-1 shadow-sm transition-all cursor-pointer"
+                >
+                  <span>Actions</span>
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                </button>
+              </DropdownMenu.Trigger>
+              <DropdownMenu.Portal>
+                <DropdownMenu.Content
+                  align="end"
+                  sideOffset={6}
+                  className="z-[100] w-52 p-1 bg-white rounded border border-slate-200 shadow-lg text-xs"
+                >
+                  <DropdownMenu.Item
+                    onSelect={() => {
+                      setBulkInitialTab("grid");
+                      setShowBulkModal(true);
+                    }}
+                    className="flex items-center gap-2 px-2.5 py-1.5 rounded text-slate-700 hover:text-slate-900 hover:bg-slate-50 cursor-pointer outline-none font-medium"
+                  >
+                    <Layers className="w-3.5 h-3.5 text-slate-500" />
+                    <span>Bulk Grid Entry</span>
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item
+                    onSelect={() => {
+                      setBulkInitialTab("csv");
+                      setShowBulkModal(true);
+                    }}
+                    className="flex items-center gap-2 px-2.5 py-1.5 rounded text-slate-700 hover:text-slate-900 hover:bg-slate-50 cursor-pointer outline-none font-medium"
+                  >
+                    <Upload className="w-3.5 h-3.5 text-slate-500" />
+                    <span>Import CSV File</span>
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Separator className="h-px bg-slate-100 my-1" />
+                  <DropdownMenu.Item
+                    disabled={transactions.length === 0}
+                    onSelect={handleExportAll}
+                    className="flex items-center gap-2 px-2.5 py-1.5 rounded text-slate-700 hover:text-slate-900 hover:bg-slate-50 cursor-pointer outline-none font-medium disabled:opacity-40"
+                  >
+                    <Download className="w-3.5 h-3.5 text-slate-500" />
+                    <span>Export Page to CSV</span>
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu.Portal>
+            </DropdownMenu.Root>
           </div>
         </div>
       ) : (
@@ -281,35 +312,63 @@ export default function SimpleTransactionsPage({ hideHeader = false }: { hideHea
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-            <button
-              onClick={handleExportAll}
-              disabled={transactions.length === 0}
-              className="flex items-center gap-1.5 bg-white border border-slate-200 text-slate-700 px-3 h-9 rounded-lg font-semibold text-xs hover:bg-slate-50 transition-all shadow-sm active:scale-95 disabled:opacity-50 cursor-pointer"
-              title="Export current page to CSV"
-            >
-              <Download className="w-3.5 h-3.5 text-slate-500" />
-              <span className="hidden sm:inline">Export CSV</span>
-            </button>
-
-            <button
-              onClick={() => {
-                setBulkInitialTab("grid");
-                setShowBulkModal(true);
-              }}
-              className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 px-3.5 h-9 rounded-lg font-semibold text-xs transition-all shadow-sm active:scale-95 cursor-pointer"
-            >
-              <Layers className="w-3.5 h-3.5 text-slate-600" />
-              <span>Bulk / Import</span>
-            </button>
-
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
             <button
               onClick={() => setShowSingleForm(true)}
-              className="flex items-center gap-1.5 bg-slate-900 text-white px-3.5 h-9 rounded-lg font-semibold text-xs hover:bg-slate-800 transition-all shadow-sm active:scale-95 flex-1 sm:flex-initial justify-center cursor-pointer"
+              className="h-8 px-3 bg-slate-900 hover:bg-slate-800 text-white rounded font-semibold text-xs flex items-center gap-1.5 shadow-sm transition-all active:scale-95 cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Log Transaction</span>
             </button>
+
+            <DropdownMenu.Root>
+              <DropdownMenu.Trigger asChild>
+                <button
+                  type="button"
+                  className="h-8 px-2.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded font-semibold text-xs flex items-center gap-1 shadow-sm transition-all cursor-pointer"
+                >
+                  <span>Actions</span>
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                </button>
+              </DropdownMenu.Trigger>
+              <DropdownMenu.Portal>
+                <DropdownMenu.Content
+                  align="end"
+                  sideOffset={6}
+                  className="z-[100] w-52 p-1 bg-white rounded border border-slate-200 shadow-lg text-xs"
+                >
+                  <DropdownMenu.Item
+                    onSelect={() => {
+                      setBulkInitialTab("grid");
+                      setShowBulkModal(true);
+                    }}
+                    className="flex items-center gap-2 px-2.5 py-1.5 rounded text-slate-700 hover:text-slate-900 hover:bg-slate-50 cursor-pointer outline-none font-medium"
+                  >
+                    <Layers className="w-3.5 h-3.5 text-slate-500" />
+                    <span>Bulk Grid Entry</span>
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item
+                    onSelect={() => {
+                      setBulkInitialTab("csv");
+                      setShowBulkModal(true);
+                    }}
+                    className="flex items-center gap-2 px-2.5 py-1.5 rounded text-slate-700 hover:text-slate-900 hover:bg-slate-50 cursor-pointer outline-none font-medium"
+                  >
+                    <Upload className="w-3.5 h-3.5 text-slate-500" />
+                    <span>Import CSV File</span>
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Separator className="h-px bg-slate-100 my-1" />
+                  <DropdownMenu.Item
+                    disabled={transactions.length === 0}
+                    onSelect={handleExportAll}
+                    className="flex items-center gap-2 px-2.5 py-1.5 rounded text-slate-700 hover:text-slate-900 hover:bg-slate-50 cursor-pointer outline-none font-medium disabled:opacity-40"
+                  >
+                    <Download className="w-3.5 h-3.5 text-slate-500" />
+                    <span>Export Page to CSV</span>
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu.Portal>
+            </DropdownMenu.Root>
           </div>
         </div>
       )}

@@ -2,6 +2,8 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useFetchAccountDrillDown } from "@/hooks/reports/actions";
 import { formatCurrency, formatNumber } from "@/tools/format";
 import {
@@ -41,6 +43,13 @@ export function AccountDrillDownModal({
     endDate,
     division,
 }: AccountDrillDownModalProps) {
+    const pathname = usePathname();
+    const rolePrefix = pathname?.startsWith("/director")
+        ? "director"
+        : pathname?.startsWith("/operations")
+        ? "operations"
+        : "finance";
+
     const [searchQuery, setSearchQuery] = useState("");
 
     const { data, isLoading, error } = useFetchAccountDrillDown({
@@ -92,61 +101,61 @@ export function AccountDrillDownModal({
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto animate-in fade-in duration-200">
-            <div className="bg-white w-full max-w-5xl rounded-2xl shadow-2xl border border-border/80 flex flex-col max-h-[90vh] overflow-hidden">
+            <div className="bg-white w-full max-w-5xl rounded shadow-2xl border border-slate-200 flex flex-col max-h-[90vh] overflow-hidden">
                 {/* Modal Header */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-muted/40">
+                <div className="flex items-center justify-between px-5 py-3 border-b border-slate-200 bg-slate-50">
                     <div className="flex items-center gap-3">
-                        <div className="p-2.5 rounded-xl bg-corporate-primary/10 text-corporate-primary border border-corporate-primary/20">
-                            <BookOpen className="w-5 h-5" />
+                        <div className="w-8 h-8 rounded bg-white text-slate-800 border border-slate-200 flex items-center justify-center shadow-sm">
+                            <BookOpen className="w-4 h-4 text-emerald-600" />
                         </div>
                         <div>
                             <div className="flex items-center gap-2">
-                                <h2 className="text-lg font-bold text-foreground">
+                                <h2 className="text-base font-bold text-slate-900 tracking-tight">
                                     {data?.book_name || bookCode || "Account Ledger Drill-Down"}
                                 </h2>
-                                <span className="px-2.5 py-0.5 text-xs font-mono font-semibold rounded-full bg-corporate-primary/10 text-corporate-primary border border-corporate-primary/20">
+                                <span className="px-2 py-0.5 text-xs font-mono font-semibold rounded bg-slate-100 text-slate-700 border border-slate-200">
                                     {data?.book_code || bookCode}
                                 </span>
                                 {data?.account_type && (
-                                    <span className="px-2 py-0.5 text-[11px] font-medium rounded-md bg-secondary text-secondary-foreground">
+                                    <span className="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-100 text-slate-600 border border-slate-200 uppercase">
                                         {data.account_type}
                                     </span>
                                 )}
                             </div>
-                            <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-2">
+                            <p className="text-xs text-slate-500 mt-0.5 flex items-center gap-2">
                                 <span>{data?.division || division || "All Divisions"}</span>
                                 <span>•</span>
                                 <span className="flex items-center gap-1">
-                                    <Calendar className="w-3 h-3" />
+                                    <Calendar className="w-3 h-3 text-slate-400" />
                                     {data?.start_date && data?.end_date
                                         ? `${data.start_date} to ${data.end_date}`
-                                        : "Lifetime Balance"}
+                                        : "Full Ledger Period"}
                                 </span>
                             </p>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5">
                         <button
                             onClick={handleExportCSV}
-                            className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg transition-colors flex items-center gap-1.5 text-xs font-semibold"
+                            className="h-8 px-2.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-sm cursor-pointer"
                             title="Export CSV"
                         >
-                            <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
+                            <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
                             <span className="hidden sm:inline">Export CSV</span>
                         </button>
                         <button
                             onClick={handlePrint}
-                            className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg transition-colors"
+                            className="h-8 w-8 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded flex items-center justify-center transition-colors shadow-sm cursor-pointer"
                             title="Print Ledger"
                         >
-                            <Printer className="w-4 h-4" />
+                            <Printer className="w-3.5 h-3.5 text-slate-600" />
                         </button>
                         <button
                             onClick={onClose}
-                            className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg transition-colors"
+                            className="h-8 w-8 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded flex items-center justify-center transition-colors cursor-pointer"
                         >
-                            <X className="w-5 h-5" />
+                            <X className="w-4 h-4" />
                         </button>
                     </div>
                 </div>
@@ -257,9 +266,19 @@ export function AccountDrillDownModal({
                                                         {tx.date}
                                                     </td>
                                                     <td className="py-2.5 px-3 whitespace-nowrap">
-                                                        <span className="font-mono font-semibold text-corporate-primary">
-                                                            {tx.journal_code}
-                                                        </span>
+                                                        {tx.journal_reference ? (
+                                                            <Link
+                                                                href={`/${rolePrefix}/fiscal-years/active/journals/${tx.journal_reference}`}
+                                                                className="font-mono font-semibold text-emerald-700 hover:text-emerald-900 hover:underline"
+                                                                title="View Journal Batch"
+                                                            >
+                                                                {tx.journal_code}
+                                                            </Link>
+                                                        ) : (
+                                                            <span className="font-mono font-semibold text-slate-800">
+                                                                {tx.journal_code}
+                                                            </span>
+                                                        )}
                                                     </td>
                                                     <td className="py-2.5 px-3 whitespace-nowrap">
                                                         <span className="px-1.5 py-0.5 text-[10px] font-medium rounded bg-secondary text-secondary-foreground uppercase">
