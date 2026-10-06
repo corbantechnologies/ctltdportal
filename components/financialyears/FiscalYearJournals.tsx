@@ -23,6 +23,7 @@ import {
   Users,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, useMemo } from "react";
 import { Journal } from "@/services/journals";
 import { exportJournalsToCSV } from "@/tools/csvExport";
@@ -40,6 +41,7 @@ export default function FiscalYearJournals({
   rolePrefix,
   fiscalYearReference,
 }: FiscalYearJournalsProps) {
+  const router = useRouter();
   const [view, setView] = useState<"grid" | "table">("table");
   const [searchQuery, setSearchQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
@@ -419,73 +421,83 @@ export default function FiscalYearJournals({
         </div>
       ) : (
         /* Table View */
-        <div className="bg-white rounded border border-gray-100 overflow-hidden shadow-lg shadow-gray-100/50">
+        <div className="bg-white rounded border border-slate-200 overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full text-xs">
               <thead>
-                <tr className="bg-gray-50 border-y border-gray-200">
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600">
+                <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold">
+                  <th className="text-left py-2.5 px-3">
                     Posting Date
                   </th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600">
+                  <th className="text-left py-2.5 px-3">
                     Journal Description
                   </th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600">
-                    Type
+                  <th className="text-left py-2.5 px-3">
+                    Type &amp; Reference
                   </th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600">
+                  <th className="text-center py-2.5 px-3">
                     Status
                   </th>
-                  <th className="text-right py-3 px-4 text-xs font-semibold text-gray-600">
-                    Ref
+                  <th className="text-right py-2.5 px-3">
+                    Action
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-300">
+              <tbody className="divide-y divide-slate-100">
                 {paginatedJournals.map((journal) => (
                   <tr
                     key={journal.reference}
-                    className="hover:bg-gray-50 border-b border-gray-100 last:border-0 transition-colors cursor-pointer group"
+                    className="hover:bg-slate-50/80 transition-colors cursor-pointer group text-xs"
                     onClick={() =>
-                      (window.location.href = `/${rolePrefix}/fiscal-years/${fiscalYearReference}/journals/${journal.reference}`)
+                      router.push(`/${rolePrefix}/fiscal-years/${fiscalYearReference}/journals/${journal.reference}`)
                     }
                   >
-                    <td className="py-3 px-4">
-                      <span className="text-sm font-medium text-gray-700">
-                        {new Date(journal.date).toLocaleDateString()}
+                    {/* Posting Date */}
+                    <td className="py-2.5 px-3 whitespace-nowrap">
+                      <span className="font-semibold text-slate-800">
+                        {new Date(journal.date).toLocaleDateString("en-GB")}
                       </span>
                     </td>
-                    <td className="py-3 px-4">
-                      <div className="flex items-center gap-3">
-                        <span className="text-sm text-gray-900 font-medium">
-                          {journal.description}
+
+                    {/* Journal Description */}
+                    <td className="py-2.5 px-3 max-w-md">
+                      <span className="font-semibold text-slate-900 group-hover:text-emerald-700 transition-colors line-clamp-1">
+                        {journal.description || "No Description Provided"}
+                      </span>
+                    </td>
+
+                    {/* Type & Ref in the SAME cell */}
+                    <td className="py-2.5 px-3 whitespace-nowrap">
+                      <div className="flex flex-col">
+                        <span className="font-mono text-xs font-semibold text-slate-900 tracking-tight group-hover:text-emerald-700 transition-colors">
+                          {journal.reference}
+                        </span>
+                        <span className="text-[10px] text-slate-500 font-medium mt-0.5">
+                          {journal.journal_type}
                         </span>
                       </div>
                     </td>
-                    <td className="py-3 px-4">
-                      <span
-                        className="bg-gray-100 text-gray-600 text-xs font-medium px-2 py-0.5 rounded border-transparent inline-block"
-                      >
-                        {journal.journal_type}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4">
+
+                    {/* Status */}
+                    <td className="py-2.5 px-3 text-center whitespace-nowrap">
                       {journal.is_posted ? (
-                        <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-green-50 text-green-700">
-                          <span className="w-1.5 h-1.5 rounded bg-green-500" />
-                          <span className="text-xs font-medium">Posted</span>
-                        </div>
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                          Posted
+                        </span>
                       ) : (
-                        <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-yellow-50 text-yellow-700">
-                          <span className="w-1.5 h-1.5 rounded bg-yellow-500" />
-                          <span className="text-xs font-medium">Pending</span>
-                        </div>
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                          <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                          Pending
+                        </span>
                       )}
                     </td>
-                    <td className="py-3 px-4 text-right">
-                      <span className="text-xs text-gray-400 font-mono">
-                        {journal.reference}
-                      </span>
+
+                    {/* Action */}
+                    <td className="py-2.5 px-3 text-right whitespace-nowrap">
+                      <div className="inline-flex items-center justify-center w-6 h-6 rounded bg-slate-100 group-hover:bg-slate-900 group-hover:text-white text-slate-400 transition-all">
+                        <ArrowUpRight className="w-3.5 h-3.5" />
+                      </div>
                     </td>
                   </tr>
                 ))}
