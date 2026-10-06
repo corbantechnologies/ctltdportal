@@ -50,7 +50,7 @@ export function useCreateJournalStudio() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: CreateJournalStudioData) => createJournalStudio(data, header),
+    mutationFn: (data: CreateJournalStudioData | FormData) => createJournalStudio(data, header),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["journals"] });
       queryClient.invalidateQueries({ queryKey: ["journalentries"] });
@@ -64,7 +64,7 @@ export function useBulkCreateJournalBatches() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (batches: BulkJournalBatchInput[]) => bulkCreateJournalBatches(batches, header),
+    mutationFn: (batches: BulkJournalBatchInput[] | FormData) => bulkCreateJournalBatches(batches, header),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["journals"] });
       queryClient.invalidateQueries({ queryKey: ["journalentries"] });

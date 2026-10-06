@@ -15,6 +15,7 @@ import {
     Loader2,
     Calendar,
     Layers,
+    ExternalLink,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -262,16 +263,31 @@ export function AccountDrillDownModal({
                                                     </td>
                                                     <td className="py-2.5 px-3 whitespace-nowrap">
                                                         <span className="px-1.5 py-0.5 text-[10px] font-medium rounded bg-secondary text-secondary-foreground uppercase">
-                                                            {tx.entry_type}
+                                                            {tx.entry_type || (tx.debit > 0 ? "DEBIT" : "CREDIT")}
                                                         </span>
                                                     </td>
-                                                    <td className="py-2.5 px-3 max-w-xs">
+                                                    <td className="py-2.5 px-3 max-w-sm">
                                                         <p className="truncate text-foreground font-medium">{tx.description}</p>
-                                                        {tx.partner && (
-                                                            <p className="text-[10px] text-muted-foreground truncate">
-                                                                Partner: {tx.partner}
-                                                            </p>
+                                                        {tx.notes && (
+                                                            <p className="text-[10px] text-muted-foreground truncate italic">{tx.notes}</p>
                                                         )}
+                                                        <div className="flex flex-wrap items-center gap-1.5 mt-0.5 text-[10px] text-muted-foreground">
+                                                            {tx.partner && <span>Partner: {tx.partner}</span>}
+                                                            {tx.division && <span>• Div: {tx.division}</span>}
+                                                            {tx.payment_method && <span>• {tx.payment_method}</span>}
+                                                            {tx.document_number && <span>• Doc: {tx.document_number}</span>}
+                                                            {tx.document_url && (
+                                                                <a
+                                                                    href={tx.document_url}
+                                                                    target="_blank"
+                                                                    rel="noreferrer"
+                                                                    className="text-corporate-primary hover:underline font-semibold flex items-center gap-0.5 ml-1"
+                                                                >
+                                                                    <span>Receipt</span>
+                                                                    <ExternalLink className="w-2.5 h-2.5" />
+                                                                </a>
+                                                            )}
+                                                        </div>
                                                     </td>
                                                     <td className="py-2.5 px-3 text-right font-mono text-emerald-600 dark:text-emerald-400 whitespace-nowrap">
                                                         {tx.debit > 0 ? formatNumber(tx.debit) : "-"}
@@ -280,7 +296,7 @@ export function AccountDrillDownModal({
                                                         {tx.credit > 0 ? formatNumber(tx.credit) : "-"}
                                                     </td>
                                                     <td className="py-2.5 px-3 text-right font-mono font-bold whitespace-nowrap">
-                                                        {formatNumber(tx.running_balance)}
+                                                        {formatNumber(tx.balance ?? tx.running_balance ?? 0)}
                                                     </td>
                                                 </tr>
                                             ))

@@ -2,6 +2,8 @@
 "use client";
 
 import { useFetchJournalTypes } from "@/hooks/journaltypes/actions";
+import { useFetchDivisions } from "@/hooks/divisions/actions";
+import { useFetchPartners } from "@/hooks/partners/actions";
 import {
   FileText,
   Search,
@@ -17,6 +19,8 @@ import {
   Filter,
   X,
   Download,
+  Building2,
+  Users,
 } from "lucide-react";
 import Link from "next/link";
 import { useState, useMemo } from "react";
@@ -40,13 +44,16 @@ export default function FiscalYearJournals({
   const [searchQuery, setSearchQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [partnerFilter, setPartnerFilter] = useState("all");
+  const [divisionFilter, setDivisionFilter] = useState("all");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
 
-  const { data: journalTypes, isLoading: isLoadingTypes } =
-    useFetchJournalTypes();
+  const { data: journalTypes, isLoading: isLoadingTypes } = useFetchJournalTypes();
+  const { data: divisions } = useFetchDivisions();
+  const { data: partners } = useFetchPartners();
 
   const primaryColor = rolePrefix === "director" ? "#D0402B" : "#045138";
 
@@ -56,10 +63,20 @@ export default function FiscalYearJournals({
       const journalDate = new Date(journal.date);
 
       // Text Search
+      const query = searchQuery.toLowerCase().trim();
       const matchesSearch =
-        journal.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        journal.reference.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        journal.journal_type.toLowerCase().includes(searchQuery.toLowerCase());
+        !query ||
+        journal.description.toLowerCase().includes(query) ||
+        journal.reference.toLowerCase().includes(query) ||
+        (journal.code && journal.code.toLowerCase().includes(query)) ||
+        journal.journal_type.toLowerCase().includes(query) ||
+        journal.journal_entries?.some(
+          (entry) =>
+            (entry.partner && entry.partner.toLowerCase().includes(query)) ||
+            (entry.division && entry.division.toLowerCase().includes(query)) ||
+            (entry.book && entry.book.toLowerCase().includes(query)) ||
+            (entry.notes && entry.notes.toLowerCase().includes(query))
+        );
 
       // Type Filter
       const matchesType =
@@ -71,14 +88,46 @@ export default function FiscalYearJournals({
         (statusFilter === "posted" && journal.is_posted) ||
         (statusFilter === "pending" && !journal.is_posted);
 
+      // Partner Filter
+      const matchesPartner =
+        partnerFilter === "all" ||
+        journal.journal_entries?.some(
+          (entry) =>
+            entry.partner?.toLowerCase() === partnerFilter.toLowerCase()
+        );
+
+      // Division Filter
+      const matchesDivision =
+        divisionFilter === "all" ||
+        journal.journal_entries?.some(
+          (entry) =>
+            entry.division?.toLowerCase() === divisionFilter.toLowerCase()
+        );
+
       // Date Range Filter
       const matchesDateRange =
         (!startDate || journalDate >= new Date(startDate)) &&
         (!endDate || journalDate <= new Date(endDate));
 
-      return matchesSearch && matchesType && matchesDateRange && matchesStatus;
+      return (
+        matchesSearch &&
+        matchesType &&
+        matchesStatus &&
+        matchesPartner &&
+        matchesDivision &&
+        matchesDateRange
+      );
     });
-  }, [journals, searchQuery, typeFilter, statusFilter, startDate, endDate]);
+  }, [
+    journals,
+    searchQuery,
+    typeFilter,
+    statusFilter,
+    partnerFilter,
+    divisionFilter,
+    startDate,
+    endDate,
+  ]);
 
   const totalPages = Math.ceil(filteredJournals.length / itemsPerPage);
   const paginatedJournals = filteredJournals.slice(
@@ -104,6 +153,8 @@ export default function FiscalYearJournals({
     setSearchQuery("");
     setTypeFilter("all");
     setStatusFilter("all");
+    setPartnerFilter("all");
+    setDivisionFilter("all");
     setStartDate("");
     setEndDate("");
     setCurrentPage(1);
@@ -155,7 +206,7 @@ export default function FiscalYearJournals({
             </div>
 
             {/* Status Filter */}
-            <div className="relative w-28 md:w-36">
+            <div className="relative w-28 md:w-32">
               <CheckCircle2 className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400" />
               <select
                 value={statusFilter}
@@ -168,6 +219,46 @@ export default function FiscalYearJournals({
                 <option value="all">Status</option>
                 <option value="posted">Posted</option>
                 <option value="pending">Pending</option>
+              </select>
+            </div>
+
+            {/* Division Filter */}
+            <div className="relative w-32 md:w-36">
+              <Building2 className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400" />
+              <select
+                value={divisionFilter}
+                onChange={(e) => {
+                  setDivisionFilter(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="w-full h-9 pl-8 pr-2 rounded border border-gray-200 bg-white text-xs font-medium text-gray-700 outline-none focus:ring-2 focus:ring-gray-100 transition-all appearance-none cursor-pointer hover:bg-gray-50"
+              >
+                <option value="all">All Divisions</option>
+                {divisions?.map((d) => (
+                  <option key={d.reference} value={d.name}>
+                    {d.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Partner Filter */}
+            <div className="relative w-32 md:w-36">
+              <Users className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400" />
+              <select
+                value={partnerFilter}
+                onChange={(e) => {
+                  setPartnerFilter(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="w-full h-9 pl-8 pr-2 rounded border border-gray-200 bg-white text-xs font-medium text-gray-700 outline-none focus:ring-2 focus:ring-gray-100 transition-all appearance-none cursor-pointer hover:bg-gray-50"
+              >
+                <option value="all">All Partners</option>
+                {partners?.map((p) => (
+                  <option key={p.reference} value={p.name}>
+                    {p.name}
+                  </option>
+                ))}
               </select>
             </div>
 

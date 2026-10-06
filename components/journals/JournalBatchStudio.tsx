@@ -25,6 +25,10 @@ import {
   Users,
   RefreshCw,
   ExternalLink,
+  Paperclip,
+  Upload,
+  X as XIcon,
+  FileCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatNumber } from "@/tools/format";
@@ -33,6 +37,7 @@ import { useFetchBooks } from "@/hooks/books/actions";
 import { useFetchDivisions } from "@/hooks/divisions/actions";
 import { useFetchJournalTypes } from "@/hooks/journaltypes/actions";
 import { useFetchPartners } from "@/hooks/partners/actions";
+import { useFetchPaymentMethods } from "@/hooks/paymentmethods/actions";
 import { useCreateJournalStudio } from "@/hooks/journals/actions";
 import SearchableSelect from "@/components/portal/SearchableSelect";
 import QuickAddPartnerModal from "@/components/partners/QuickAddPartnerModal";
@@ -45,6 +50,11 @@ export interface JournalLineItem {
   debit: string;
   credit: string;
   notes: string;
+  payment_method?: string;
+  source_document?: string;
+  document_number?: string;
+  document_file?: File | null;
+  showDocDetails?: boolean;
 }
 
 interface JournalBatchStudioProps {
@@ -66,6 +76,7 @@ export default function JournalBatchStudio({
   const { data: divisions, isLoading: loadingDivisions } = useFetchDivisions();
   const { data: journalTypes, isLoading: loadingJournalTypes } = useFetchJournalTypes();
   const { data: partners } = useFetchPartners();
+  const { data: paymentMethods } = useFetchPaymentMethods();
   const [quickAddPartnerOpen, setQuickAddPartnerOpen] = useState(false);
   const [activeLineForQuickAdd, setActiveLineForQuickAdd] = useState<string | null>(null);
 
@@ -90,6 +101,11 @@ export default function JournalBatchStudio({
       debit: "",
       credit: "0",
       notes: "",
+      payment_method: "",
+      source_document: "",
+      document_number: "",
+      document_file: null,
+      showDocDetails: false,
     },
     {
       id: "line-2",
@@ -99,6 +115,11 @@ export default function JournalBatchStudio({
       debit: "0",
       credit: "",
       notes: "",
+      payment_method: "",
+      source_document: "",
+      document_number: "",
+      document_file: null,
+      showDocDetails: false,
     },
   ]);
 
@@ -135,6 +156,11 @@ export default function JournalBatchStudio({
     [partners]
   );
 
+  const paymentMethodOptions = useMemo(
+    () => paymentMethods?.map((p) => ({ value: p.name, label: p.name })) || [],
+    [paymentMethods]
+  );
+
   // Live Totals
   const totalDebit = lines.reduce(
     (sum, l) => sum + (parseFloat(l.debit) || 0),
@@ -148,17 +174,17 @@ export default function JournalBatchStudio({
   const isBalanced = diff < 0.01 && totalDebit > 0;
 
   // Row Manipulation
-  const handleUpdateLine = (id: string, field: keyof JournalLineItem, value: string) => {
+  const handleUpdateLine = (id: string, field: keyof JournalLineItem, value: any) => {
     setLines((prev) =>
       prev.map((l) => {
         if (l.id !== id) return l;
         const updated = { ...l, [field]: value };
         // If entering a debit amount > 0, auto-zero credit for clarity
-        if (field === "debit" && parseFloat(value) > 0) {
+        if (field === "debit" && typeof value === "string" && parseFloat(value) > 0) {
           updated.credit = "0";
         }
         // If entering a credit amount > 0, auto-zero debit
-        if (field === "credit" && parseFloat(value) > 0) {
+        if (field === "credit" && typeof value === "string" && parseFloat(value) > 0) {
           updated.debit = "0";
         }
         return updated;
@@ -184,6 +210,11 @@ export default function JournalBatchStudio({
       debit: suggestedDebit !== "0" ? suggestedDebit : "",
       credit: suggestedCredit !== "0" ? suggestedCredit : "",
       notes: "",
+      payment_method: "",
+      source_document: "",
+      document_number: "",
+      document_file: null,
+      showDocDetails: false,
     };
     setLines((prev) => [...prev, newLine]);
   };
@@ -202,6 +233,7 @@ export default function JournalBatchStudio({
     const duplicated: JournalLineItem = {
       ...target,
       id: Math.random().toString(36).substring(2, 9),
+      document_file: null,
     };
     setLines((prev) => [...prev, duplicated]);
     toast.success("Line duplicated");
@@ -236,37 +268,86 @@ export default function JournalBatchStudio({
     }
 
     try {
-      const payload = {
-        date: headerState.date,
-        journal_type: headerState.journal_type,
-        description: headerState.description.trim(),
-        currency: headerState.currency,
-        post_now: postNow,
-        entries: lines
+      const hasFiles = lines.some((l) => l.document_file !== null && l.document_file !== undefined);
+
+      if (hasFiles) {
+        const formData = new FormData();
+        formData.append("date", headerState.date);
+        formData.append("journal_type", headerState.journal_type);
+        formData.append("description", headerState.description.trim());
+        formData.append("currency", headerState.currency);
+        formData.append("post_now", String(postNow));
+
+        const entriesPayload = lines
           .filter((l) => l.book)
-          .map((l) => ({
-            book: l.book,
-            division: l.division || headerState.default_division || undefined,
-            partner: l.partner || undefined,
-            debit: parseFloat(l.debit) || 0,
-            credit: parseFloat(l.credit) || 0,
-            notes: l.notes || undefined,
-          })),
-      };
+          .map((l, idx) => {
+            if (l.document_file) {
+              formData.append(`document_file_${idx}`, l.document_file);
+            }
+            return {
+              book: l.book,
+              division: l.division || headerState.default_division || undefined,
+              partner: l.partner || undefined,
+              debit: parseFloat(l.debit) || 0,
+              credit: parseFloat(l.credit) || 0,
+              notes: l.notes || undefined,
+              payment_method: l.payment_method || undefined,
+              source_document: l.source_document || undefined,
+              document_number: l.document_number || undefined,
+            };
+          });
 
-      const res = await createStudioMutation.mutateAsync(payload);
-      toast.success(
-        postNow
-          ? `Journal ${res.code} created & posted to General Ledger!`
-          : `Journal ${res.code} created as Draft.`
-      );
+        formData.append("entries", JSON.stringify(entriesPayload));
+        const res = await createStudioMutation.mutateAsync(formData as any);
+        toast.success(
+          postNow
+            ? `Journal ${res.code} created & posted to General Ledger!`
+            : `Journal ${res.code} created as Draft.`
+        );
 
-      if (onSuccess) {
-        onSuccess(res);
-      } else if (fiscalYearRef) {
-        router.push(`/finance/fiscal-years/${fiscalYearRef}/journals/${res.reference}`);
+        if (onSuccess) {
+          onSuccess(res);
+        } else if (fiscalYearRef) {
+          router.push(`/finance/fiscal-years/${fiscalYearRef}/journals/${res.reference}`);
+        } else {
+          router.push(`/finance/journal-entries`);
+        }
       } else {
-        router.push(`/finance/journal-entries`);
+        const payload = {
+          date: headerState.date,
+          journal_type: headerState.journal_type,
+          description: headerState.description.trim(),
+          currency: headerState.currency,
+          post_now: postNow,
+          entries: lines
+            .filter((l) => l.book)
+            .map((l) => ({
+              book: l.book,
+              division: l.division || headerState.default_division || undefined,
+              partner: l.partner || undefined,
+              debit: parseFloat(l.debit) || 0,
+              credit: parseFloat(l.credit) || 0,
+              notes: l.notes || undefined,
+              payment_method: l.payment_method || undefined,
+              source_document: l.source_document || undefined,
+              document_number: l.document_number || undefined,
+            })),
+        };
+
+        const res = await createStudioMutation.mutateAsync(payload);
+        toast.success(
+          postNow
+            ? `Journal ${res.code} created & posted to General Ledger!`
+            : `Journal ${res.code} created as Draft.`
+        );
+
+        if (onSuccess) {
+          onSuccess(res);
+        } else if (fiscalYearRef) {
+          router.push(`/finance/fiscal-years/${fiscalYearRef}/journals/${res.reference}`);
+        } else {
+          router.push(`/finance/journal-entries`);
+        }
       }
     } catch (error: any) {
       toast.error(formatBackendError(error, "Failed to create journal batch"));
@@ -633,6 +714,115 @@ export default function JournalBatchStudio({
                     onChange={(e) => handleUpdateLine(line.id, "notes", e.target.value)}
                     className="w-full h-8 px-3 rounded-md border border-slate-200 bg-white/70 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-slate-900"
                   />
+                </div>
+
+                {/* Documentation & Receipt Attachments */}
+                <div className="pt-1.5 border-t border-slate-100">
+                  <div className="flex items-center justify-between">
+                    <button
+                      type="button"
+                      onClick={() => handleUpdateLine(line.id, "showDocDetails", !line.showDocDetails)}
+                      className="text-[11px] font-semibold text-slate-500 hover:text-slate-800 flex items-center gap-1.5 transition-colors cursor-pointer"
+                    >
+                      <Paperclip className="w-3.5 h-3.5 text-slate-400" />
+                      <span>
+                        {line.document_file || line.document_number || line.source_document || line.payment_method
+                          ? `Documentation: ${[line.payment_method, line.document_number, line.document_file ? `Receipt (${line.document_file.name})` : ""].filter(Boolean).join(" • ")}`
+                          : "+ Add Payment Reference / Receipt Proof"}
+                      </span>
+                      {line.showDocDetails ? (
+                        <ChevronUp className="w-3 h-3 text-slate-400" />
+                      ) : (
+                        <ChevronDown className="w-3 h-3 text-slate-400" />
+                      )}
+                    </button>
+
+                    {line.document_file && (
+                      <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded flex items-center gap-1">
+                        <FileCheck className="w-3 h-3 text-emerald-600" />
+                        <span>File Attached</span>
+                      </span>
+                    )}
+                  </div>
+
+                  {line.showDocDetails && (
+                    <div className="mt-2 p-3 rounded-lg bg-slate-50 border border-slate-200/80 grid grid-cols-1 sm:grid-cols-12 gap-3 animate-in fade-in">
+                      {/* Payment Method - 3 cols */}
+                      <div className="sm:col-span-3 space-y-1">
+                        <SearchableSelect
+                          label="Payment Method"
+                          options={paymentMethodOptions}
+                          value={line.payment_method || ""}
+                          onChange={(val) => handleUpdateLine(line.id, "payment_method", val)}
+                          placeholder="Select Method..."
+                        />
+                      </div>
+
+                      {/* Source Document - 3 cols */}
+                      <div className="sm:col-span-3 space-y-1">
+                        <label className="text-[10px] font-bold text-slate-500 uppercase">
+                          Source Document
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Invoice, Receipt, Tax receipt..."
+                          value={line.source_document || ""}
+                          onChange={(e) => handleUpdateLine(line.id, "source_document", e.target.value)}
+                          className="w-full h-9 px-2.5 rounded border border-slate-200 bg-white text-xs font-medium outline-none"
+                        />
+                      </div>
+
+                      {/* Document Number - 3 cols */}
+                      <div className="sm:col-span-3 space-y-1">
+                        <label className="text-[10px] font-bold text-slate-500 uppercase">
+                          Document Number
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="INV-001, RCT-2024..."
+                          value={line.document_number || ""}
+                          onChange={(e) => handleUpdateLine(line.id, "document_number", e.target.value)}
+                          className="w-full h-9 px-2.5 rounded border border-slate-200 bg-white text-xs font-mono font-medium outline-none"
+                        />
+                      </div>
+
+                      {/* Receipt File Upload - 3 cols */}
+                      <div className="sm:col-span-3 space-y-1">
+                        <label className="text-[10px] font-bold text-slate-500 uppercase">
+                          Receipt / Proof File
+                        </label>
+                        {line.document_file ? (
+                          <div className="h-9 px-2 rounded border border-emerald-200 bg-emerald-50/60 flex items-center justify-between text-xs text-emerald-800">
+                            <span className="truncate text-[11px] font-medium max-w-[120px]" title={line.document_file.name}>
+                              {line.document_file.name}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => handleUpdateLine(line.id, "document_file", null)}
+                              className="text-slate-400 hover:text-rose-600 p-1"
+                              title="Remove file"
+                            >
+                              <XIcon className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ) : (
+                          <label className="h-9 px-2.5 rounded border border-dashed border-slate-300 hover:border-slate-800 bg-white hover:bg-slate-50 flex items-center justify-center gap-1.5 cursor-pointer text-slate-600 hover:text-slate-900 transition-colors">
+                            <Upload className="w-3.5 h-3.5 text-slate-400" />
+                            <span className="text-[11px] font-semibold">Upload Proof</span>
+                            <input
+                              type="file"
+                              accept="image/*,application/pdf"
+                              className="hidden"
+                              onChange={(e) => {
+                                const f = e.target.files?.[0];
+                                if (f) handleUpdateLine(line.id, "document_file", f);
+                              }}
+                            />
+                          </label>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             );

@@ -1,6 +1,6 @@
 "use client";
 
-import { apiActions } from "@/tools/axios";
+import { apiActions, apiMultipartActions } from "@/tools/axios";
 import { AxiosResponse } from "axios";
 import { PaginatedResponse } from "./general";
 import { JournalEntry } from "./journalentries";
@@ -158,6 +158,7 @@ export interface JournalStudioEntryInput {
   payment_method?: string;
   source_document?: string;
   document_number?: string;
+  document_file?: File | null;
 }
 
 export interface CreateJournalStudioData {
@@ -191,25 +192,67 @@ export interface BulkJournalCreateResponse {
 }
 
 export const createJournalStudio = async (
-  data: CreateJournalStudioData,
-  headers: { headers: { Authorization: string } }
+  data: CreateJournalStudioData | FormData,
+  headers: { headers: { Authorization: string; [key: string]: any } }
 ): Promise<Journal> => {
+  const isFormData = typeof FormData !== "undefined" && data instanceof FormData;
+  if (isFormData) {
+    const authHeaders = {
+      headers: {
+        Authorization: headers.headers.Authorization,
+      },
+    };
+    const response: AxiosResponse<Journal> = await apiMultipartActions.post(
+      `/api/v1/journals/studio-create/`,
+      data,
+      authHeaders
+    );
+    return response.data;
+  }
+
+  const jsonHeaders = {
+    headers: {
+      Authorization: headers.headers.Authorization,
+      "Content-Type": "application/json",
+    },
+  };
   const response: AxiosResponse<Journal> = await apiActions.post(
     `/api/v1/journals/studio-create/`,
     data,
-    headers
+    jsonHeaders
   );
   return response.data;
 };
 
 export const bulkCreateJournalBatches = async (
-  batches: BulkJournalBatchInput[],
-  headers: { headers: { Authorization: string } }
+  batches: BulkJournalBatchInput[] | FormData,
+  headers: { headers: { Authorization: string; [key: string]: any } }
 ): Promise<BulkJournalCreateResponse> => {
+  const isFormData = typeof FormData !== "undefined" && batches instanceof FormData;
+  if (isFormData) {
+    const authHeaders = {
+      headers: {
+        Authorization: headers.headers.Authorization,
+      },
+    };
+    const response: AxiosResponse<BulkJournalCreateResponse> = await apiMultipartActions.post(
+      `/api/v1/journals/bulk-create/`,
+      batches,
+      authHeaders
+    );
+    return response.data;
+  }
+
+  const jsonHeaders = {
+    headers: {
+      Authorization: headers.headers.Authorization,
+      "Content-Type": "application/json",
+    },
+  };
   const response: AxiosResponse<BulkJournalCreateResponse> = await apiActions.post(
     `/api/v1/journals/bulk-create/`,
     { batches },
-    headers
+    jsonHeaders
   );
   return response.data;
 };

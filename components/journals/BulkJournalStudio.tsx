@@ -25,6 +25,9 @@ import {
   Maximize2,
   Minimize2,
   Sparkles,
+  Paperclip,
+  X as XIcon,
+  FileCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatNumber } from "@/tools/format";
@@ -33,6 +36,7 @@ import { useFetchBooks } from "@/hooks/books/actions";
 import { useFetchDivisions } from "@/hooks/divisions/actions";
 import { useFetchJournalTypes } from "@/hooks/journaltypes/actions";
 import { useFetchPartners } from "@/hooks/partners/actions";
+import { useFetchPaymentMethods } from "@/hooks/paymentmethods/actions";
 import { useBulkCreateJournalBatches } from "@/hooks/journals/actions";
 import SearchableSelect from "@/components/portal/SearchableSelect";
 import { downloadCSV } from "@/tools/csvExport";
@@ -45,6 +49,11 @@ export interface BulkBatchLine {
   debit: string;
   credit: string;
   notes: string;
+  payment_method?: string;
+  source_document?: string;
+  document_number?: string;
+  document_file?: File | null;
+  showDocDetails?: boolean;
 }
 
 export interface BulkBatchItem {
@@ -78,6 +87,11 @@ const createEmptyBatch = (
       debit: "",
       credit: "0",
       notes: "",
+      payment_method: "",
+      source_document: "",
+      document_number: "",
+      document_file: null,
+      showDocDetails: false,
     },
     {
       id: "line-2",
@@ -87,6 +101,11 @@ const createEmptyBatch = (
       debit: "0",
       credit: "",
       notes: "",
+      payment_method: "",
+      source_document: "",
+      document_number: "",
+      document_file: null,
+      showDocDetails: false,
     },
   ],
 });
@@ -107,6 +126,7 @@ export default function BulkJournalStudio({
   const { data: divisions, isLoading: loadingDivisions } = useFetchDivisions();
   const { data: journalTypes, isLoading: loadingJournalTypes } = useFetchJournalTypes();
   const { data: partners } = useFetchPartners();
+  const { data: paymentMethods } = useFetchPaymentMethods();
 
   const bulkCreateMutation = useBulkCreateJournalBatches();
 
@@ -158,6 +178,11 @@ export default function BulkJournalStudio({
     [partners]
   );
 
+  const paymentMethodOptions = useMemo(
+    () => paymentMethods?.map((p) => ({ value: p.name, label: p.name })) || [],
+    [paymentMethods]
+  );
+
   // Overall totals across all batches
   const overallTotals = useMemo(() => {
     let totalDebit = 0;
@@ -189,7 +214,7 @@ export default function BulkJournalStudio({
     batchId: string,
     lineId: string,
     field: keyof BulkBatchLine,
-    value: string
+    value: any
   ) => {
     setBatches((prev) =>
       prev.map((b) => {
@@ -199,8 +224,8 @@ export default function BulkJournalStudio({
           lines: b.lines.map((l) => {
             if (l.id !== lineId) return l;
             const updated = { ...l, [field]: value };
-            if (field === "debit" && parseFloat(value) > 0) updated.credit = "0";
-            if (field === "credit" && parseFloat(value) > 0) updated.debit = "0";
+            if (field === "debit" && typeof value === "string" && parseFloat(value) > 0) updated.credit = "0";
+            if (field === "credit" && typeof value === "string" && parseFloat(value) > 0) updated.debit = "0";
             return updated;
           }),
         };
@@ -228,6 +253,11 @@ export default function BulkJournalStudio({
           debit: suggestedDebit !== "0" ? suggestedDebit : "",
           credit: suggestedCredit !== "0" ? suggestedCredit : "",
           notes: "",
+          payment_method: "",
+          source_document: "",
+          document_number: "",
+          document_file: null,
+          showDocDetails: false,
         };
 
         return { ...b, lines: [...b.lines, newLine] };
@@ -283,6 +313,7 @@ export default function BulkJournalStudio({
       lines: source.lines.map((l) => ({
         ...l,
         id: Math.random().toString(36).substring(2, 9),
+        document_file: null,
       })),
     };
 
@@ -323,6 +354,9 @@ export default function BulkJournalStudio({
       "credit",
       "partner",
       "notes",
+      "payment_method",
+      "source_document",
+      "document_number",
     ];
     const sampleRows = [
       [
@@ -336,6 +370,9 @@ export default function BulkJournalStudio({
         "0",
         "",
         "AWS Cloud Hosting",
+        "Bank Transfer",
+        "Invoice",
+        "INV-AWS-2024",
       ],
       [
         new Date().toISOString().split("T")[0],
@@ -348,6 +385,9 @@ export default function BulkJournalStudio({
         "25000",
         "",
         "Corporate Card Payment",
+        "Bank Transfer",
+        "Card Receipt",
+        "TXN-998811",
       ],
     ];
 
@@ -392,6 +432,9 @@ export default function BulkJournalStudio({
             credit,
             partner,
             notes,
+            paymentMethod,
+            sourceDoc,
+            docNum,
           ] = cols;
 
           const groupKey = bDesc || `Batch ${i}`;
@@ -409,6 +452,9 @@ export default function BulkJournalStudio({
             credit: credit || "0",
             partner: partner || "",
             notes: notes || "",
+            payment_method: paymentMethod || "",
+            source_document: sourceDoc || "",
+            document_number: docNum || "",
           });
         }
 
@@ -432,6 +478,11 @@ export default function BulkJournalStudio({
               debit: e.debit,
               credit: e.credit,
               notes: e.notes,
+              payment_method: e.payment_method || "",
+              source_document: e.source_document || "",
+              document_number: e.document_number || "",
+              document_file: null,
+              showDocDetails: Boolean(e.payment_method || e.source_document || e.document_number),
             })),
           };
         });
@@ -495,37 +546,89 @@ export default function BulkJournalStudio({
     }
 
     try {
-      const payloadBatches = batches.map((b) => ({
-        date: b.date,
-        journal_type: b.journal_type,
-        description: b.description.trim(),
-        currency: b.currency,
-        post_now: postNow,
-        entries: b.lines
-          .filter((l) => l.book)
-          .map((l) => ({
-            book: l.book,
-            division: l.division || b.default_division || undefined,
-            partner: l.partner || undefined,
-            debit: parseFloat(l.debit) || 0,
-            credit: parseFloat(l.credit) || 0,
-            notes: l.notes || undefined,
-          })),
-      }));
-
-      const res = await bulkCreateMutation.mutateAsync(payloadBatches);
-      toast.success(
-        postNow
-          ? `Successfully created & posted ${res.count} journal batch(es) to GL!`
-          : `Successfully created ${res.count} draft journal batch(es)!`
+      const hasFiles = batches.some((b) =>
+        b.lines.some((l) => l.document_file !== null && l.document_file !== undefined)
       );
 
-      if (onSuccess) {
-        onSuccess();
-      } else if (fiscalYearRef) {
-        router.push(`/finance/fiscal-years/${fiscalYearRef}/journals`);
+      if (hasFiles) {
+        const formData = new FormData();
+        const payloadBatches = batches.map((b, bIdx) => ({
+          date: b.date,
+          journal_type: b.journal_type,
+          description: b.description.trim(),
+          currency: b.currency,
+          post_now: postNow,
+          entries: b.lines
+            .filter((l) => l.book)
+            .map((l, lIdx) => {
+              if (l.document_file) {
+                formData.append(`batch_${bIdx}_document_file_${lIdx}`, l.document_file);
+              }
+              return {
+                book: l.book,
+                division: l.division || b.default_division || undefined,
+                partner: l.partner || undefined,
+                debit: parseFloat(l.debit) || 0,
+                credit: parseFloat(l.credit) || 0,
+                notes: l.notes || undefined,
+                payment_method: l.payment_method || undefined,
+                source_document: l.source_document || undefined,
+                document_number: l.document_number || undefined,
+              };
+            }),
+        }));
+
+        formData.append("batches", JSON.stringify(payloadBatches));
+        const res = await bulkCreateMutation.mutateAsync(formData as any);
+        toast.success(
+          postNow
+            ? `Successfully created & posted ${res.count} journal batch(es) to GL!`
+            : `Successfully created ${res.count} draft journal batch(es)!`
+        );
+
+        if (onSuccess) {
+          onSuccess();
+        } else if (fiscalYearRef) {
+          router.push(`/finance/fiscal-years/${fiscalYearRef}/journals`);
+        } else {
+          router.push(`/finance/journal-entries`);
+        }
       } else {
-        router.push(`/finance/journal-entries`);
+        const payloadBatches = batches.map((b) => ({
+          date: b.date,
+          journal_type: b.journal_type,
+          description: b.description.trim(),
+          currency: b.currency,
+          post_now: postNow,
+          entries: b.lines
+            .filter((l) => l.book)
+            .map((l) => ({
+              book: l.book,
+              division: l.division || b.default_division || undefined,
+              partner: l.partner || undefined,
+              debit: parseFloat(l.debit) || 0,
+              credit: parseFloat(l.credit) || 0,
+              notes: l.notes || undefined,
+              payment_method: l.payment_method || undefined,
+              source_document: l.source_document || undefined,
+              document_number: l.document_number || undefined,
+            })),
+        }));
+
+        const res = await bulkCreateMutation.mutateAsync(payloadBatches);
+        toast.success(
+          postNow
+            ? `Successfully created & posted ${res.count} journal batch(es) to GL!`
+            : `Successfully created ${res.count} draft journal batch(es)!`
+        );
+
+        if (onSuccess) {
+          onSuccess();
+        } else if (fiscalYearRef) {
+          router.push(`/finance/fiscal-years/${fiscalYearRef}/journals`);
+        } else {
+          router.push(`/finance/journal-entries`);
+        }
       }
     } catch (error: any) {
       toast.error(formatBackendError(error, "Failed to create journal batches"));
@@ -717,12 +820,11 @@ export default function BulkJournalStudio({
             <div
               key={batch.id}
               className={cn(
-                "rounded-xl border transition-all overflow-hidden bg-white shadow-xs",
+                "rounded-xl border transition-all bg-white shadow-xs",
                 isOpen
-                  ? "border-slate-300 ring-2 ring-slate-900/5 shadow-md"
-                  : hasErrors
-                  ? "border-rose-300 bg-rose-50/20"
-                  : "border-slate-200 hover:border-slate-300"
+                  ? "border-slate-300 ring-2 ring-slate-900/5 shadow-md overflow-visible relative z-10"
+                  : "overflow-hidden border-slate-200 hover:border-slate-300",
+                hasErrors && !isOpen && "border-rose-300 bg-rose-50/20"
               )}
             >
               {/* Accordion Header Bar */}
@@ -974,8 +1076,9 @@ export default function BulkJournalStudio({
                         return (
                           <div
                             key={line.id}
+                            style={{ zIndex: batch.lines.length - lIdx }}
                             className={cn(
-                              "p-3 rounded-lg border transition-all space-y-2",
+                              "p-3 rounded-lg border transition-all space-y-2 relative",
                               hasDebit
                                 ? "bg-emerald-50/20 border-emerald-200"
                                 : hasCredit
@@ -1000,8 +1103,8 @@ export default function BulkJournalStudio({
                             </div>
 
                             <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 items-end">
-                              {/* Account Book - 4 cols */}
-                              <div className="sm:col-span-4">
+                              {/* Account Book - 3 cols */}
+                              <div className="sm:col-span-3">
                                 <SearchableSelect
                                   label="Book [Code] *"
                                   options={bookOptions}
@@ -1025,6 +1128,19 @@ export default function BulkJournalStudio({
                                   }
                                   placeholder="Division..."
                                   disabled={loadingDivisions}
+                                />
+                              </div>
+
+                              {/* Partner - 2 cols */}
+                              <div className="sm:col-span-2">
+                                <SearchableSelect
+                                  label="Partner"
+                                  options={partnerOptions}
+                                  value={line.partner}
+                                  onChange={(val) =>
+                                    handleUpdateBatchLine(batch.id, line.id, "partner", val)
+                                  }
+                                  placeholder="Partner..."
                                 />
                               </div>
 
@@ -1064,16 +1180,149 @@ export default function BulkJournalStudio({
                                 />
                               </div>
 
-                              {/* Delete Line - 2 cols */}
-                              <div className="sm:col-span-2 flex items-center justify-end">
+                              {/* Delete Line - 1 col */}
+                              <div className="sm:col-span-1 flex items-center justify-end">
                                 <button
                                   type="button"
                                   onClick={() => handleRemoveLineFromBatch(batch.id, line.id)}
-                                  className="h-9 px-2.5 rounded text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                                  className="h-9 w-9 rounded text-slate-400 hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center transition-colors"
+                                  title="Delete Line"
                                 >
                                   <Trash2 className="w-4 h-4" />
                                 </button>
                               </div>
+                            </div>
+
+                            {/* Line Notes */}
+                            <div className="pt-1">
+                              <input
+                                type="text"
+                                placeholder="Line notes or item reference (optional)..."
+                                value={line.notes}
+                                onChange={(e) =>
+                                  handleUpdateBatchLine(batch.id, line.id, "notes", e.target.value)
+                                }
+                                className="w-full h-8 px-2.5 rounded border border-slate-200 bg-white/70 text-xs font-medium outline-none focus:bg-white"
+                              />
+                            </div>
+
+                            {/* Documentation & Receipt Attachments Bar */}
+                            <div className="pt-1 border-t border-slate-100">
+                              <div className="flex items-center justify-between">
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    handleUpdateBatchLine(batch.id, line.id, "showDocDetails", !line.showDocDetails)
+                                  }
+                                  className="text-[11px] font-semibold text-slate-500 hover:text-slate-800 flex items-center gap-1.5 transition-colors cursor-pointer"
+                                >
+                                  <Paperclip className="w-3.5 h-3.5 text-slate-400" />
+                                  <span>
+                                    {line.document_file || line.document_number || line.source_document || line.payment_method
+                                      ? `Documentation: ${[line.payment_method, line.document_number, line.document_file ? `Receipt Attached (${line.document_file.name})` : ""].filter(Boolean).join(" • ")}`
+                                      : "+ Add Payment Reference / Receipt Proof"}
+                                  </span>
+                                  {line.showDocDetails ? (
+                                    <ChevronUp className="w-3 h-3 text-slate-400" />
+                                  ) : (
+                                    <ChevronDown className="w-3 h-3 text-slate-400" />
+                                  )}
+                                </button>
+
+                                {line.document_file && (
+                                  <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded flex items-center gap-1">
+                                    <FileCheck className="w-3 h-3 text-emerald-600" />
+                                    <span>File Attached</span>
+                                  </span>
+                                )}
+                              </div>
+
+                              {line.showDocDetails && (
+                                <div className="mt-2 p-2.5 rounded-lg bg-slate-50 border border-slate-200/80 grid grid-cols-1 sm:grid-cols-12 gap-2.5 animate-in fade-in">
+                                  {/* Payment Method - 3 cols */}
+                                  <div className="sm:col-span-3 space-y-1">
+                                    <SearchableSelect
+                                      label="Payment Method"
+                                      options={paymentMethodOptions}
+                                      value={line.payment_method || ""}
+                                      onChange={(val) =>
+                                        handleUpdateBatchLine(batch.id, line.id, "payment_method", val)
+                                      }
+                                      placeholder="Payment Method..."
+                                    />
+                                  </div>
+
+                                  {/* Source Document - 3 cols */}
+                                  <div className="sm:col-span-3 space-y-1">
+                                    <label className="text-[10px] font-bold text-slate-500 uppercase">
+                                      Source Document
+                                    </label>
+                                    <input
+                                      type="text"
+                                      placeholder="Invoice, Receipt..."
+                                      value={line.source_document || ""}
+                                      onChange={(e) =>
+                                        handleUpdateBatchLine(batch.id, line.id, "source_document", e.target.value)
+                                      }
+                                      className="w-full h-9 px-2.5 rounded border border-slate-200 bg-white text-xs font-medium outline-none"
+                                    />
+                                  </div>
+
+                                  {/* Document Number - 3 cols */}
+                                  <div className="sm:col-span-3 space-y-1">
+                                    <label className="text-[10px] font-bold text-slate-500 uppercase">
+                                      Document Number
+                                    </label>
+                                    <input
+                                      type="text"
+                                      placeholder="INV-001, RCT-2024..."
+                                      value={line.document_number || ""}
+                                      onChange={(e) =>
+                                        handleUpdateBatchLine(batch.id, line.id, "document_number", e.target.value)
+                                      }
+                                      className="w-full h-9 px-2.5 rounded border border-slate-200 bg-white text-xs font-mono font-medium outline-none"
+                                    />
+                                  </div>
+
+                                  {/* Receipt File Upload - 3 cols */}
+                                  <div className="sm:col-span-3 space-y-1">
+                                    <label className="text-[10px] font-bold text-slate-500 uppercase">
+                                      Receipt / Proof File
+                                    </label>
+                                    {line.document_file ? (
+                                      <div className="h-9 px-2 rounded border border-emerald-200 bg-emerald-50/60 flex items-center justify-between text-xs text-emerald-800">
+                                        <span className="truncate text-[11px] font-medium max-w-[120px]" title={line.document_file.name}>
+                                          {line.document_file.name}
+                                        </span>
+                                        <button
+                                          type="button"
+                                          onClick={() =>
+                                            handleUpdateBatchLine(batch.id, line.id, "document_file", null)
+                                          }
+                                          className="text-slate-400 hover:text-rose-600 p-1"
+                                          title="Remove file"
+                                        >
+                                          <XIcon className="w-3.5 h-3.5" />
+                                        </button>
+                                      </div>
+                                    ) : (
+                                      <label className="h-9 px-2.5 rounded border border-dashed border-slate-300 hover:border-slate-800 bg-white hover:bg-slate-50 flex items-center justify-center gap-1.5 cursor-pointer text-slate-600 hover:text-slate-900 transition-colors">
+                                        <Upload className="w-3.5 h-3.5 text-slate-400" />
+                                        <span className="text-[11px] font-semibold">Upload Proof</span>
+                                        <input
+                                          type="file"
+                                          accept="image/*,application/pdf"
+                                          className="hidden"
+                                          onChange={(e) => {
+                                            const f = e.target.files?.[0];
+                                            if (f) handleUpdateBatchLine(batch.id, line.id, "document_file", f);
+                                          }}
+                                        />
+                                      </label>
+                                    )}
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           </div>
                         );

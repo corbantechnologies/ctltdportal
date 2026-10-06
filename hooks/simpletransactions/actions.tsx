@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import useAxiosAuth from "../authentication/useAxiosAuth";
 import {
   getSimpleTransactions,
@@ -19,6 +19,7 @@ export function useFetchSimpleTransactions(filters?: Record<string, string>) {
     queryKey: ["simpletransactions", filters],
     queryFn: () => getSimpleTransactions(header, filters),
     enabled: !!header.headers.Authorization,
+    placeholderData: keepPreviousData,
   });
 }
 

@@ -1,7 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-"use client";
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { toast } from "react-hot-toast";
 import {
   useFetchSimpleTransactions,
@@ -60,12 +57,15 @@ export default function SimpleTransactionsPage({ hideHeader = false }: { hideHea
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
   const limit = "20";
-  const debouncedSearch = useDebounce(searchQuery, 500);
+  const debouncedSearch = useDebounce(searchQuery, 400);
 
-  const activeFilters: Record<string, string> = { page: page.toString(), limit };
-  if (debouncedSearch) activeFilters["search"] = debouncedSearch;
+  const activeFilters: Record<string, string> = useMemo(() => {
+    const filters: Record<string, string> = { page: page.toString(), limit };
+    if (debouncedSearch.trim()) filters["search"] = debouncedSearch.trim();
+    return filters;
+  }, [page, limit, debouncedSearch]);
 
-  const { data: response, isLoading } = useFetchSimpleTransactions(activeFilters);
+  const { data: response, isLoading, isFetching } = useFetchSimpleTransactions(activeFilters);
   const transactions: SimpleTransaction[] = response?.results || [];
   const totalCount = response?.count || 0;
   const totalPages = Math.ceil(totalCount / parseInt(limit));
@@ -345,7 +345,11 @@ export default function SimpleTransactionsPage({ hideHeader = false }: { hideHea
       {/* Search Bar */}
       <div className="bg-white/70 p-2.5 sm:p-3 rounded-lg border border-slate-200/80 backdrop-blur-md shadow-sm flex gap-2">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+          {isFetching ? (
+            <RefreshCw className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 animate-spin" />
+          ) : (
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+          )}
           <input
             type="text"
             placeholder="Search by description, code, book, payment method, division, partner..."
@@ -371,7 +375,7 @@ export default function SimpleTransactionsPage({ hideHeader = false }: { hideHea
       </div>
 
       {/* List / Table */}
-      {isLoading ? (
+      {isLoading && !response ? (
         <LoadingSpinner />
       ) : transactions.length > 0 ? (
         <div className="bg-white border border-slate-200/80 overflow-hidden shadow-sm rounded-lg">
