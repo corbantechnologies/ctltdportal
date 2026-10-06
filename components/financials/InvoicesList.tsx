@@ -43,7 +43,7 @@ export default function InvoicesList({ rolePrefix }: InvoicesListProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 50;
 
   const { isLoading, data: invoices } = useFetchInvoices();
   const markAsPaidMutation = useMarkInvoiceAsPaid();

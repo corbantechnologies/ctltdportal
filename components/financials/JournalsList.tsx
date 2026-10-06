@@ -43,7 +43,7 @@ export default function JournalsList({
     new Date().getFullYear().toString(),
   );
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 20;
+  const itemsPerPage = 50;
 
   const { data: journals, isLoading: isLoadingJournals } = useFetchJournals();
   const { data: journalTypes, isLoading: isLoadingTypes } =

@@ -42,7 +42,7 @@ export default function QuotationsList({ rolePrefix }: QuotationsListProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 50;
 
   const { isLoading, data: quotations } = useFetchQuotations();
 

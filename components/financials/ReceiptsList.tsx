@@ -50,7 +50,7 @@ export default function ReceiptsList({ rolePrefix }: ReceiptsListProps) {
   const [partnerFilter, setPartnerFilter] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 50;
 
   const { isLoading: isLoadingReceipts, data: receipts } = useFetchReceipts();
   const { data: partners, isLoading: isLoadingPartners } = useFetchPartners();
