@@ -636,7 +636,7 @@ export default function BulkJournalStudio({
   };
 
   return (
-    <div className="space-y-6 pb-24 max-w-6xl mx-auto w-full">
+    <div className="space-y-6 pb-16 w-full">
       {/* Studio Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div className="flex items-center gap-3">
@@ -1347,39 +1347,39 @@ export default function BulkJournalStudio({
       </button>
 
       {/* Sticky Bottom Summary & Submission Bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-30 p-4 sm:p-5 bg-slate-900 text-white shadow-2xl border-t border-slate-800">
-        <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+      <div className="sticky bottom-0 z-30 px-4 py-2.5 rounded bg-slate-900 text-white shadow-xl border border-slate-800 mt-6">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
           {/* Totals */}
-          <div className="flex flex-wrap items-center gap-6">
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6">
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+              <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
                 Batches
               </p>
-              <p className="text-base sm:text-lg font-mono font-bold text-white">
+              <p className="text-xs sm:text-sm font-mono font-bold text-white">
                 {batches.length}
               </p>
             </div>
 
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+              <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
                 Total Debits
               </p>
-              <p className="text-base sm:text-lg font-mono font-bold text-emerald-400">
+              <p className="text-xs sm:text-sm font-mono font-bold text-emerald-400">
                 KES {formatNumber(overallTotals.totalDebit)}
               </p>
             </div>
 
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+              <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
                 Total Credits
               </p>
-              <p className="text-base sm:text-lg font-mono font-bold text-rose-400">
+              <p className="text-xs sm:text-sm font-mono font-bold text-rose-400">
                 KES {formatNumber(overallTotals.totalCredit)}
               </p>
             </div>
 
-            <div className="border-l border-slate-700 pl-4">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+            <div className="border-l border-slate-700 pl-3 sm:pl-4">
+              <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
                 Balancing Status
               </p>
               <p
@@ -1398,12 +1398,12 @@ export default function BulkJournalStudio({
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <button
               type="button"
               disabled={bulkCreateMutation.isPending}
               onClick={() => handleSubmit(false)}
-              className="h-11 px-5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs uppercase tracking-wider transition-all border border-slate-700 disabled:opacity-50"
+              className="h-8 px-3.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs tracking-wide transition-all border border-slate-700 disabled:opacity-50 cursor-pointer"
             >
               Save All as Drafts
             </button>
@@ -1413,13 +1413,13 @@ export default function BulkJournalStudio({
               disabled={bulkCreateMutation.isPending || overallTotals.unbalancedCount > 0}
               onClick={() => handleSubmit(true)}
               className={cn(
-                "h-11 px-6 rounded-lg font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-lg active:scale-95 disabled:opacity-50",
+                "h-8 px-4 rounded font-semibold text-xs tracking-wide flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95 disabled:opacity-50 cursor-pointer",
                 overallTotals.unbalancedCount === 0
-                  ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-900/30"
+                  ? "bg-emerald-600 hover:bg-emerald-500 text-white"
                   : "bg-slate-700 text-slate-400 cursor-not-allowed"
               )}
             >
-              <Lock className="w-4 h-4" />
+              <Lock className="w-3.5 h-3.5" />
               <span>Post All to GL</span>
             </button>
           </div>
