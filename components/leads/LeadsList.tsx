@@ -41,7 +41,7 @@ export default function LeadsList({ rolePrefix }: LeadsListProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 50;
 
   const { isLoading, data: leads } = useFetchLeads();
 

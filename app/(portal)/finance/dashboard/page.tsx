@@ -14,6 +14,7 @@ import { useFetchInvoices } from "@/hooks/financials/actions";
 import { useFetchVendorBills } from "@/hooks/vendorbills/actions";
 import { useFetchPayrollRuns } from "@/hooks/payrollruns/actions";
 import * as Tabs from "@radix-ui/react-tabs";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import LoadingSpinner from "@/components/portal/LoadingSpinner";
 import { GlobalSearch } from "@/components/navigation/GlobalSearch";
 import ReportsDashboard from "@/components/reports/ReportsDashboard";
@@ -36,6 +37,7 @@ import {
   ArrowDownLeft,
   ArrowUpRight,
   CheckCircle2,
+  ChevronDown,
 } from "lucide-react";
 
 export default function FinanceDashboard() {
@@ -198,70 +200,107 @@ export default function FinanceDashboard() {
           </p>
         </div>
 
-        <Link
-          href="/finance/guides"
-          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold tracking-tight transition-all shadow-sm group"
-        >
-          <BookOpen className="w-3.5 h-3.5 text-emerald-400 group-hover:scale-105 transition-transform" />
-          <span>Finance Reference</span>
-        </Link>
-      </div>
+        <div className="flex items-center gap-2">
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger asChild>
+              <button
+                type="button"
+                className="h-8 px-3 bg-slate-900 hover:bg-slate-800 text-white rounded font-semibold text-xs flex items-center gap-1.5 shadow-sm transition-all active:scale-95 cursor-pointer"
+              >
+                <span>Quick Actions</span>
+                <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+              </button>
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Portal>
+              <DropdownMenu.Content
+                align="end"
+                sideOffset={6}
+                className="z-[100] w-56 p-1 bg-white rounded border border-slate-200 shadow-lg text-xs"
+              >
+                <div className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  Transactions &amp; Payables
+                </div>
+                <DropdownMenu.Item asChild>
+                  <Link
+                    href="/finance/receipts"
+                    className="flex items-center gap-2 px-2.5 py-1.5 rounded text-slate-700 hover:text-slate-900 hover:bg-slate-50 cursor-pointer outline-none font-medium"
+                  >
+                    <ReceiptIcon className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Record Receipt</span>
+                  </Link>
+                </DropdownMenu.Item>
+                <DropdownMenu.Item asChild>
+                  <Link
+                    href="/finance/vendor-bills"
+                    className="flex items-center gap-2 px-2.5 py-1.5 rounded text-slate-700 hover:text-slate-900 hover:bg-slate-50 cursor-pointer outline-none font-medium"
+                  >
+                    <CreditCard className="w-3.5 h-3.5 text-blue-600" />
+                    <span>Post Vendor Bill</span>
+                  </Link>
+                </DropdownMenu.Item>
+                <DropdownMenu.Item asChild>
+                  <Link
+                    href="/finance/payroll"
+                    className="flex items-center gap-2 px-2.5 py-1.5 rounded text-slate-700 hover:text-slate-900 hover:bg-slate-50 cursor-pointer outline-none font-medium"
+                  >
+                    <Banknote className="w-3.5 h-3.5 text-purple-600" />
+                    <span>Run Payroll</span>
+                  </Link>
+                </DropdownMenu.Item>
+                <DropdownMenu.Item asChild>
+                  <Link
+                    href="/finance/staff-claims"
+                    className="flex items-center gap-2 px-2.5 py-1.5 rounded text-slate-700 hover:text-slate-900 hover:bg-slate-50 cursor-pointer outline-none font-medium"
+                  >
+                    <ArrowDownLeft className="w-3.5 h-3.5 text-amber-600" />
+                    <span>Staff Claims</span>
+                  </Link>
+                </DropdownMenu.Item>
+                <DropdownMenu.Item asChild>
+                  <Link
+                    href="/finance/simple-transactions"
+                    className="flex items-center gap-2 px-2.5 py-1.5 rounded text-slate-700 hover:text-slate-900 hover:bg-slate-50 cursor-pointer outline-none font-medium"
+                  >
+                    <ArrowUpRight className="w-3.5 h-3.5 text-slate-600" />
+                    <span>Simple Inflow/Outflow</span>
+                  </Link>
+                </DropdownMenu.Item>
 
-      {/* Quick Action Command Hub */}
-      <div className="bg-slate-50 border border-slate-200/90 rounded-xl p-3">
-        <div className="flex items-center justify-between gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
-          <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 pl-2 whitespace-nowrap hidden md:inline">
-            Direct Actions:
-          </span>
-          <div className="flex items-center gap-2 flex-wrap">
-            <Link
-              href="/finance/receipts"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-800 border border-slate-200 hover:border-emerald-300 rounded-lg text-xs font-semibold transition-all shadow-sm"
-            >
-              <ReceiptIcon className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Record Receipt</span>
-            </Link>
+                <DropdownMenu.Separator className="h-px bg-slate-100 my-1" />
 
-            <Link
-              href="/finance/vendor-bills"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-800 border border-slate-200 hover:border-blue-300 rounded-lg text-xs font-semibold transition-all shadow-sm"
-            >
-              <CreditCard className="w-3.5 h-3.5 text-blue-600" />
-              <span>Post Vendor Bill</span>
-            </Link>
-
-            <Link
-              href="/finance/payroll"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-purple-50 text-slate-700 hover:text-purple-800 border border-slate-200 hover:border-purple-300 rounded-lg text-xs font-semibold transition-all shadow-sm"
-            >
-              <Banknote className="w-3.5 h-3.5 text-purple-600" />
-              <span>Run Payroll</span>
-            </Link>
-
-            <Link
-              href="/finance/staff-claims"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-amber-50 text-slate-700 hover:text-amber-800 border border-slate-200 hover:border-amber-300 rounded-lg text-xs font-semibold transition-all shadow-sm"
-            >
-              <ArrowDownLeft className="w-3.5 h-3.5 text-amber-600" />
-              <span>Staff Claims</span>
-            </Link>
-
-            <Link
-              href="/finance/simple-transactions"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg text-xs font-semibold transition-all shadow-sm"
-            >
-              <ArrowUpRight className="w-3.5 h-3.5 text-slate-600" />
-              <span>Simple Inflow/Outflow</span>
-            </Link>
-
-            <Link
-              href="/finance/coa"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg text-xs font-semibold transition-all shadow-sm"
-            >
-              <Layers className="w-3.5 h-3.5 text-indigo-600" />
-              <span>Chart of Accounts</span>
-            </Link>
-          </div>
+                <div className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  Structure &amp; Reference
+                </div>
+                <DropdownMenu.Item asChild>
+                  <Link
+                    href="/finance/coa"
+                    className="flex items-center gap-2 px-2.5 py-1.5 rounded text-slate-700 hover:text-slate-900 hover:bg-slate-50 cursor-pointer outline-none font-medium"
+                  >
+                    <Layers className="w-3.5 h-3.5 text-indigo-600" />
+                    <span>Chart of Accounts</span>
+                  </Link>
+                </DropdownMenu.Item>
+                <DropdownMenu.Item asChild>
+                  <Link
+                    href="/finance/fiscal-years"
+                    className="flex items-center gap-2 px-2.5 py-1.5 rounded text-slate-700 hover:text-slate-900 hover:bg-slate-50 cursor-pointer outline-none font-medium"
+                  >
+                    <CalendarRange className="w-3.5 h-3.5 text-slate-500" />
+                    <span>Fiscal Years &amp; Closures</span>
+                  </Link>
+                </DropdownMenu.Item>
+                <DropdownMenu.Item asChild>
+                  <Link
+                    href="/finance/guides"
+                    className="flex items-center gap-2 px-2.5 py-1.5 rounded text-slate-700 hover:text-slate-900 hover:bg-slate-50 cursor-pointer outline-none font-medium"
+                  >
+                    <BookOpen className="w-3.5 h-3.5 text-slate-500" />
+                    <span>Finance Reference Guide</span>
+                  </Link>
+                </DropdownMenu.Item>
+              </DropdownMenu.Content>
+            </DropdownMenu.Portal>
+          </DropdownMenu.Root>
         </div>
       </div>
 

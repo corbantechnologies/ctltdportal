@@ -143,7 +143,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${inter.className} min-h-screen bg-slate-50 text-slate-900 selection:bg-corporate-primary selection:text-white antialiased`}
+        className={`${inter.className} min-h-screen bg-white text-slate-900 selection:bg-corporate-primary selection:text-white antialiased`}
       >
         <Toaster position="top-center" />
         <NextAuthProvider>

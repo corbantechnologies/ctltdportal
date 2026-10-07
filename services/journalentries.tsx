@@ -8,6 +8,13 @@ interface JournalEntry {
   code: string;
   created_by: string;
   journal: string;
+  journal_reference?: string;
+  journal_date?: string;
+  journal_description?: string;
+  journal_status?: string;
+  journal_is_posted?: boolean;
+  financial_year_reference?: string;
+  partner_reference?: string | null;
   book: string;
   partner: string | null;
   division: string;

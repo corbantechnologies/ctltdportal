@@ -19,6 +19,7 @@ import {
   X,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, useMemo } from "react";
 import LoadingSpinner from "../portal/LoadingSpinner";
 
@@ -31,6 +32,7 @@ export default function JournalsList({
   rolePrefix,
   linkPrefix,
 }: JournalsListProps) {
+  const router = useRouter();
   const [view, setView] = useState<"grid" | "table">("table");
   const [searchQuery, setSearchQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
@@ -41,7 +43,7 @@ export default function JournalsList({
     new Date().getFullYear().toString(),
   );
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 20;
+  const itemsPerPage = 50;
 
   const { data: journals, isLoading: isLoadingJournals } = useFetchJournals();
   const { data: journalTypes, isLoading: isLoadingTypes } =
@@ -387,83 +389,69 @@ export default function JournalsList({
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-black/5 border-b border-black/5">
-                  <th className="text-left py-2 px-4 text-[10px] font-semibold uppercase tracking-wider text-black/60">
+                <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 text-xs font-semibold">
+                  <th className="text-left py-2.5 px-3">
                     Posting Date
                   </th>
-                  <th className="text-left py-2 px-4 text-[10px] font-semibold uppercase tracking-wider text-black/60">
+                  <th className="text-left py-2.5 px-3">
                     Journal Description
                   </th>
-                  <th className="text-left py-2 px-4 text-[10px] font-semibold uppercase tracking-wider text-black/60">
-                    Type
+                  <th className="text-left py-2.5 px-3">
+                    Type &amp; Reference
                   </th>
-                  <th className="text-left py-2 px-4 text-[10px] font-semibold uppercase tracking-wider text-black/60">
+                  <th className="text-center py-2.5 px-3">
                     Status
                   </th>
-                  <th className="text-right py-2 px-4 text-[10px] font-semibold uppercase tracking-wider text-black/60 text-center">
-                    Reference
+                  <th className="text-right py-2.5 px-3">
+                    Action
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-black/5">
+              <tbody className="divide-y divide-slate-100">
                 {paginatedJournals.map((journal) => (
                   <tr
                     key={journal.reference}
-                    className="hover:bg-white/80 transition-all cursor-pointer group"
+                    className="hover:bg-slate-50/80 transition-colors cursor-pointer group text-xs"
                     onClick={() =>
-                      (window.location.href = `/${rolePrefix}/${linkPrefix}/${journal.reference}`)
+                      router.push(`/${rolePrefix}/${linkPrefix}/${journal.reference}`)
                     }
                   >
-                    <td className="py-2.5 px-4 border-b border-black/5">
-                      <div className="flex flex-col">
-                        <span className="text-sm font-medium text-black">
-                          {new Date(journal.date).toLocaleDateString()}
-                        </span>
-                        <span className="text-[10px] font-semibold text-black/30 uppercase tracking-widest mt-0.5">
-                          Automated Entry
-                        </span>
-                      </div>
-                    </td>
-                    <td className="py-2.5 px-4 border-b border-black/5">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded bg-black/5 flex items-center justify-center text-black/40 group-hover:bg-[#D0402B]/10 group-hover:text-[#D0402B] transition-all">
-                          <FileText className="w-4 h-4" />
-                        </div>
-                        <span className="text-sm font-medium text-black group-hover:text-[#D0402B] transition-colors">
-                          {journal.description}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="py-2.5 px-4 border-b border-black/5">
-                      <span className="bg-white/50 border border-black/5 text-black/60 font-semibold text-[9px] uppercase px-2 py-0.5 rounded inline-block">
-                        {journal.journal_type}
+                    <td className="py-2.5 px-3 whitespace-nowrap">
+                      <span className="font-semibold text-slate-800">
+                        {new Date(journal.date).toLocaleDateString("en-GB")}
                       </span>
                     </td>
-                    <td className="py-2.5 px-4 border-b border-black/5">
-                      <div className="flex items-center gap-2">
-                        {journal.is_posted ? (
-                          <div className="flex items-center gap-2 text-green-600">
-                            <CheckCircle2 className="w-3.5 h-3.5" />
-                            <span className="text-[10px] font-semibold uppercase tracking-wider">
-                              POSTED
-                            </span>
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-2 text-orange-600">
-                            <Clock className="w-3.5 h-3.5" />
-                            <span className="text-[10px] font-semibold uppercase tracking-wider">
-                              PENDING
-                            </span>
-                          </div>
-                        )}
+                    <td className="py-2.5 px-3 max-w-md">
+                      <span className="font-semibold text-slate-900 group-hover:text-emerald-700 transition-colors line-clamp-1">
+                        {journal.description}
+                      </span>
+                    </td>
+                    <td className="py-2.5 px-3 whitespace-nowrap">
+                      <div className="flex flex-col">
+                        <span className="font-mono text-xs font-semibold text-slate-900 tracking-tight group-hover:text-emerald-700 transition-colors">
+                          {journal.reference}
+                        </span>
+                        <span className="text-[10px] text-slate-500 font-medium mt-0.5">
+                          {journal.journal_type}
+                        </span>
                       </div>
                     </td>
-                    <td className="py-2.5 px-4 text-right border-b border-black/5">
-                      <div className="flex items-center justify-end gap-4 font-mono font-semibold text-xs text-black/40 group-hover:text-black">
-                        {journal.reference}
-                        <div className="w-7 h-7 rounded bg-black text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-lg hover:bg-[#D0402B]">
-                          <ArrowUpRight className="w-3.5 h-3.5" />
-                        </div>
+                    <td className="py-2.5 px-3 text-center whitespace-nowrap">
+                      {journal.is_posted ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                          POSTED
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                          <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                          PENDING
+                        </span>
+                      )}
+                    </td>
+                    <td className="py-2.5 px-3 text-right whitespace-nowrap">
+                      <div className="inline-flex items-center justify-center w-6 h-6 rounded bg-slate-100 group-hover:bg-slate-900 group-hover:text-white text-slate-400 transition-all">
+                        <ArrowUpRight className="w-3.5 h-3.5" />
                       </div>
                     </td>
                   </tr>

@@ -31,7 +31,7 @@ export default function PartnersList({ rolePrefix }: PartnersListProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 20;
+  const itemsPerPage = 50;
 
   const { data: partners, isLoading: isLoadingPartners } = useFetchPartners();
   const { data: partnerTypes, isLoading: isLoadingTypes } =

@@ -57,59 +57,59 @@ export default function SearchableSelect({
   );
 
   return (
-    <div className={cn("space-y-2 relative", className)} ref={containerRef}>
+    <div className={cn("space-y-1 relative", className)} ref={containerRef}>
       {label && (
-        <label className="text-[10px] font-semibold uppercase tracking-widest text-black/40 ml-1 flex items-center gap-1">
+        <label className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 ml-0.5 flex items-center gap-1">
           {label} {required && <span className="text-red-500 text-xs font-semibold">*</span>}
         </label>
       )}
 
       <div
         className={cn(
-          "min-h-[40px] w-full rounded-lg border bg-slate-50/70 px-3 py-2 flex items-center justify-between cursor-pointer transition-all",
-          isOpen ? "border-emerald-600 ring-2 ring-emerald-600/10 shadow-sm bg-white" : "border-slate-200 hover:border-slate-300",
-          disabled && "opacity-50 cursor-not-allowed",
+          "min-h-[32px] h-8 w-full rounded border bg-white px-2.5 py-1 flex items-center justify-between cursor-pointer transition-all",
+          isOpen ? "border-slate-900 ring-1 ring-slate-900 shadow-xs" : "border-slate-300 hover:border-slate-400",
+          disabled && "opacity-50 cursor-not-allowed bg-slate-50",
           error && "border-red-500"
         )}
         onClick={() => !disabled && setIsOpen(!isOpen)}
       >
-        <div className="flex flex-col truncate pr-2">
+        <div className="flex items-center gap-1.5 truncate pr-2">
           {selectedOption ? (
             <>
-              <span className="text-xs sm:text-sm font-semibold text-slate-900 truncate">
+              <span className="text-xs font-medium text-slate-900 truncate">
                 {selectedOption.label}
               </span>
               {selectedOption.secondaryLabel && (
                 <span className="text-[9px] font-mono text-slate-400 uppercase truncate">
-                  {selectedOption.secondaryLabel}
+                  ({selectedOption.secondaryLabel})
                 </span>
               )}
             </>
           ) : (
-            <span className="text-xs sm:text-sm text-slate-400">{placeholder}</span>
+            <span className="text-xs text-slate-400">{placeholder}</span>
           )}
         </div>
-        <ChevronDown className={cn("w-3.5 h-3.5 text-slate-400 transition-transform flex-shrink-0", isOpen && "rotate-180")} />
+        <ChevronDown className={cn("w-3 h-3 text-slate-400 transition-transform flex-shrink-0", isOpen && "rotate-180")} />
       </div>
 
       {isOpen && (
-        <div className="absolute z-50 w-full mt-1.5 bg-white border border-slate-200 rounded-lg shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-150 max-h-64 flex flex-col">
-          <div className="p-2 border-b border-slate-100 bg-slate-50/80 flex-shrink-0">
+        <div className="absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded shadow-lg overflow-hidden animate-in fade-in zoom-in-95 duration-100 max-h-60 flex flex-col">
+          <div className="p-1.5 border-b border-slate-100 bg-slate-50 flex-shrink-0">
             <div className="relative">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+              <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-400" />
               <input
                 type="text"
                 placeholder="Type to filter..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-white border border-slate-200 rounded-md pl-8 pr-7 py-1.5 text-xs text-slate-900 focus:outline-none focus:border-slate-400 font-medium"
+                className="w-full bg-white border border-slate-200 rounded pl-7 pr-6 py-1 text-xs text-slate-900 focus:outline-none focus:border-slate-400 font-medium"
                 autoFocus
               />
               {searchTerm && (
                 <button
                   type="button"
                   onClick={() => setSearchTerm("")}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  className="absolute right-1.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                 >
                   <X className="w-3 h-3" />
                 </button>
@@ -123,8 +123,8 @@ export default function SearchableSelect({
                 <div
                   key={opt.value}
                   className={cn(
-                    "flex items-center justify-between px-3 py-2.5 rounded cursor-pointer transition-colors group",
-                    value === opt.value ? "bg-emerald-50" : "hover:bg-slate-50"
+                    "flex items-center justify-between px-2.5 py-1.5 rounded cursor-pointer transition-colors group",
+                    value === opt.value ? "bg-slate-100" : "hover:bg-slate-50"
                   )}
                   onClick={(e) => {
                     e.stopPropagation();
@@ -135,23 +135,23 @@ export default function SearchableSelect({
                 >
                   <div className="flex flex-col">
                     <span className={cn(
-                      "text-sm font-semibold transition-colors",
-                      value === opt.value ? "text-emerald-700" : "text-black"
+                      "text-xs font-medium transition-colors",
+                      value === opt.value ? "text-slate-900 font-semibold" : "text-slate-700"
                     )}>
                       {opt.label}
                     </span>
                     {opt.secondaryLabel && (
-                      <span className="text-[10px] font-mono text-black/40 uppercase">
+                      <span className="text-[9px] font-mono text-slate-400 uppercase">
                         {opt.secondaryLabel}
                       </span>
                     )}
                   </div>
-                  {value === opt.value && <Check className="w-4 h-4 text-emerald-600" />}
+                  {value === opt.value && <Check className="w-3.5 h-3.5 text-slate-800" />}
                 </div>
               ))
             ) : (
-              <div className="py-8 text-center">
-                <p className="text-xs text-black/40 font-medium italic">No results found</p>
+              <div className="py-4 text-center">
+                <p className="text-xs text-slate-400 font-medium italic">No results found</p>
               </div>
             )}
           </div>

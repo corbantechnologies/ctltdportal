@@ -36,7 +36,7 @@ export default function BooksList({
   const [view, setView] = useState<"grid" | "table">("table");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 20;
+  const itemsPerPage = 50;
 
   const filteredBooks = useMemo(() => {
     if (!books) return [];

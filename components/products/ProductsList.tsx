@@ -27,7 +27,7 @@ export default function ProductsList({ rolePrefix }: ProductsListProps) {
   const [view, setView] = useState<"grid" | "table">("table");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 50;
 
   const { isLoading, data: products } = useFetchProducts();
 

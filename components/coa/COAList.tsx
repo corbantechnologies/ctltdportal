@@ -32,7 +32,7 @@ export default function COAList({ rolePrefix }: COAListProps) {
   const [view, setView] = useState<"grid" | "table">("table");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 20;
+  const itemsPerPage = 50;
 
   const { isLoading, data: coas } = useFetchCOAs();
 
@@ -324,7 +324,7 @@ export default function COAList({ rolePrefix }: COAListProps) {
                             } as CSSWithVariables
                           }
                         >
-                          
+
                           <ArrowRight className="w-3.5 h-3.5" />
                         </button>
                       </Link>

@@ -7,6 +7,7 @@ import { useFetchDivisions } from "@/hooks/divisions/actions";
 import { useFetchFinancialYears } from "@/hooks/financialyears/actions";
 import { useBulkPostJournals } from "@/hooks/journals/actions";
 import LoadingSpinner from "@/components/portal/LoadingSpinner";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import {
   Search,
   Calendar,
@@ -24,6 +25,7 @@ import {
   AlertCircle,
   Sparkles,
   Layers,
+  ChevronDown,
 } from "lucide-react";
 import Link from "next/link";
 import { formatNumber } from "@/tools/format";
@@ -107,7 +109,7 @@ export default function JournalEntriesPage() {
     setPage(1);
   };
 
-  // Selection handlers
+  // Selection helpers
   const handleSelectAll = () => {
     if (selectedRefs.length === entries.length) {
       setSelectedRefs([]);
@@ -123,28 +125,27 @@ export default function JournalEntriesPage() {
     );
   };
 
-  // Bulk Post Action
+  const selectedEntries = useMemo(() => {
+    return entries.filter((e) => selectedRefs.includes(e.reference));
+  }, [entries, selectedRefs]);
+
+  // Distinct unposted journals from selected entries
+  const unpostedSelectedJournals = useMemo(() => {
+    const unposted = selectedEntries.filter(
+      (e) => !e.journal_is_posted && e.journal_status !== "POSTED"
+    );
+    return Array.from(new Set(unposted.map((e) => e.journal).filter(Boolean)));
+  }, [selectedEntries]);
+
+  // Bulk Post Action (only for unposted journals)
   const handleBulkPost = async () => {
-    if (selectedRefs.length === 0) {
-      toast.error("Please select at least one entry to post.");
-      return;
-    }
-
-    // Extract unique journals from selected entries
-    const selectedEntriesList = entries.filter((e) =>
-      selectedRefs.includes(e.reference)
-    );
-    const uniqueJournalCodes = Array.from(
-      new Set(selectedEntriesList.map((e) => e.journal).filter(Boolean))
-    );
-
-    if (uniqueJournalCodes.length === 0) {
-      toast.error("No valid journals found in selected entries.");
+    if (unpostedSelectedJournals.length === 0) {
+      toast.error("All selected entries belong to already posted journals.");
       return;
     }
 
     try {
-      const res = await bulkPostMutation.mutateAsync(uniqueJournalCodes);
+      const res = await bulkPostMutation.mutateAsync(unpostedSelectedJournals);
       toast.success(res.message || `Successfully posted ${res.posted_count} journal(s).`);
       setSelectedRefs([]);
     } catch (err: any) {
@@ -154,20 +155,29 @@ export default function JournalEntriesPage() {
   };
 
   const handleExportCSV = () => {
-    const toExport = selectedRefs.length > 0
-      ? entries.filter((e) => selectedRefs.includes(e.reference))
-      : entries;
-
-    if (toExport.length === 0) {
+    if (entries.length === 0) {
       toast.error("No journal entries available to export.");
       return;
     }
 
     exportJournalEntriesToCSV(
-      toExport,
+      entries,
       `gl_journal_entries_${new Date().toISOString().split("T")[0]}.csv`
     );
-    toast.success(`Exported ${toExport.length} journal entry records to CSV.`);
+    toast.success(`Exported ${entries.length} journal entry records to CSV.`);
+  };
+
+  const handleExportSelectedCSV = () => {
+    if (selectedEntries.length === 0) {
+      toast.error("No journal entries selected to export.");
+      return;
+    }
+
+    exportJournalEntriesToCSV(
+      selectedEntries,
+      `selected_journal_entries_${new Date().toISOString().split("T")[0]}.csv`
+    );
+    toast.success(`Exported ${selectedEntries.length} selected journal entries to CSV.`);
   };
 
   if (isLoadingDivisions || isLoadingYears) return <LoadingSpinner />;
@@ -175,7 +185,7 @@ export default function JournalEntriesPage() {
   const isAllSelected = entries.length > 0 && selectedRefs.length === entries.length;
 
   return (
-    <div className="space-y-6 pb-20 animate-in fade-in duration-500">
+    <div className="space-y-6 pb-24 animate-in fade-in duration-500">
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-slate-200/80 pb-4">
         <div>
@@ -193,66 +203,53 @@ export default function JournalEntriesPage() {
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            onClick={handleExportCSV}
-            className="h-9 px-3.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-lg font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-sm transition-all active:scale-95"
-            title="Export filtered/selected entries to CSV for audit"
-          >
-            <Download className="w-3.5 h-3.5 text-slate-500" />
-            <span>Export CSV</span>
-          </button>
+        {/* Compact Header Actions in Popover */}
+        <div className="flex items-center gap-2">
           <Link
             href="/finance/journal-entries/studio"
-            className="h-9 px-3.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-sm transition-all active:scale-95"
+            className="h-8 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-semibold text-xs flex items-center gap-1.5 shadow-sm transition-all active:scale-95"
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>Journal Studio</span>
           </Link>
-          <Link
-            href="/finance/journal-entries/bulk"
-            className="h-9 px-3.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-sm transition-all active:scale-95"
-          >
-            <Layers className="w-3.5 h-3.5" />
-            <span>Bulk Batch Input</span>
-          </Link>
 
-          {/* Selected Batch Actions Bar */}
-          {selectedRefs.length > 0 && (
-            <div className="flex items-center gap-2 bg-slate-900 text-white px-3.5 py-1.5 rounded-xl shadow-lg border border-slate-800 animate-in slide-in-from-top-2 duration-200">
-              <span className="text-xs font-bold font-mono">
-                {selectedRefs.length} selected
-              </span>
-            <span className="text-slate-600">|</span>
-            <button
-              type="button"
-              disabled={bulkPostMutation.isPending}
-              onClick={handleBulkPost}
-              className="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all active:scale-95 disabled:opacity-50"
-            >
-              {bulkPostMutation.isPending ? (
-                <>
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  <span>Posting...</span>
-                </>
-              ) : (
-                <>
-                  <Zap className="w-3.5 h-3.5 text-emerald-300" />
-                  <span>Bulk Post</span>
-                </>
-              )}
-            </button>
-            <button
-              type="button"
-              onClick={() => setSelectedRefs([])}
-              className="text-slate-400 hover:text-white p-1 rounded-full hover:bg-slate-800 transition-colors ml-1"
-              title="Clear selection"
-            >
-              <X className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        )}
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger asChild>
+              <button
+                type="button"
+                className="h-8 px-2.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded font-semibold text-xs flex items-center gap-1 shadow-sm transition-all"
+              >
+                <span>Actions</span>
+                <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+              </button>
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Portal>
+              <DropdownMenu.Content
+                align="end"
+                sideOffset={6}
+                className="z-[100] w-52 p-1 bg-white rounded border border-slate-200 shadow-lg text-xs"
+              >
+                <DropdownMenu.Item asChild>
+                  <Link
+                    href="/finance/journal-entries/bulk"
+                    className="flex items-center gap-2 px-2.5 py-1.5 rounded text-slate-700 hover:text-slate-900 hover:bg-slate-50 cursor-pointer outline-none font-medium"
+                  >
+                    <Layers className="w-3.5 h-3.5 text-slate-500" />
+                    <span>Bulk Batch Input</span>
+                  </Link>
+                </DropdownMenu.Item>
+                <DropdownMenu.Separator className="h-px bg-slate-100 my-1" />
+                <DropdownMenu.Item
+                  disabled={entries.length === 0}
+                  onSelect={handleExportCSV}
+                  className="flex items-center gap-2 px-2.5 py-1.5 rounded text-slate-700 hover:text-slate-900 hover:bg-slate-50 cursor-pointer outline-none font-medium disabled:opacity-40"
+                >
+                  <Download className="w-3.5 h-3.5 text-slate-500" />
+                  <span>Export Page to CSV</span>
+                </DropdownMenu.Item>
+              </DropdownMenu.Content>
+            </DropdownMenu.Portal>
+          </DropdownMenu.Root>
         </div>
       </div>
 
@@ -430,9 +427,21 @@ export default function JournalEntriesPage() {
                       {/* Journal / Division */}
                       <td className="py-3 px-4 whitespace-nowrap">
                         <div className="flex flex-col">
-                          <span className="text-xs font-bold text-slate-900 group-hover:text-emerald-600 transition-colors font-mono">
-                            {entry.journal}
-                          </span>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-xs font-bold text-slate-900 group-hover:text-emerald-600 transition-colors font-mono">
+                              {entry.journal}
+                            </span>
+                            <span
+                              className={cn(
+                                "text-[9px] font-semibold px-1.5 py-0.5 rounded border uppercase",
+                                entry.journal_is_posted || entry.journal_status === "POSTED"
+                                  ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                                  : "bg-amber-50 text-amber-700 border-amber-200"
+                              )}
+                            >
+                              {entry.journal_is_posted || entry.journal_status === "POSTED" ? "Posted" : "Draft"}
+                            </span>
+                          </div>
                           <span className="text-[10px] text-slate-400 uppercase font-medium mt-0.5">
                             {entry.division}
                           </span>
@@ -512,9 +521,21 @@ export default function JournalEntriesPage() {
                       </button>
 
                       <div>
-                        <span className="font-mono font-bold text-xs text-slate-900 block">
-                          {entry.journal}
-                        </span>
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-mono font-bold text-xs text-slate-900 block">
+                            {entry.journal}
+                          </span>
+                          <span
+                            className={cn(
+                              "text-[9px] font-semibold px-1 py-0.2 rounded border uppercase",
+                              entry.journal_is_posted || entry.journal_status === "POSTED"
+                                ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                                : "bg-amber-50 text-amber-700 border-amber-200"
+                            )}
+                          >
+                            {entry.journal_is_posted || entry.journal_status === "POSTED" ? "Posted" : "Draft"}
+                          </span>
+                        </div>
                         <span className="text-[10px] text-slate-400 font-mono">
                           {entry.reference}
                         </span>
@@ -596,6 +617,61 @@ export default function JournalEntriesPage() {
           <p className="text-slate-400 font-medium max-w-sm mx-auto text-xs">
             Adjust your search filters, dates, or fiscal year to view matching general ledger entries.
           </p>
+        </div>
+      )}
+
+      {/* Floating Selection Toolbar */}
+      {selectedRefs.length > 0 && (
+        <div className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-40 bg-slate-900/95 backdrop-blur-md text-white px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full shadow-2xl border border-white/10 flex items-center gap-2.5 sm:gap-3.5 max-w-[95vw] overflow-x-auto scrollbar-none animate-in slide-in-from-bottom-3 duration-200">
+          <div className="flex items-center gap-2 border-r border-slate-700 pr-2.5 sm:pr-3.5 flex-shrink-0">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-xs font-bold font-mono">{selectedRefs.length} selected</span>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleExportSelectedCSV}
+            className="flex items-center gap-1.5 text-xs font-semibold hover:text-emerald-400 transition-colors flex-shrink-0 cursor-pointer"
+            title="Export selected journal entries to CSV"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Export CSV</span>
+          </button>
+
+          {unpostedSelectedJournals.length > 0 ? (
+            <button
+              type="button"
+              disabled={bulkPostMutation.isPending}
+              onClick={handleBulkPost}
+              className="flex items-center gap-1.5 text-xs font-semibold text-emerald-400 hover:text-emerald-300 transition-colors flex-shrink-0 disabled:opacity-50 cursor-pointer"
+            >
+              {bulkPostMutation.isPending ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>Posting...</span>
+                </>
+              ) : (
+                <>
+                  <Zap className="w-3.5 h-3.5" />
+                  <span>Bulk Post ({unpostedSelectedJournals.length})</span>
+                </>
+              )}
+            </button>
+          ) : (
+            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-400 bg-emerald-950/70 border border-emerald-800/80 px-2 py-0.5 rounded-full flex-shrink-0">
+              <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+              <span>All Selected Posted</span>
+            </span>
+          )}
+
+          <button
+            type="button"
+            onClick={() => setSelectedRefs([])}
+            className="p-1 text-slate-400 hover:text-white rounded-full hover:bg-slate-800 transition-colors ml-0.5 flex-shrink-0 cursor-pointer"
+            title="Clear selection"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
         </div>
       )}
 
