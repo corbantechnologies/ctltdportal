@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import CreateJournalType from "@/forms/journaltypes/CreateJournalType";
 import CreatePartnerType from "@/forms/partnertypes/CreatePartnerType";
 import CreateSimpleTransaction from "@/forms/simpletransactions/CreateSimpleTransaction";
-import { Settings2, Users, Zap } from "lucide-react";
+import { Settings2, Users, Zap, X } from "lucide-react";
 
 export default function FinanceLayout({
     children,
@@ -14,32 +14,80 @@ export default function FinanceLayout({
     const [openCreateJournalType, setOpenCreateJournalType] = useState(false);
     const [openCreatePartnerType, setOpenCreatePartnerType] = useState(false);
     const [openCreateTransaction, setOpenCreateTransaction] = useState(false);
+    const [isQuickActionsOpen, setIsQuickActionsOpen] = useState(false);
+    const menuRef = useRef<HTMLDivElement>(null);
+
+    // Close floating speed-dial when clicking outside
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+                setIsQuickActionsOpen(false);
+            }
+        }
+        if (isQuickActionsOpen) {
+            document.addEventListener("mousedown", handleClickOutside);
+        }
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [isQuickActionsOpen]);
 
     return (
         <div className="relative min-h-screen">
             {children}
 
-            <div className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 flex flex-col items-end gap-3 z-40">
+            {/* Collapsible Floating Quick Actions Speed Dial */}
+            <div ref={menuRef} className="fixed bottom-6 right-6 flex flex-col items-end gap-2.5 z-40">
+                {isQuickActionsOpen && (
+                    <div className="flex flex-col items-end gap-2 mb-1 animate-in fade-in slide-in-from-bottom-3 duration-200">
+                        <button
+                            onClick={() => {
+                                setOpenCreateTransaction(true);
+                                setIsQuickActionsOpen(false);
+                            }}
+                            className="flex items-center gap-2.5 bg-[#D0402B] text-white px-3.5 py-2 rounded-xl shadow-xl hover:bg-black transition-all group border border-white/10"
+                        >
+                            <span className="text-xs font-semibold tracking-tight whitespace-nowrap">Quick Transaction</span>
+                            <Zap className="w-4 h-4 flex-shrink-0" />
+                        </button>
+                        <button
+                            onClick={() => {
+                                setOpenCreateJournalType(true);
+                                setIsQuickActionsOpen(false);
+                            }}
+                            className="flex items-center gap-2.5 bg-white text-slate-800 px-3.5 py-2 rounded-xl shadow-xl border border-slate-200 hover:bg-slate-900 hover:text-white transition-all group"
+                        >
+                            <span className="text-xs font-semibold tracking-tight whitespace-nowrap">New Journal Type</span>
+                            <Settings2 className="w-4 h-4 flex-shrink-0 text-slate-500 group-hover:text-white" />
+                        </button>
+                        <button
+                            onClick={() => {
+                                setOpenCreatePartnerType(true);
+                                setIsQuickActionsOpen(false);
+                            }}
+                            className="flex items-center gap-2.5 bg-white text-slate-800 px-3.5 py-2 rounded-xl shadow-xl border border-slate-200 hover:bg-slate-900 hover:text-white transition-all group"
+                        >
+                            <span className="text-xs font-semibold tracking-tight whitespace-nowrap">New Partner Type</span>
+                            <Users className="w-4 h-4 flex-shrink-0 text-slate-500 group-hover:text-white" />
+                        </button>
+                    </div>
+                )}
+
+                {/* Collapsed FAB Toggle */}
                 <button
-                    onClick={() => setOpenCreateTransaction(true)}
-                    className="flex items-center gap-2 bg-[#D0402B] text-white px-4 py-2 rounded shadow-lg border border-black/5 hover:bg-black transition-all shadow-black/10 group"
+                    onClick={() => setIsQuickActionsOpen((prev) => !prev)}
+                    title={isQuickActionsOpen ? "Close Quick Actions" : "Quick Actions"}
+                    className={`flex items-center justify-center w-11 h-11 rounded-full shadow-xl transition-all transform active:scale-95 border ${
+                        isQuickActionsOpen
+                            ? "bg-slate-900 text-white border-slate-700"
+                            : "bg-[#D0402B] text-white border-black/10 hover:bg-black hover:scale-105"
+                    }`}
                 >
-                    <span className="text-xs font-semibold uppercase tracking-widest hidden group-hover:block transition-all">Quick Transaction</span>
-                    <Zap className="w-5 h-5 flex-shrink-0" />
-                </button>
-                <button
-                    onClick={() => setOpenCreateJournalType(true)}
-                    className="flex items-center gap-2 bg-white text-black px-4 py-2 rounded shadow-lg border border-black/5 hover:bg-black hover:text-white transition-all shadow-black/10 group"
-                >
-                    <span className="text-xs font-semibold uppercase tracking-widest hidden group-hover:block transition-all">New Journal Type</span>
-                    <Settings2 className="w-5 h-5 flex-shrink-0" />
-                </button>
-                <button
-                    onClick={() => setOpenCreatePartnerType(true)}
-                    className="flex items-center gap-2 bg-white text-black px-4 py-2 rounded shadow-lg border border-black/5 hover:bg-black hover:text-white transition-all shadow-black/10 group"
-                >
-                    <span className="text-xs font-semibold uppercase tracking-widest hidden group-hover:block transition-all">New Partner Type</span>
-                    <Users className="w-5 h-5 flex-shrink-0" />
+                    {isQuickActionsOpen ? (
+                        <X className="w-5 h-5 transition-transform" />
+                    ) : (
+                        <Zap className="w-5 h-5" />
+                    )}
                 </button>
             </div>
 

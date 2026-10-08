@@ -39,8 +39,9 @@ import {
   Building2,
   FileCheck,
   CreditCard,
-  Send,
   FileBadge,
+  Scale,
+  FileStack,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { downloadSampleCSVTemplate } from "@/tools/csvExport";
@@ -214,6 +215,36 @@ const CATEGORIES: GuideCategory[] = [
     bgColor: "bg-cyan-500/10",
     borderColor: "border-cyan-500/20",
     description: "General Ledger statements, Trial Balance, Balance Sheet, and P&L exports",
+  },
+  {
+    id: "tax-filing",
+    name: "Tax Filing & Statutory VAT",
+    icon: FileBadge,
+    badge: "VAT & eTIMS",
+    color: "text-emerald-500",
+    bgColor: "bg-emerald-500/10",
+    borderColor: "border-emerald-500/20",
+    description: "Input vs Output VAT return schedules, Withholding Tax (WHT) ledger reconciliation, and All Transactions statutory audit extract.",
+  },
+  {
+    id: "year-end",
+    name: "Year-End Financial Audit",
+    icon: Scale,
+    badge: "Fiscal Closing",
+    color: "text-purple-500",
+    bgColor: "bg-purple-500/10",
+    borderColor: "border-purple-500/20",
+    description: "Statutory Year-End audit, Trial Balance vs Balance Sheet variance analysis, Net Margin reconciliation, and locked fiscal periods.",
+  },
+  {
+    id: "journal-studio",
+    name: "Journal Studio & Batch Journals",
+    icon: FileStack,
+    badge: "Double-Entry Engine",
+    color: "text-blue-500",
+    bgColor: "bg-blue-500/10",
+    borderColor: "border-blue-500/20",
+    description: "Multi-line batch journal creation, real-time debit/credit balancing, invoice/voucher documentation, and bulk CSV uploads.",
   },
 ];
 
@@ -741,6 +772,9 @@ export default function FinanceGuidesPage() {
     "batch-fill-guide": true,
     "csv-specs": true,
     "month-end-sop": true,
+    "tax-filing-guide": true,
+    "year-end-guide": true,
+    "journal-studio-guide": true,
   });
 
   // Checklist state for Month-End SOP
@@ -771,7 +805,7 @@ export default function FinanceGuidesPage() {
   const activeScenario = SIMULATION_SCENARIOS[selectedScenarioIndex];
 
   return (
-    <div className="space-y-10 pb-24 max-w-7xl mx-auto">
+    <div className="space-y-10 pb-24 w-full">
       {/* Header Banner */}
       <div className="relative overflow-hidden rounded-xl bg-slate-900 border border-slate-800 p-6 md:p-10 shadow-2xl">
         <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
@@ -2140,16 +2174,267 @@ export default function FinanceGuidesPage() {
         </div>
       )}
 
+      {/* Section 11: Tax Filing, VAT Schedules & eTIMS Compliance Guide */}
+      {(selectedCategory === "all" || selectedCategory === "tax-filing") && (
+        <div className="bg-white rounded-xl border border-emerald-200 shadow-sm overflow-hidden">
+          <button
+            onClick={() => toggleSection("tax-filing-guide")}
+            className="w-full p-6 flex items-center justify-between text-left hover:bg-emerald-50/30 transition-colors"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+                <FileBadge className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-slate-900">
+                    Tax Filing, VAT Schedules &amp; Statutory Returns
+                  </h3>
+                  <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">
+                    KRA eTIMS &amp; Audit
+                  </span>
+                </div>
+                <p className="text-xs md:text-sm text-slate-500">
+                  Standard procedure for generating VAT return schedules, Withholding Tax (WHT) ledgers, partner PIN compliance, and All Transactions audit logs.
+                </p>
+              </div>
+            </div>
+            <ChevronDown
+              className={cn(
+                "w-5 h-5 text-slate-400 transition-transform",
+                expandedSections["tax-filing-guide"] && "rotate-180"
+              )}
+            />
+          </button>
+
+          {expandedSections["tax-filing-guide"] && (
+            <div className="p-6 pt-0 border-t border-slate-100 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+                  <div className="w-6 h-6 rounded bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs">
+                    1
+                  </div>
+                  <h4 className="font-bold text-slate-900 uppercase">All Transactions Audit Log</h4>
+                  <p className="text-slate-600 leading-relaxed">
+                    Default auditor tab extracting all chronological entries within the fiscal period with journal codes, counterparty PINs, debits, credits, and linked Invoice / Document reference numbers.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+                  <div className="w-6 h-6 rounded bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">
+                    2
+                  </div>
+                  <h4 className="font-bold text-slate-900 uppercase">VAT Return Schedule</h4>
+                  <p className="text-slate-600 leading-relaxed">
+                    Segregates <strong>Output VAT</strong> (collected on sales) and <strong>Input VAT</strong> (claimable on business expenses) with calculated net VAT payable/refundable for statutory filing.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+                  <div className="w-6 h-6 rounded bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-xs">
+                    3
+                  </div>
+                  <h4 className="font-bold text-slate-900 uppercase">Withholding Tax (WHT)</h4>
+                  <p className="text-slate-600 leading-relaxed">
+                    Tracks withheld amounts (e.g. 5% professional services or 2% contractual services) mapped to each vendor&apos;s registered tax PIN for statutory KRA remittance certificates.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+                  <div className="w-6 h-6 rounded bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-xs">
+                    4
+                  </div>
+                  <h4 className="font-bold text-slate-900 uppercase">Doc &amp; Voucher Integrity</h4>
+                  <p className="text-slate-600 leading-relaxed">
+                    Resolves document numbers across POS receipts, standard sales invoices, and Journal Studio batch entries so every tax entry is tied to an audit-ready voucher.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between p-3.5 rounded-lg bg-emerald-50 border border-emerald-200 text-xs">
+                <div className="flex items-center gap-2 text-slate-700">
+                  <FileBadge className="w-4 h-4 text-emerald-600" />
+                  <span>Access statutory tax return schedules, VAT audit worksheets, and download reports:</span>
+                </div>
+                <Link
+                  href="/finance/reports/tax-filing"
+                  className="px-3.5 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white font-semibold transition-colors shadow-sm"
+                >
+                  Open Tax Filing Report
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Section 12: Year-End Financial Audit & Statutory Closing Guide */}
+      {(selectedCategory === "all" || selectedCategory === "year-end") && (
+        <div className="bg-white rounded-xl border border-purple-200 shadow-sm overflow-hidden">
+          <button
+            onClick={() => toggleSection("year-end-guide")}
+            className="w-full p-6 flex items-center justify-between text-left hover:bg-purple-50/30 transition-colors"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center font-bold">
+                <Scale className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-slate-900">
+                    Year-End Financial Audit &amp; Statutory Closing
+                  </h3>
+                  <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-purple-100 text-purple-800">
+                    Fiscal Closing SOP
+                  </span>
+                </div>
+                <p className="text-xs md:text-sm text-slate-500">
+                  Comprehensive checklist for annual balance sheet audit, zero-variance trial balance reconciliation, and fiscal year rollover.
+                </p>
+              </div>
+            </div>
+            <ChevronDown
+              className={cn(
+                "w-5 h-5 text-slate-400 transition-transform",
+                expandedSections["year-end-guide"] && "rotate-180"
+              )}
+            />
+          </button>
+
+          {expandedSections["year-end-guide"] && (
+            <div className="p-6 pt-0 border-t border-slate-100 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+                  <h4 className="font-bold text-slate-900 uppercase">1. Zero Variance Verification</h4>
+                  <p className="text-slate-600 leading-relaxed">
+                    Confirms that <strong>Total Assets == Total Liabilities + Equity</strong> with 0.00 variance. Any variance indicates an unposted or unbalanced journal batch that must be reconciled before audit certification.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+                  <h4 className="font-bold text-slate-900 uppercase">2. Net Margin &amp; Retained Earnings</h4>
+                  <p className="text-slate-600 leading-relaxed">
+                    Reconciles operational gross turnover against all COA 5xxx/6xxx expense lines. The final net income figure is automatically rolled into <code>3020 - Retained Earnings</code> at year end.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+                  <h4 className="font-bold text-slate-900 uppercase">3. Fiscal Year Period Lock</h4>
+                  <p className="text-slate-600 leading-relaxed">
+                    Once audit sign-off is complete, the financial year is permanently closed. No journals can be posted to a locked fiscal year without an executive audit unlock justification.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between p-3.5 rounded-lg bg-purple-50 border border-purple-200 text-xs">
+                <div className="flex items-center gap-2 text-slate-700">
+                  <Scale className="w-4 h-4 text-purple-600" />
+                  <span>Inspect statutory year-end turnover, operating expense lines, and balance sheet variance:</span>
+                </div>
+                <Link
+                  href="/finance/reports/year-end"
+                  className="px-3.5 py-1.5 rounded-lg bg-purple-700 hover:bg-purple-600 text-white font-semibold transition-colors shadow-sm"
+                >
+                  Open Year-End Audit
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Section 13: Journal Studio & Batch Journals Guide */}
+      {(selectedCategory === "all" || selectedCategory === "journal-studio") && (
+        <div className="bg-white rounded-xl border border-blue-200 shadow-sm overflow-hidden">
+          <button
+            onClick={() => toggleSection("journal-studio-guide")}
+            className="w-full p-6 flex items-center justify-between text-left hover:bg-blue-50/30 transition-colors"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold">
+                <FileStack className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-slate-900">
+                    Journal Studio &amp; Multi-Line Batch Journal Engine
+                  </h3>
+                  <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-blue-100 text-blue-800">
+                    Double-Entry Engine
+                  </span>
+                </div>
+                <p className="text-xs md:text-sm text-slate-500">
+                  How to book balanced multi-line general journals, attach supporting documentation, validate debits and credits, and post to the GL.
+                </p>
+              </div>
+            </div>
+            <ChevronDown
+              className={cn(
+                "w-5 h-5 text-slate-400 transition-transform",
+                expandedSections["journal-studio-guide"] && "rotate-180"
+              )}
+            />
+          </button>
+
+          {expandedSections["journal-studio-guide"] && (
+            <div className="p-6 pt-0 border-t border-slate-100 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+                  <h4 className="font-bold text-slate-900 uppercase">1. Live Balance Checker</h4>
+                  <p className="text-slate-600 leading-relaxed">
+                    The Studio displays a live balance indicator ensuring <code>Total Debit == Total Credit</code>. Batches out of balance cannot be posted to protect the General Ledger.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+                  <h4 className="font-bold text-slate-900 uppercase">2. Document Attachments</h4>
+                  <p className="text-slate-600 leading-relaxed">
+                    Attach electronic invoices, vendor receipts, and contracts per line item. Files are securely archived in Cloudinary and linked permanently to the audit log.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+                  <h4 className="font-bold text-slate-900 uppercase">3. CSV Batch Import</h4>
+                  <p className="text-slate-600 leading-relaxed">
+                    Download the pre-formatted CSV template to import multi-line journal batches in bulk (e.g. monthly payroll allocations, depreciation schedules, or rent).
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+                  <h4 className="font-bold text-slate-900 uppercase">4. Draft vs. Post to GL</h4>
+                  <p className="text-slate-600 leading-relaxed">
+                    Save work-in-progress as <strong>Draft</strong> for review. Once verified, click <strong>Post to General Ledger</strong> to commit the double-entry transaction immutably.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between p-3.5 rounded-lg bg-blue-50 border border-blue-200 text-xs">
+                <div className="flex items-center gap-2 text-slate-700">
+                  <FileStack className="w-4 h-4 text-blue-600" />
+                  <span>Create balanced journal entries, review draft batches, and view general ledger vouchers:</span>
+                </div>
+                <Link
+                  href="/finance/journal-entries"
+                  className="px-3.5 py-1.5 rounded-lg bg-blue-700 hover:bg-blue-600 text-white font-semibold transition-colors shadow-sm"
+                >
+                  Open Journal Studio
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Guide Section: Common FAQs & Trouble-Shooting */}
 
-      {(selectedCategory === "all" || selectedCategory === "immutability-reversals" || selectedCategory === "forex-usd" || selectedCategory === "direct-sales" || selectedCategory === "expenses-hub" || selectedCategory === "billing-sales" || selectedCategory === "ledger-reports") && (
+      {(selectedCategory === "all" || selectedCategory === "tax-filing" || selectedCategory === "year-end" || selectedCategory === "journal-studio" || selectedCategory === "immutability-reversals" || selectedCategory === "forex-usd" || selectedCategory === "direct-sales" || selectedCategory === "expenses-hub" || selectedCategory === "billing-sales" || selectedCategory === "ledger-reports") && (
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-6">
           <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
             <HelpCircle className="w-5 h-5 text-emerald-600" />
             <div>
-              <h3 className="text-lg font-bold text-slate-900">Finance FAQs & Audit Best Practices</h3>
+              <h3 className="text-lg font-bold text-slate-900">Finance FAQs &amp; Audit Best Practices</h3>
               <p className="text-xs text-slate-500">
-                Quick answers to common day-to-day accounting, POS billing, expenses, forex, reversals, and portal operations questions.
+                Quick answers to common day-to-day accounting, POS billing, tax filing, year-end closing, batch journals, and portal operations questions.
               </p>
             </div>
           </div>
@@ -2188,6 +2473,24 @@ export default function FinanceGuidesPage() {
               </h4>
               <p className="text-xs text-slate-600 leading-relaxed">
                 Record the <strong>exact KES amount</strong> debited on your bank/card statement. This includes all card processing and FX conversion charges, ensuring your bank ledger perfectly reconciles with zero FX suspense variance. Include the USD amount in the description memo.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+              <h4 className="text-xs font-bold text-slate-900 uppercase">
+                Q: Where does the Tax-Filing report pull Invoice and Document numbers from?
+              </h4>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                The Tax Filing engine resolves document references directly from each <code>JournalEntry</code> (including Batch Journal lines, vendor bills, sales invoices, and receipt vouchers) and falls back to transaction documentation. This guarantees all statutory entries have unbroken voucher audit trails.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+              <h4 className="text-xs font-bold text-slate-900 uppercase">
+                Q: How do we ensure zero variance on the Year-End Balance Sheet?
+              </h4>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                The Year-End module audits that <strong>Total Assets == Total Liabilities + Total Equity</strong>. All entries posted via Journal Studio enforce strict real-time balancing (<code>Total Debit == Total Credit</code>), ensuring complete statutory alignment with zero unallocated variance.
               </p>
             </div>
           </div>
