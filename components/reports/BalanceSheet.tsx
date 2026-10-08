@@ -1,6 +1,8 @@
 import { formatCurrency, formatNumber } from "@/tools/format";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./Card";
 import { BalanceSheet } from "@/services/reports";
+import { Download } from "lucide-react";
+import { exportBalanceSheetToCSV } from "@/tools/csvExport";
 
 interface SectionData {
     debit: number;
@@ -93,6 +95,17 @@ export function BalanceSheetReport({ data }: { data: BalanceSheet }) {
                         <CardDescription className="text-[10px] text-corporate-primary mt-2 bg-corporate-primary/5 px-3 py-1 rounded inline-block border border-corporate-primary/10">
                             Check: {formatCurrency(data.balance_check, data.currency)}
                         </CardDescription>
+                    </div>
+                    <div>
+                        <button
+                            type="button"
+                            onClick={() => exportBalanceSheetToCSV(data)}
+                            className="flex items-center gap-1.5 h-7 px-2.5 rounded bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold shadow-xs transition-all active:scale-95 cursor-pointer"
+                            title="Export Balance Sheet to CSV"
+                        >
+                            <Download className="w-3.5 h-3.5 text-slate-500" />
+                            <span>Export CSV</span>
+                        </button>
                     </div>
                 </div>
             </CardHeader>

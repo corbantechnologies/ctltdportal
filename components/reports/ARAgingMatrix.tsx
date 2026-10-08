@@ -26,6 +26,7 @@ import {
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { exportARAgingToCSV } from "@/tools/csvExport";
 
 interface ARAgingMatrixProps {
     rolePrefix?: "finance" | "director" | "operations";
@@ -127,6 +128,15 @@ export function ARAgingMatrix({ rolePrefix = "finance" }: ARAgingMatrixProps) {
                         className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border transition-colors shadow-sm"
                     >
                         <Printer className="w-3.5 h-3.5" /> Print Matrix
+                    </button>
+
+                    <button
+                        disabled={!data}
+                        onClick={() => data && exportARAgingToCSV(data)}
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 transition-colors shadow-sm disabled:opacity-50"
+                        title="Export AR Aging Schedule to CSV"
+                    >
+                        <Download className="w-3.5 h-3.5 text-slate-500" /> Export CSV
                     </button>
                 </div>
             </div>

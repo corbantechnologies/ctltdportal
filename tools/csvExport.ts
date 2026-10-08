@@ -367,4 +367,245 @@ export function exportYearEndPackToCSV(
   downloadCSV(`${topContent}\r\n${bottomContent}`, filename);
 }
 
+/**
+ * Exports Trial Balance to CSV
+ */
+export function exportTrialBalanceToCSV(
+  data: any,
+  filename = `trial_balance_${data?.financial_year || "period"}_${new Date().toISOString().split("T")[0]}.csv`
+) {
+  if (!data || !data.trial_balance) return;
+  const headerLines = [
+    ["TRIAL BALANCE REPORT"],
+    [`Financial Year: ${data.financial_year || "—"} | Division: ${data.division || "ALL"} | Currency: ${data.currency || "KES"}`],
+    [""],
+    ["Account Code", "Account Name", "Account Type", "Report Category", "Debit (KES)", "Credit (KES)", "Net Balance (KES)"],
+  ];
+
+  const rows = (data.trial_balance || []).map((row: any) => [
+    escapeCSVValue(row.code),
+    escapeCSVValue(row.name),
+    escapeCSVValue(row.account_type),
+    escapeCSVValue(row.report_role),
+    escapeCSVValue(row.debit),
+    escapeCSVValue(row.credit),
+    escapeCSVValue(row.balance),
+  ]);
+
+  const totalLines = [
+    [""],
+    ["TOTAL DISCLOSURE", "", "", "", escapeCSVValue(data.totals?.total_debit || 0), escapeCSVValue(data.totals?.total_credit || 0), escapeCSVValue(data.totals?.net_balance || 0)],
+  ];
+
+  const content = [
+    ...headerLines.map((r) => r.map((c) => escapeCSVValue(c)).join(",")),
+    ...rows.map((r: any) => r.join(",")),
+    ...totalLines.map((r) => r.map((c) => escapeCSVValue(c)).join(",")),
+  ].join("\r\n");
+
+  downloadCSV(content, filename);
+}
+
+/**
+ * Exports Balance Sheet to CSV
+ */
+export function exportBalanceSheetToCSV(
+  data: any,
+  filename = `balance_sheet_${data?.financial_year || "period"}_${new Date().toISOString().split("T")[0]}.csv`
+) {
+  if (!data) return;
+  const lines: string[][] = [
+    ["BALANCE SHEET STATEMENT"],
+    [`Period As Of: ${data.as_of_date || "Present"} | Division: ${data.division || "ALL"} | Currency: ${data.currency || "KES"}`],
+    [""],
+    ["SECTION / CATEGORY", "AMOUNT (KES)"],
+    ["1. CURRENT ASSETS", String(data.assets?.current?.net || 0)],
+    ["2. NON-CURRENT ASSETS", String(data.assets?.non_current?.net || 0)],
+    ["TOTAL ASSETS", String(data.assets?.total || 0)],
+    [""],
+    ["3. CURRENT LIABILITIES", String(data.liabilities?.current?.net || 0)],
+    ["4. NON-CURRENT LIABILITIES", String(data.liabilities?.non_current?.net || 0)],
+    ["TOTAL LIABILITIES", String(data.liabilities?.total || 0)],
+    [""],
+    ["5. SHAREHOLDERS' EQUITY", String(data.equity?.net || 0)],
+    ["NET INCOME (CURRENT PERIOD PROFIT)", String(data.equity?.net_income || 0)],
+    ["TOTAL EQUITY & NET INCOME", String(data.equity?.total || 0)],
+    [""],
+    ["TOTAL LIABILITIES & EQUITY", String(data.total_liabilities_and_equity || 0)],
+    ["VARIANCE CHECK (ASSETS - LIAB & EQUITY)", String((data.assets?.total || 0) - (data.total_liabilities_and_equity || 0))],
+  ];
+
+  const content = lines.map((r) => r.map((c) => escapeCSVValue(c)).join(",")).join("\r\n");
+  downloadCSV(content, filename);
+}
+
+/**
+ * Exports Profit & Loss (P&L) to CSV
+ */
+export function exportPnLToCSV(
+  data: any,
+  filename = `profit_and_loss_${new Date().toISOString().split("T")[0]}.csv`
+) {
+  if (!data) return;
+  const lines: string[][] = [
+    ["PROFIT & LOSS STATEMENT (STATEMENT OF FINANCIAL PERFORMANCE)"],
+    [`Currency: ${data.currency || "KES"} | Division: ${data.division || "ALL"}`],
+    [""],
+    ["LINE ITEM", "AMOUNT (KES)"],
+    ["Operating Revenue", String(data.revenue || 0)],
+    ["Cost of Sales / Direct Cost", String(data.cost_of_sales || 0)],
+    ["GROSS PROFIT", String(data.gross_profit || 0)],
+    ["Operating Expenses", String(data.operating_expenses || 0)],
+    ["OPERATING PROFIT (EBIT)", String(data.operating_profit || 0)],
+    ["Other Income", String(data.other_income || 0)],
+    ["NET PROFIT / (LOSS)", String(data.net_profit || 0)],
+  ];
+
+  const content = lines.map((r) => r.map((c) => escapeCSVValue(c)).join(",")).join("\r\n");
+  downloadCSV(content, filename);
+}
+
+/**
+ * Exports Revenue Summary to CSV
+ */
+export function exportRevenueToCSV(
+  data: any,
+  filename = `revenue_summary_${new Date().toISOString().split("T")[0]}.csv`
+) {
+  if (!data) return;
+  const lines: string[][] = [
+    ["REVENUE PERFORMANCE SUMMARY"],
+    [`Group Total Revenue: KES ${data.group_total_revenue || 0}`],
+    [""],
+    ["Division Code / Name", "Revenue (KES)"],
+  ];
+
+  if (Array.isArray(data.breakdown)) {
+    data.breakdown.forEach((item: any) => {
+      lines.push([item.division || item.name || "Division", String(item.revenue || item.amount || 0)]);
+    });
+  }
+
+  const content = lines.map((r) => r.map((c) => escapeCSVValue(c)).join(",")).join("\r\n");
+  downloadCSV(content, filename);
+}
+
+/**
+ * Exports Accounts Receivable Aging Matrix to CSV
+ */
+export function exportARAgingToCSV(
+  data: any,
+  filename = `ar_aging_schedule_${new Date().toISOString().split("T")[0]}.csv`
+) {
+  if (!data || !data.partners) return;
+  const headerLines = [
+    ["ACCOUNTS RECEIVABLE (AR) AGING SCHEDULE"],
+    [`As of Date: ${data.as_of_date || "Present"} | Division: ${data.division || "ALL"} | DSO: ${data.average_dso_days || 0} Days`],
+    [`Total Receivables: KES ${data.total_ar || 0} | Debtors: ${data.partners_count || 0}`],
+    [""],
+    ["Customer Code", "Customer Name", "Current (0-30 Days)", "31-60 Days", "61-90 Days", "90+ Days (Overdue)", "Total Balance (KES)", "Invoices Count"],
+  ];
+
+  const rows = (data.partners || []).map((p: any) => [
+    escapeCSVValue(p.partner_code),
+    escapeCSVValue(p.partner_name),
+    escapeCSVValue(p.current),
+    escapeCSVValue(p.days_31_60),
+    escapeCSVValue(p.days_61_90),
+    escapeCSVValue(p.days_90_plus),
+    escapeCSVValue(p.total_balance),
+    escapeCSVValue(p.invoices_count),
+  ]);
+
+  const summaryLine = [
+    [""],
+    [
+      "PORTFOLIO TOTALS",
+      "",
+      escapeCSVValue(data.total_current || 0),
+      escapeCSVValue(data.total_31_60 || 0),
+      escapeCSVValue(data.total_61_90 || 0),
+      escapeCSVValue(data.total_90_plus || 0),
+      escapeCSVValue(data.total_ar || 0),
+      escapeCSVValue(data.partners_count || 0),
+    ],
+  ];
+
+  const content = [
+    ...headerLines.map((r) => r.map((c) => escapeCSVValue(c)).join(",")),
+    ...rows.map((r: any) => r.join(",")),
+    ...summaryLine.map((r) => r.map((c) => escapeCSVValue(c)).join(",")),
+  ].join("\r\n");
+
+  downloadCSV(content, filename);
+}
+
+/**
+ * Exports Consolidated Financial Statements Pack (Multi-Statement CSV Dossier)
+ */
+export function exportFullFinancialPackToCSV(
+  pack: {
+    trialBalance?: any;
+    pnl?: any;
+    balanceSheet?: any;
+    revenue?: any;
+    cash?: any;
+    yearCode?: string;
+  },
+  filename = `full_financial_statements_pack_${pack.yearCode || "FY"}_${new Date().toISOString().split("T")[0]}.csv`
+) {
+  const sections: string[] = [];
+
+  sections.push([
+    ["=========================================================================="],
+    [`CORBAN TECHNOLOGIES LTD - STATUTORY FINANCIAL STATEMENTS PACK - ${pack.yearCode || "FY"}`],
+    [`Generated: ${new Date().toISOString()} | All figures in KES`],
+    ["=========================================================================="],
+  ].map(r => r.join(",")).join("\r\n"));
+
+  // 1. P&L
+  if (pack.pnl) {
+    sections.push([
+      ["\r\n--- 1. STATEMENT OF PROFIT OR LOSS ---"],
+      ["Operating Revenue", pack.pnl.revenue || 0],
+      ["Cost of Sales", pack.pnl.cost_of_sales || 0],
+      ["Gross Profit", pack.pnl.gross_profit || 0],
+      ["Operating Expenses", pack.pnl.operating_expenses || 0],
+      ["Operating Profit", pack.pnl.operating_profit || 0],
+      ["Other Income", pack.pnl.other_income || 0],
+      ["Net Profit", pack.pnl.net_profit || 0],
+    ].map(r => r.map(c => escapeCSVValue(c)).join(",")).join("\r\n"));
+  }
+
+  // 2. Balance Sheet
+  if (pack.balanceSheet) {
+    sections.push([
+      ["\r\n--- 2. STATEMENT OF FINANCIAL POSITION (BALANCE SHEET) ---"],
+      ["Current Assets", pack.balanceSheet.assets?.current?.net || 0],
+      ["Non-Current Assets", pack.balanceSheet.assets?.non_current?.net || 0],
+      ["Total Assets", pack.balanceSheet.assets?.total || 0],
+      ["Current Liabilities", pack.balanceSheet.liabilities?.current?.net || 0],
+      ["Non-Current Liabilities", pack.balanceSheet.liabilities?.non_current?.net || 0],
+      ["Total Liabilities", pack.balanceSheet.liabilities?.total || 0],
+      ["Total Equity", pack.balanceSheet.equity?.net || 0],
+      ["Total Liabilities & Equity", pack.balanceSheet.total_liabilities_and_equity || 0],
+    ].map(r => r.map(c => escapeCSVValue(c)).join(",")).join("\r\n"));
+  }
+
+  // 3. Trial Balance
+  if (pack.trialBalance && pack.trialBalance.trial_balance) {
+    const tbLines = [
+      ["\r\n--- 3. TRIAL BALANCE SCHEDULE ---"],
+      ["Account Code", "Account Name", "Category", "Debit", "Credit", "Net Balance"],
+    ];
+    pack.trialBalance.trial_balance.forEach((r: any) => {
+      tbLines.push([r.code, r.name, r.report_role || r.account_type, r.debit, r.credit, r.balance]);
+    });
+    tbLines.push(["TOTALS", "", "", pack.trialBalance.totals?.total_debit || 0, pack.trialBalance.totals?.total_credit || 0, pack.trialBalance.totals?.net_balance || 0]);
+    sections.push(tbLines.map(r => r.map(c => escapeCSVValue(c)).join(",")).join("\r\n"));
+  }
+
+  downloadCSV(sections.join("\r\n"), filename);
+}
+
 

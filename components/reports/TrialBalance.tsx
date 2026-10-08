@@ -4,7 +4,8 @@ import { useState } from "react";
 import { formatCurrency, formatNumber } from "@/tools/format";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./Card";
 import { AccountDrillDownModal } from "./AccountDrillDownModal";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Download } from "lucide-react";
+import { exportTrialBalanceToCSV } from "@/tools/csvExport";
 
 interface TrialBalanceData {
     trial_balance: {
@@ -33,14 +34,25 @@ export function TrialBalanceReport({ data }: { data: TrialBalanceData }) {
         <>
             <Card className="h-full overflow-hidden flex flex-col rounded">
                 <CardHeader>
-                    <div className="flex justify-between items-center">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                         <div>
                             <CardTitle>Trial Balance</CardTitle>
                             <CardDescription>{data.division} • {data.financial_year}</CardDescription>
                         </div>
-                        <span className="text-[11px] text-muted-foreground bg-secondary/50 px-2.5 py-1 rounded-md">
-                            Click any row to drill down into general ledger
-                        </span>
+                        <div className="flex items-center gap-2">
+                            <span className="text-[11px] text-muted-foreground bg-secondary/50 px-2.5 py-1 rounded-md hidden md:inline">
+                                Click row to drill down
+                            </span>
+                            <button
+                                type="button"
+                                onClick={() => exportTrialBalanceToCSV(data)}
+                                className="flex items-center gap-1.5 h-7 px-2.5 rounded bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold shadow-xs transition-all active:scale-95 cursor-pointer"
+                                title="Export Trial Balance to CSV"
+                            >
+                                <Download className="w-3.5 h-3.5 text-slate-500" />
+                                <span>Export CSV</span>
+                            </button>
+                        </div>
                     </div>
                 </CardHeader>
                 <CardContent className="flex-1 -mx-4 px-4 sm:mx-0 sm:px-6">
@@ -117,6 +129,7 @@ export function TrialBalanceReport({ data }: { data: TrialBalanceData }) {
                 onClose={() => setSelectedBookCode(null)}
                 bookCode={selectedBookCode}
                 division={data.division}
+                year={data.financial_year}
             />
         </>
     );

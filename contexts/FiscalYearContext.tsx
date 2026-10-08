@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "react-hot-toast";
+import { useRouter, usePathname } from "next/navigation";
 
 interface FiscalYearContextType {
   years: FinancialYear[];
@@ -46,6 +47,8 @@ const STORAGE_KEY = "ct_selected_fiscal_year_code";
 const SESSION_PROMPT_KEY = "ct_fiscal_year_confirmed_session";
 
 export function FiscalYearProvider({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const pathname = usePathname();
   const queryClient = useQueryClient();
   const { data: session } = useSession();
   const { data: rawYears, isLoading } = useFetchFinancialYears();
@@ -142,12 +145,21 @@ export function FiscalYearProvider({ children }: { children: React.ReactNode }) 
       queryClient.invalidateQueries({ queryKey: ["reports"] });
       queryClient.invalidateQueries({ queryKey: ["account-drilldown"] });
 
+      // If currently viewing a fiscal year detail page, navigate to the selected year's detail page
+      if (pathname) {
+        const detailMatch = pathname.match(/^\/([^/]+)\/fiscal-years\/([^/]+)$/);
+        if (detailMatch) {
+          const currentRole = detailMatch[1];
+          router.push(`/${currentRole}/fiscal-years/${target.reference}`);
+        }
+      }
+
       toast.success(
         `Portal context shifted to Fiscal Year ${target.code} (${target.start_date} → ${target.end_date})`
       );
       setIsModalOpen(false);
     },
-    [years, queryClient]
+    [years, queryClient, pathname, router]
   );
 
   const refreshYears = useCallback(async () => {

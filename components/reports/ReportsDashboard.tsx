@@ -26,6 +26,7 @@ import {
     ShieldCheck,
     Calendar,
     ChevronDown,
+    Download,
 } from "lucide-react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { cn } from "@/lib/utils";
@@ -34,6 +35,7 @@ import { RevenueReport } from "./Revenue";
 import { BalanceSheetReport } from "./BalanceSheet";
 import { TrialBalanceReport } from "./TrialBalance";
 import Link from "next/link";
+import { exportFullFinancialPackToCSV } from "@/tools/csvExport";
 
 // ---------- Skeleton helpers ----------
 function CardSkeleton({ height = "h-64" }: { height?: string }) {
@@ -186,6 +188,29 @@ export default function ReportsDashboard({
                         <span>{hasFilters ? "Filtered" : "Filters"}</span>
                     </button>
 
+                    {/* Export Full Financial Pack */}
+                    <button
+                        type="button"
+                        disabled={!pnlData || !bsData || !tbData || !revenueData}
+                        onClick={() => {
+                            if (pnlData && bsData && tbData && revenueData) {
+                                exportFullFinancialPackToCSV({
+                                    trialBalance: tbData,
+                                    balanceSheet: bsData,
+                                    pnl: pnlData,
+                                    revenue: revenueData,
+                                    cash: cashData,
+                                    yearCode: activeYearCode,
+                                });
+                            }
+                        }}
+                        className="flex items-center gap-1.5 h-8 px-3 rounded bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-semibold text-xs transition-all shadow-sm active:scale-95 cursor-pointer disabled:opacity-50"
+                        title="Export Full Financial Statements Pack to CSV"
+                    >
+                        <Download className="w-3.5 h-3.5 text-slate-500" />
+                        <span>Export Pack</span>
+                    </button>
+
                     {/* Specialized Reports Popover */}
                     <DropdownMenu.Root>
                         <DropdownMenu.Trigger asChild>
@@ -204,6 +229,26 @@ export default function ReportsDashboard({
                                 sideOffset={6}
                                 className="z-[100] w-56 p-1 bg-white rounded border border-slate-200 shadow-lg text-xs"
                             >
+                                <DropdownMenu.Item
+                                    disabled={!pnlData || !bsData || !tbData || !revenueData}
+                                    onClick={() => {
+                                        if (pnlData && bsData && tbData && revenueData) {
+                                            exportFullFinancialPackToCSV({
+                                                trialBalance: tbData,
+                                                balanceSheet: bsData,
+                                                pnl: pnlData,
+                                                revenue: revenueData,
+                                                cash: cashData,
+                                                yearCode: activeYearCode,
+                                            });
+                                        }
+                                    }}
+                                    className="flex items-center gap-2 px-2.5 py-1.5 rounded text-slate-700 hover:text-slate-900 hover:bg-slate-50 cursor-pointer outline-none font-medium disabled:opacity-50"
+                                >
+                                    <Download className="w-3.5 h-3.5 text-corporate-primary" />
+                                    <span>Export Financial Pack (CSV)</span>
+                                </DropdownMenu.Item>
+                                <DropdownMenu.Separator className="h-px bg-slate-100 my-1" />
                                 <DropdownMenu.Item asChild>
                                     <Link
                                         href={`/${rolePrefix}/reports/ar-aging`}

@@ -88,6 +88,7 @@ export function useFetchAccountDrillDown(params: {
     start_date?: string;
     end_date?: string;
     division?: string;
+    year?: string;
 }) {
     const header = useAxiosAuth();
     const canFetch = !!(params.book_reference || params.book_code) && !!header.headers.Authorization;

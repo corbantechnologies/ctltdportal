@@ -89,6 +89,20 @@ export default function Navbar() {
           ? "employee"
           : "portal";
 
+  const handleFiscalYearChange = (newYearCode: string) => {
+    switchFiscalYear(newYearCode);
+
+    // If currently viewing a fiscal year detail page, navigate to the selected year's detail page
+    const detailMatch = pathname?.match(/^\/([^/]+)\/fiscal-years\/([^/]+)$/);
+    if (detailMatch) {
+      const currentRole = detailMatch[1];
+      const target = years?.find((y) => y.code === newYearCode || y.reference === newYearCode);
+      if (target) {
+        router.push(`/${currentRole}/fiscal-years/${target.reference}`);
+      }
+    }
+  };
+
   // Define categorized navigation structure
   const categories: NavCategory[] = useMemo(() => [
     {
@@ -563,7 +577,7 @@ export default function Navbar() {
                     <div className="relative inline-flex items-center">
                       <select
                         value={selectedYearCode || ""}
-                        onChange={(e) => switchFiscalYear(e.target.value)}
+                        onChange={(e) => handleFiscalYearChange(e.target.value)}
                         className="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700/80 rounded px-1.5 py-0.5 text-[9px] font-mono font-semibold outline-none cursor-pointer transition-colors appearance-none pr-4 max-w-[130px] truncate"
                         title="Switch active fiscal cycle"
                       >

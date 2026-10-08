@@ -339,7 +339,7 @@ export interface AccountDrillDown {
 }
 
 export const getAccountDrillDown = async (
-    params: { book_reference?: string; book_code?: string; start_date?: string; end_date?: string; division?: string },
+    params: { book_reference?: string; book_code?: string; start_date?: string; end_date?: string; division?: string; year?: string },
     headers: { headers: { Authorization: string } }
 ): Promise<AccountDrillDown> => {
     const query = new URLSearchParams();
@@ -347,7 +347,10 @@ export const getAccountDrillDown = async (
     if (params.book_code) query.append("book_code", params.book_code);
     if (params.start_date) query.append("start_date", params.start_date);
     if (params.end_date) query.append("end_date", params.end_date);
-    if (params.division) query.append("division", params.division);
+    if (params.year) query.append("year", params.year);
+    if (params.division && params.division !== "ALL" && params.division !== "All Divisions") {
+        query.append("division", params.division);
+    }
 
     const response: AxiosResponse<AccountDrillDown> = await apiActions.get(
         `/api/v1/reports/account-drilldown/?${query.toString()}`,

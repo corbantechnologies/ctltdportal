@@ -1,6 +1,8 @@
 import { formatCurrency } from "@/tools/format";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./Card";
 import { PnL } from "@/services/reports";
+import { Download } from "lucide-react";
+import { exportPnLToCSV } from "@/tools/csvExport";
 
 export function PnLReport({ data }: { data: PnL }) {
     const Row = ({ label, value, bold = false, net = false }: { label: string; value: number; bold?: boolean; net?: boolean }) => (
@@ -19,8 +21,21 @@ export function PnLReport({ data }: { data: PnL }) {
     return (
         <Card className="h-full rounded">
             <CardHeader>
-                <CardTitle>Profit & Loss</CardTitle>
-                <CardDescription>{data.division} • {displayDate}</CardDescription>
+                <div className="flex justify-between items-start">
+                    <div>
+                        <CardTitle>Profit & Loss</CardTitle>
+                        <CardDescription>{data.division} • {displayDate}</CardDescription>
+                    </div>
+                    <button
+                        type="button"
+                        onClick={() => exportPnLToCSV(data)}
+                        className="flex items-center gap-1.5 h-7 px-2.5 rounded bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold shadow-xs transition-all active:scale-95 cursor-pointer"
+                        title="Export Profit & Loss to CSV"
+                    >
+                        <Download className="w-3.5 h-3.5 text-slate-500" />
+                        <span>Export CSV</span>
+                    </button>
+                </div>
             </CardHeader>
             <CardContent className="space-y-1 p-1 sm:p-1">
                 <Row label="Revenue" value={data.revenue} />

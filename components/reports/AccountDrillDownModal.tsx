@@ -32,6 +32,7 @@ interface AccountDrillDownModalProps {
     startDate?: string;
     endDate?: string;
     division?: string;
+    year?: string;
 }
 
 export function AccountDrillDownModal({
@@ -42,6 +43,7 @@ export function AccountDrillDownModal({
     startDate,
     endDate,
     division,
+    year,
 }: AccountDrillDownModalProps) {
     const pathname = usePathname();
     const rolePrefix = pathname?.startsWith("/director")
@@ -52,12 +54,15 @@ export function AccountDrillDownModal({
 
     const [searchQuery, setSearchQuery] = useState("");
 
+    const cleanDivision = division && division !== "ALL" && division !== "All Divisions" ? division : undefined;
+
     const { data, isLoading, error } = useFetchAccountDrillDown({
         book_code: bookCode || undefined,
         book_reference: bookReference || undefined,
         start_date: startDate || undefined,
         end_date: endDate || undefined,
-        division: division || undefined,
+        division: cleanDivision,
+        year: year || undefined,
     });
 
     if (!isOpen) return null;
