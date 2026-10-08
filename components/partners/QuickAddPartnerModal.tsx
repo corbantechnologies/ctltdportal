@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { X, UserPlus, Building, Phone, Mail, FileText, Loader2, Sparkles } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import { X, UserPlus, Building, Phone, Mail, FileText, Loader2, Sparkles, Zap } from "lucide-react";
 import { useCreatePartner } from "@/hooks/partners/actions";
 import { useFetchPartnerTypes } from "@/hooks/partnertypes/actions";
 import { useFetchDivisions } from "@/hooks/divisions/actions";
@@ -31,7 +31,33 @@ export default function QuickAddPartnerModal({
   const [partnerType, setPartnerType] = useState(defaultType || "Customer");
   const [division, setDivision] = useState("");
 
+  useEffect(() => {
+    if (defaultType) {
+      setPartnerType(defaultType);
+    }
+  }, [defaultType, isOpen]);
+
+  const typeOptions = useMemo(() => {
+    const list: { value: string; label: string }[] = [];
+    if (partnerTypes && partnerTypes.length > 0) {
+      partnerTypes.forEach((pt) => {
+        list.push({ value: pt.name, label: pt.name });
+      });
+    }
+    ["Customer", "Supplier", "Walk-in"].forEach((def) => {
+      if (!list.some((item) => item.value.toLowerCase() === def.toLowerCase())) {
+        list.push({ value: def, label: def === "Walk-in" ? "Walk-in Customer" : def });
+      }
+    });
+    return list;
+  }, [partnerTypes]);
+
   if (!isOpen) return null;
+
+  const handleQuickFillWalkin = () => {
+    setName("Walk-in Cash Customer");
+    setPartnerType("Walk-in");
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,11 +74,11 @@ export default function QuickAddPartnerModal({
         email: email.trim() || undefined,
       };
 
-      if (partnerType) {
-        payload.partner_type = partnerType;
+      if (partnerType && partnerType.trim()) {
+        payload.partner_type = partnerType.trim();
       }
-      if (division) {
-        payload.division = division;
+      if (division && division.trim()) {
+        payload.division = division.trim();
       } else if (divisions && divisions.length > 0) {
         payload.division = divisions[0].name;
       }
@@ -69,6 +95,7 @@ export default function QuickAddPartnerModal({
     } catch (err: any) {
       const errMsg =
         err?.response?.data?.name?.[0] ||
+        err?.response?.data?.partner_type?.[0] ||
         err?.response?.data?.tax_pin?.[0] ||
         err?.response?.data?.detail ||
         err?.message ||
@@ -113,9 +140,19 @@ export default function QuickAddPartnerModal({
         {/* Modal Body */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
-              Partner / Entity Name <span className="text-red-500">*</span>
-            </label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600">
+                Partner / Entity Name <span className="text-red-500">*</span>
+              </label>
+              <button
+                type="button"
+                onClick={handleQuickFillWalkin}
+                className="text-[10px] font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1 hover:underline cursor-pointer"
+              >
+                <Zap className="w-3 h-3" />
+                <span>Fill as Walk-in Customer</span>
+              </button>
+            </div>
             <div className="relative">
               <Building className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
@@ -190,12 +227,9 @@ export default function QuickAddPartnerModal({
                 onChange={(e) => setPartnerType(e.target.value)}
                 className="w-full h-10 px-3.5 bg-slate-50 focus:bg-white rounded-xl border border-slate-200 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/10 text-sm font-medium outline-none transition-all"
               >
-                <option value="Customer">Customer / Client</option>
-                <option value="Supplier">Supplier / Vendor</option>
-                <option value="Walk-in">Walk-in Customer</option>
-                {partnerTypes?.map((pt) => (
-                  <option key={pt.reference} value={pt.name}>
-                    {pt.name}
+                {typeOptions.map((pt) => (
+                  <option key={pt.value} value={pt.value}>
+                    {pt.label}
                   </option>
                 ))}
               </select>
