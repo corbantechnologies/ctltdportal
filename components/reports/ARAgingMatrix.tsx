@@ -381,7 +381,7 @@ export function ARAgingMatrix({ rolePrefix = "finance" }: ARAgingMatrixProps) {
                                                         <Phone className="w-3 h-3" /> {partner.partner_phone}
                                                     </span>
                                                 )}
-                                                <span>• {partner.invoices_count} pending invoice(s)</span>
+                                                <span>• {partner.invoices_count} receivable item(s)</span>
                                             </div>
                                         </div>
                                     </div>
@@ -448,37 +448,50 @@ export function ARAgingMatrix({ rolePrefix = "finance" }: ARAgingMatrixProps) {
                                     </div>
                                 </div>
 
-                                {/* Collapsible Invoices Subtable */}
+                                {/* Collapsible Invoices & Journal Receivables Subtable */}
                                 {isExpanded && (
                                     <div className="border-t border-border/80 bg-muted/20 p-4 sm:p-5">
                                         <div className="border border-border/70 rounded-xl overflow-hidden shadow-inner bg-card">
                                             <table className="w-full text-left text-xs">
                                                 <thead className="bg-muted/60 text-muted-foreground font-semibold border-b border-border">
                                                     <tr>
-                                                        <th className="py-2.5 px-3">Invoice No.</th>
-                                                        <th className="py-2.5 px-3">Invoice Date</th>
+                                                        <th className="py-2.5 px-3">Ref / Document</th>
+                                                        <th className="py-2.5 px-3">Date</th>
                                                         <th className="py-2.5 px-3">Due Date</th>
                                                         <th className="py-2.5 px-3">Days Past</th>
                                                         <th className="py-2.5 px-3">Aging Bracket</th>
-                                                        <th className="py-2.5 px-3 text-right">Invoice Total</th>
+                                                        <th className="py-2.5 px-3 text-right">Total Amount</th>
                                                         <th className="py-2.5 px-3 text-right">Amount Paid</th>
                                                         <th className="py-2.5 px-3 text-right">Balance Due</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody className="divide-y divide-border/50">
-                                                    {partner.invoices.map((inv) => (
-                                                        <tr
-                                                            key={inv.reference || inv.code}
-                                                            className="hover:bg-muted/30 transition-colors"
-                                                        >
-                                                            <td className="py-2.5 px-3 whitespace-nowrap">
-                                                                <Link
-                                                                    href={`/${rolePrefix}/invoices/${inv.reference}`}
-                                                                    className="font-mono font-semibold text-corporate-primary hover:underline"
-                                                                >
-                                                                    {inv.code}
-                                                                </Link>
-                                                            </td>
+                                                    {partner.invoices.map((inv) => {
+                                                        const isJournal = (inv as any).type === "JOURNAL" || inv.code?.startsWith("JRN");
+                                                        return (
+                                                            <tr
+                                                                key={inv.reference || inv.code}
+                                                                className="hover:bg-muted/30 transition-colors"
+                                                            >
+                                                                <td className="py-2.5 px-3 whitespace-nowrap">
+                                                                    {isJournal ? (
+                                                                        <div className="inline-flex items-center gap-1.5">
+                                                                            <span className="font-mono font-semibold text-corporate-primary">
+                                                                                {inv.code}
+                                                                            </span>
+                                                                            <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                                                                                GL Journal
+                                                                            </span>
+                                                                        </div>
+                                                                    ) : (
+                                                                        <Link
+                                                                            href={`/${rolePrefix}/invoices/${inv.reference}`}
+                                                                            className="font-mono font-semibold text-corporate-primary hover:underline"
+                                                                        >
+                                                                            {inv.code}
+                                                                        </Link>
+                                                                    )}
+                                                                </td>
                                                             <td className="py-2.5 px-3 whitespace-nowrap text-muted-foreground">
                                                                 {inv.date}
                                                             </td>
@@ -523,7 +536,8 @@ export function ARAgingMatrix({ rolePrefix = "finance" }: ARAgingMatrixProps) {
                                                                 {formatCurrency(inv.balance_due, data?.currency || "KES")}
                                                             </td>
                                                         </tr>
-                                                    ))}
+                                                    );
+                                                })}
                                                 </tbody>
                                             </table>
                                         </div>

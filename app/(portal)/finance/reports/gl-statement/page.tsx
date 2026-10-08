@@ -31,7 +31,7 @@ function GLStatementContent() {
     const { data: divisions } = useFetchDivisions();
     const { selectedYearCode, years, switchFiscalYear } = useFiscalYear();
 
-    const [selectedBook, setSelectedBook] = useState("");
+    const [selectedBook, setSelectedBook] = useState("ALL");
     const [division, setDivision] = useState("ALL");
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
@@ -46,9 +46,9 @@ function GLStatementContent() {
         }
     }, [searchParams]);
 
-    // Pass selected fiscal year to the query
+    // Pass selected fiscal year to the query (defaults to ALL books if none specified)
     const { data: glData, isLoading: isLoadingGL, isFetching } = useFetchGLStatement(
-        selectedBook,
+        selectedBook === "ALL" ? undefined : selectedBook,
         {
             start_date: startDate || undefined,
             end_date: endDate || undefined,
@@ -89,11 +89,13 @@ function GLStatementContent() {
     const handleExportCSV = () => {
         if (!glData?.entries?.length) return;
         const rows = [
-            ["Date", "Journal Code", "Description", "Partner", "Debit", "Credit", "Running Balance"],
+            ["Date", "Journal Code", "Account Code", "Account Name", "Description", "Partner", "Debit", "Credit", "Running Balance"],
             ...glData.entries.map((e) => [
                 e.date,
                 e.journal_code,
-                `"${e.description}"`,
+                (e as any).book_code || "",
+                (e as any).book_name || "",
+                `"${e.description || ""}"`,
                 e.partner || "",
                 e.debit,
                 e.credit,
@@ -105,7 +107,7 @@ function GLStatementContent() {
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = `gl_${glData.book_code}_${startDate || "all"}_${endDate || "date"}.csv`;
+        a.download = `gl_${selectedBook === "ALL" || !selectedBook ? "all_accounts" : glData.book_code}_${startDate || "all"}_${endDate || "date"}.csv`;
         a.click();
         URL.revokeObjectURL(url);
     };
@@ -182,7 +184,7 @@ function GLStatementContent() {
                     {/* Book Selector */}
                     <div className="flex-1 min-w-[200px]">
                         <label className="block text-[10px] font-semibold uppercase tracking-widest text-black/40 mb-1">
-                            Account Book <span className="text-red-500">*</span>
+                            Account Book
                         </label>
                         <div className="relative">
                             <BookOpen className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
@@ -191,7 +193,7 @@ function GLStatementContent() {
                                 onChange={(e) => { setSelectedBook(e.target.value); setCurrentPage(1); }}
                                 className="w-full h-10 pl-9 pr-3 rounded border border-gray-200 bg-white text-sm font-medium text-gray-800 outline-none focus:ring-2 focus:ring-[#045138]/20 focus:border-[#045138] transition-all appearance-none"
                             >
-                                <option value="">— Select a Book —</option>
+                                <option value="ALL">— All Books / General Journal —</option>
                                 {isLoadingBooks ? (
                                     <option disabled>Loading...</option>
                                 ) : (
@@ -269,18 +271,18 @@ function GLStatementContent() {
                 )}
             </div>
 
-            {/* Empty / Prompt State */}
-            {!selectedBook && (
+            {/* Empty State when no entries match filters */}
+            {!isLoadingGL && !isFetching && glData && glData.entries?.length === 0 && (
                 <div className="py-20 text-center bg-white rounded border border-dashed border-gray-200">
-                    <div className="w-14 h-14 rounded bg-gray-50 flex items-center justify-center text-gray-200 mx-auto mb-4">
+                    <div className="w-14 h-14 rounded bg-gray-50 flex items-center justify-center text-gray-300 mx-auto mb-4">
                         <SlidersHorizontal className="w-7 h-7" />
                     </div>
-                    <p className="text-sm font-semibold text-black/40 uppercase tracking-widest">Select an account book to load the GL Statement</p>
+                    <p className="text-sm font-semibold text-black/40 uppercase tracking-widest">No journal entries found for the selected period / criteria</p>
                 </div>
             )}
 
             {/* Loading */}
-            {selectedBook && (isLoadingGL || isFetching) && !glData && (
+            {(isLoadingGL || isFetching) && !glData && (
                 <div className="py-20 text-center bg-white rounded border border-gray-100 animate-pulse">
                     <div className="h-4 bg-gray-100 rounded w-1/4 mx-auto mb-2" />
                     <div className="h-3 bg-gray-50 rounded w-1/3 mx-auto" />
@@ -293,7 +295,7 @@ function GLStatementContent() {
                     {/* Summary Header */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         {[
-                            { label: "Book", value: `${glData.book_code} — ${glData.book_name}` },
+                            { label: "Account / Book", value: selectedBook === "ALL" || !selectedBook ? "All Accounts (Consolidated GL)" : `${glData.book_code} — ${glData.book_name}` },
                             { label: "Opening Balance", value: formatNumber(glData.opening_balance), mono: true },
                             { label: "Closing Balance", value: formatNumber(glData.closing_balance), mono: true, highlight: glData.closing_balance < 0 },
                             { label: "Period", value: glData.start_date ? `${glData.start_date} → ${glData.end_date}` : "Full Year" },
@@ -315,6 +317,9 @@ function GLStatementContent() {
                                     <tr className="bg-gray-50 border-y border-gray-200">
                                         <th className="py-3 px-4 text-[10px] font-bold uppercase tracking-widest text-gray-500 w-28">Date</th>
                                         <th className="py-3 px-4 text-[10px] font-bold uppercase tracking-widest text-gray-500 w-32">Journal</th>
+                                        {(selectedBook === "ALL" || !selectedBook) && (
+                                            <th className="py-3 px-4 text-[10px] font-bold uppercase tracking-widest text-gray-500 w-36">Account Book</th>
+                                        )}
                                         <th className="py-3 px-4 text-[10px] font-bold uppercase tracking-widest text-gray-500">Description</th>
                                         <th className="py-3 px-4 text-[10px] font-bold uppercase tracking-widest text-gray-500 w-36">Partner</th>
                                         <th className="py-3 px-4 text-[10px] font-bold uppercase tracking-widest text-gray-500 text-right w-32">Debit</th>
@@ -333,6 +338,11 @@ function GLStatementContent() {
                                                     {entry.journal_code}
                                                 </span>
                                             </td>
+                                            {(selectedBook === "ALL" || !selectedBook) && (
+                                                <td className="py-3 px-4 text-xs font-mono text-gray-700 whitespace-nowrap">
+                                                    {(entry as any).book_code || "—"}
+                                                </td>
+                                            )}
                                             <td className="py-3 px-4 text-sm text-gray-800 max-w-xs truncate">
                                                 {entry.description}
                                             </td>

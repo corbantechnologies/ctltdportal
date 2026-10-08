@@ -50,14 +50,14 @@ export function useFetchCashBalance(params: Record<string, string> = {}) {
 }
 
 export function useFetchGLStatement(
-    bookReference: string,
+    bookReference?: string,
     params: { start_date?: string; end_date?: string; division?: string; year?: string } = {}
 ) {
     const header = useAxiosAuth();
     return useQuery({
-        queryKey: ["gl-statement", bookReference, params],
+        queryKey: ["gl-statement", bookReference || "ALL", params],
         queryFn: () => getGLStatement(bookReference, params, header),
-        enabled: !!bookReference && !!header.headers.Authorization,
+        enabled: !!header.headers.Authorization,
     });
 }
 

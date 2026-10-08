@@ -173,15 +173,19 @@ export interface GLStatement {
 }
 
 export const getGLStatement = async (
-    bookReference: string,
+    bookReference: string | undefined = undefined,
     params: { start_date?: string; end_date?: string; division?: string; year?: string } = {},
-    headers: { headers: { Authorization: string } }
+    headers?: { headers: { Authorization: string } }
 ): Promise<GLStatement> => {
     const query = new URLSearchParams();
-    query.append("book_reference", bookReference);
+    if (bookReference && bookReference !== "ALL") {
+        query.append("book_reference", bookReference);
+    }
     if (params.start_date) query.append("start_date", params.start_date);
     if (params.end_date) query.append("end_date", params.end_date);
-    if (params.division) query.append("division", params.division);
+    if (params.division && params.division !== "ALL" && params.division !== "All Divisions") {
+        query.append("division", params.division);
+    }
     if (params.year) query.append("year", params.year);
 
     const response: AxiosResponse<GLStatement> = await apiActions.get(`/api/v1/reports/gl-statement/?${query.toString()}`, headers);
