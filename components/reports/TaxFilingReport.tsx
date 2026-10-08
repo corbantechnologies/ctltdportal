@@ -35,7 +35,7 @@ export default function TaxFilingReportComponent({
 }: TaxFilingReportProps) {
   const { selectedYearCode, years, switchFiscalYear } = useFiscalYear();
 
-  const [activeTab, setActiveTab] = useState<"TAX_SCHEDULE" | "ALL_TRANSACTIONS">("TAX_SCHEDULE");
+  const [activeTab, setActiveTab] = useState<"TAX_SCHEDULE" | "ALL_TRANSACTIONS">("ALL_TRANSACTIONS");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [division, setDivision] = useState("ALL");
@@ -343,17 +343,6 @@ export default function TaxFilingReportComponent({
               <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  onClick={() => setActiveTab("TAX_SCHEDULE")}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${
-                    activeTab === "TAX_SCHEDULE"
-                      ? "bg-slate-900 text-white shadow-sm"
-                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                  }`}
-                >
-                  Tax Return Schedule ({filteredScheduleItems.length})
-                </button>
-                <button
-                  type="button"
                   onClick={() => setActiveTab("ALL_TRANSACTIONS")}
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${
                     activeTab === "ALL_TRANSACTIONS"
@@ -362,6 +351,17 @@ export default function TaxFilingReportComponent({
                   }`}
                 >
                   All Transactions ({filteredAllTransactions.length})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("TAX_SCHEDULE")}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${
+                    activeTab === "TAX_SCHEDULE"
+                      ? "bg-slate-900 text-white shadow-sm"
+                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                  }`}
+                >
+                  Tax Return Schedule ({filteredScheduleItems.length})
                 </button>
               </div>
 
